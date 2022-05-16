@@ -4,6 +4,9 @@
 Describe this file.
 
 ============ Change Log ============
+2022-May-16 = Fix bug in subprocess due to back-porting behind Python 3.7. Python 3.6 does not have the subprocess.run
+              capture_output param.
+
 2020-Jun-30 = Created.
 
 ============ License ============
@@ -207,7 +210,7 @@ def _run_importer_on_selected_files(files_for_importer, previously_sent_to_impor
         importer_command = file_for_importer.generate_importer_command(log_argument)
         _logger.info(f"Importer command: {importer_command}")
         previously_sent_to_importer_cache[file_for_importer.file_path] = True
-        results = subprocess.run(["rdimport", *importer_command], capture_output=True)
+        results = subprocess.run(["rdimport", *importer_command], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if results.returncode == 0:
             if b"is not readable or not a recognized format, skipping..." in results.stdout:
                 _logger.error(f"Error on {importer_command[-1]}, {results.args}, {results.stderr}, {results.stdout}")

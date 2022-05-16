@@ -73,7 +73,7 @@ def setup__run_importer_on_selected_files(caplog, mocker):
 
     file_4_stdout = b'blah blah is not readable or not a recognized format, skipping... blah blah'
 
-    def mock_subprocess_run_function(args, capture_output):
+    def mock_subprocess_run_function(args, stdout, stderr):
         if args[1] == mock_file_2_command:
             return mocker.Mock(returncode=-1, args=args, stdout=b'', stderr=b'')
         elif args[1] == mock_file_4_command:
@@ -90,6 +90,10 @@ def setup__run_importer_on_selected_files(caplog, mocker):
     mocker.patch("wmul_rivendell.RivendellAudioImporter.subprocess.run",
                  mock_subprocess_run)
 
+    mock_subprocess_pipe = "mock_suprocess_pipe"
+    mocker.patch("wmul_rivendell.RivendellAudioImporter.subprocess.PIPE",
+                 mock_subprocess_pipe)
+
     RivendellAudioImporter._run_importer_on_selected_files(
         mock_files_for_importer,
         mock_previously_sent_to_importer,
@@ -97,10 +101,10 @@ def setup__run_importer_on_selected_files(caplog, mocker):
     )
 
     expected_calls = [
-        mocker.call(["rdimport", mock_file_1_command], capture_output=True),
-        mocker.call(["rdimport", mock_file_2_command], capture_output=True),
-        mocker.call(["rdimport", mock_file_3_command], capture_output=True),
-        mocker.call(["rdimport", mock_file_4_command], capture_output=True)
+        mocker.call(["rdimport", mock_file_1_command], stderr=mock_subprocess_pipe, stdout=mock_subprocess_pipe),
+        mocker.call(["rdimport", mock_file_2_command], stderr=mock_subprocess_pipe, stdout=mock_subprocess_pipe),
+        mocker.call(["rdimport", mock_file_3_command], stderr=mock_subprocess_pipe, stdout=mock_subprocess_pipe),
+        mocker.call(["rdimport", mock_file_4_command], stderr=mock_subprocess_pipe, stdout=mock_subprocess_pipe)
     ]
 
     expected_previously_sent_to_importer = {
