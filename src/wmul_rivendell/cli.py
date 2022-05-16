@@ -136,41 +136,42 @@ def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_
 @click.argument('log_name_format', type=str, nargs=1)
 @click.argument('rivendell_host', type=str, nargs=1)
 @click.option('--sql_host', type=str, nargs=1, default="localhost",
-              help="The host name to the sql database. Usually localhost. Default: localhost.")
+              help="The host name to the SQL database. Usually localhost. Default: localhost.")
 @click.option('--sql_user', type=str, nargs=1, default="rduser",
-              help="The username for the sql database. Usually rduser. Default: rduser.")
+              help="The username for the SQL database. Usually rduser. Default: rduser.")
 @click.option('--sql_pass', type=str, nargs=1, default="letmein",
-              help="The password for the sql database. Usually letmein. Default: letmein.")
+              help="The password for the SQL database. Usually letmein. Default: letmein.")
 @click.option('--sql_database_name', type=str, nargs=1, default="Rivendell",
-              help="The Database name of the sql database. Usually Rivendell. Default: Rivendell.")
+              help="The Database name of the SQL database. Usually Rivendell. Default: Rivendell.")
 @click.option('--use_date', type=click.DateTime(formats=["%Y-%m-%d", "%y-%m-%d"]), nargs=1,
-              help="The date of the log to be loaded. If omitted, will use the system date of the system running the "
-                   "script. Format is YY-MM-DD or YYYY-MM-DD.")
+              help="The date of the log to be loaded. Format is YY-MM-DD or YYYY-MM-DD. If this option is omitted, "
+                   "the system date of the system running the script will be used.")
 @click.option('--use_time',
               type=click.DateTime(formats=["%I:%M:%S %p", "%I:%M %p", "%I %p", "%H:%M:%S", "%H:%M", "%H"]),
               nargs=1, help="The time of the log line to be loaded. The script will find the line closest to, but "
                             "before that time. Valid formats are HH:MM:SS AM, HH:MM AM, HH AM, HH:MM:SS, HH:MM, and HH."
                             "If AM/PM are present, HH will be 12-hour. If AM/PM are absent, HH will be 24-hour. IF MM "
-                            "or SS are omitted, they will be set to 00. If this option is omitted entirely,"
+                            "and/or SS are omitted, they will be set to 00. If this option is omitted,"
                             "the system time of the system running the script will be used.")
 @click.option('--dry_run', is_flag=True,
-              help="For testing. Prints out the log line that is selected, but does not load it.")
+              help="For testing purposes. Prints out the log line that is selected, but does not load it.")
 @click.option('--start_immediately', is_flag=True,
-              help="Starts the given line immediately. If not set, the given line will be 'made next'.")
+              help="Starts the selected log line immediately. If not set, the selected log line will be 'made next'.")
 @click.option('--days_back', type=int, nargs=1, default=7,
-              help="Maximum number of days back in time to go. If a log is not available for the given day, it will "
-                   "try to load the previous day's log. It will keep going back in time up to and including this many "
-                   "days. If that fails, tries to load the default log if provided. Set this value to 0 to not attempt "
-                   "previous days' logs. Defaults to 7.")
+              help="Maximum number of days back in time to go. If a log is not available for the given day, the script"
+                   " will try to load the previous day's log. It will keep going back in time up to and including "
+                   "this many days. This option is for cases where it is preferred to load and replay an old log "
+                   "rather than no log. If no logs can be found for those dates, it will try to load the default log, "
+                   "if provided. Set this value to 0 to not attempt previous days' logs. Defaults to 7.")
 @click.option('--default_log', type=str, nargs=1,
               help="The full name of the last-ditch log to try to load if day based logs fail.")
 @click.option('--log_machine', type=int, nargs=1, default=1,
               help="The log machine on which to load the playlist. Defaults to 1 (Main Log).")
 @click.option("--email_address", type=str, multiple=True,
-              help="The e-mail address to which the results should be sent.")
+              help="The e-mail address to which the report should be sent.")
 @click.option("--mail_server", type=str, cls=RequiredIf, required_if="email_address",
-              help="The address of the e-mail server to use.")
-@click.option("--mail_port", type=int, default=25, help="The port of the e-mail server.")
+              help="The address of the e-mail SMTP server to use.")
+@click.option("--mail_port", type=int, default=25, help="The port of the e-mail server. Defaults to 25")
 @click.option("--mail_username", type=str, cls=RequiredIf, required_if="email_address",
               help="The username to authenticate with the e-mail server.")
 @click.option("--mail_password", type=str, cls=RequiredIf, required_if="email_address",
