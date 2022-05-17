@@ -29,7 +29,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='wmul_rivendell',
-    version='0.10.0',
+    version='0.10.4',
     license='GPLv2',
     description='Various scripts to help use Rivendell Radio Automation 3.4.1+',
 

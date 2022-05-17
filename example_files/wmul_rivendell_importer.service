@@ -1,0 +1,15 @@
+[Unit]
+Description=wmul_rivendell importer
+After=multi-user.target
+
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+Type=idle
+Restart=on-failure
+RestartSec=5s
+ExecStart=/home/rd/wmul_rivendell_venv/bin/wmul_rivendell --log_name "/home/rd/import_with_file_system_metadata.log" --log_level 30 import-with-file-system-metadata "/mnt/Rivendell Import/"
+
+[Install]
+WantedBy=multi-user.target
