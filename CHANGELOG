@@ -1,0 +1,18 @@
+v0.10.4
+-------
+Rebuilt requirements.txt to fix encoding and contents.
+
+Update the cli help entries for load_current_log_line to more closely match what is in the README.
+
+Fixed a bug in Rivendell Audio Importer. There was a bug in the way it called subprocess.run due to back-porting
+behind Python 3.7. Python 3.6 does not have the subprocess.run: capture_output param.
+
+Added full instructions to the README file and this CHANGELOG.
+
+v0.10.1
+-------
+Add requirements.txt and tests/requirements.txt
+
+v0.10.0
+-------
+The initial public release of the wmul_rivendell python module.
