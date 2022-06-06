@@ -65,7 +65,7 @@ Installation - Linux
 
 #. Clone this repo. The options -b, --single-branch, and --depth will cause git to download only the code needed for the install and not the entire repo.
 
-    ``git clone -b 'v0.10.4' --single-branch --depth 1 https://github.com/MikeTheHammer/wmul_rivendell.git``
+    ``git clone -b 'v0.10.5' --single-branch --depth 1 https://github.com/MikeTheHammer/wmul_rivendell.git``
 
 
 #. Change into the git repo directory.
@@ -118,7 +118,7 @@ While "Load Current Log Line" and "Rivendell Audio Importer" are only usable on 
 
 #. Clone this repo. The options -b, --single-branch, and --depth will cause git to download only the code needed for the install and not the entire repo.
 
-    ``git clone -b 'v0.10.4' --single-branch --depth 1 https://github.com/MikeTheHammer/wmul_rivendell.git``
+    ``git clone -b 'v0.10.5' --single-branch --depth 1 https://github.com/MikeTheHammer/wmul_rivendell.git``
 
 #. Change into the git repo directory.
 
