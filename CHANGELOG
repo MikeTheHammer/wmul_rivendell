@@ -1,3 +1,9 @@
+v0.10.5
+-------
+Updated requirements.txt and install_requires to specify protobuf <= 3.19.4 when the python version is below 3.7.0 and
+>= 3.19.0 when python version is above 3.7.0. protobuf dropped support for pythons lower than 3.7.0 when it released
+version 3.20.0.
+
 v0.10.4
 -------
 Rebuilt requirements.txt to fix encoding and contents.
