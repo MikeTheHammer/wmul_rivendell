@@ -29,7 +29,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='wmul_rivendell',
-    version='0.10.4',
+    version='0.10.5',
     license='GPLv2',
     description='Various scripts to help use Rivendell Radio Automation 3.4.1+',
 
@@ -40,7 +40,8 @@ setup(
     package_dir={'': 'src'},
 
     install_requires=['wmul_logger>=0.5.0', 'wmul_emailer>=0.3.0', 'click', "mysql-connector-python",
-                      "cachetools", "dataclasses;python_version < '3.7.0'"],
+                      "cachetools", "dataclasses;python_version < '3.7.0'",
+                      "protobuf<=3.19.4;python_version < '3.7.0'", "protobuf>=3.19.0;python_version > '3.7.0'"],
     tests_require=["pytest", "pyfakefs", "pytest-mock", "wmul_test_utils>=0.1.0"],
 
     entry_points='''
