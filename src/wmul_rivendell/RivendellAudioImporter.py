@@ -4,6 +4,8 @@
 Describe this file.
 
 ============ Change Log ============
+2022-Jun-09 = Improve the crash handling when the problem is a network burp.
+
 2022-May-16 = Fix bug in subprocess due to back-porting behind Python 3.7. Python 3.6 does not have the subprocess.run
               capture_output param.
 
@@ -237,6 +239,7 @@ def run_script(arguments):
     _logger.info(f"With log_argument: {log_argument}")
 
     while True:
+        exception_cache = cachetools.TTLCache(5, 3600)
         try:
             _logger.debug("Loop!")
             previously_seen_files, files_for_importer = _gather_file_names(
@@ -248,4 +251,16 @@ def run_script(arguments):
             sleep(10)
         except BlockingIOError as bio:
             _logger.debug(bio)
-            sleep(10)
+            exception_cache[datetime.datetime.now()] = True
+            if exception_cache.currsize > 3:
+                raise
+            sleep(300)
+        except OSError as ose:
+            _logger.debug(ose)
+            if ose.errno == 112:
+                exception_cache[datetime.datetime.now()] = True
+                if exception_cache.currsize > 3:
+                    raise
+                sleep(300)
+            else:
+                raise

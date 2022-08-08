@@ -1,3 +1,7 @@
+v0.10.6
+-------
+Improve crash handling in import_with_file_system_metadata when the problem is a network burp.
+
 v0.10.5
 -------
 Updated requirements.txt and install_requires to specify protobuf <= 3.19.4 when the python version is below 3.7.0 and
