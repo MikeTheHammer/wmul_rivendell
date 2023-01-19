@@ -115,8 +115,16 @@ def setup_run_script(request, mocker, caplog):
     )
 
 
-def test_run_script(setup_run_script):
-    setup_run_script.mock_ttl_cache_constructor.assert_called_once_with(10_000, setup_run_script.mock_cache_duration)
+def test_run_script(setup_run_script, mocker):
+    mock_ttl_cache_constructor_expected_calls = [
+        mocker.call(10_000, setup_run_script.mock_cache_duration),
+        mocker.call(5, 3600)
+    ]
+
+    wmul_test_utils.assert_has_only_these_calls(
+        setup_run_script.mock_ttl_cache_constructor, 
+        mock_ttl_cache_constructor_expected_calls
+    )
 
     for elm in setup_run_script.expected_log_messages:
         assert elm in setup_run_script.caplog_text
