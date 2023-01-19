@@ -32,53 +32,12 @@ from wmul_rivendell.FilterCartReportForMusicScheduler import FilterCartReportFor
 from wmul_rivendell.LoadCurrentLogLine import LoadCurrentLogLineArguments, run_script as load_current_log_lines
 from wmul_rivendell.RivendellAudioImporter import \
     ImportRivendellFileWithFileSystemMetadataArguments, run_script as import_rivendell_file
+from wmul_click_utils import RequiredIf, MXWith
 import wmul_emailer
 import wmul_logger
 
 
 _logger = wmul_logger.get_logger()
-
-
-class RequiredIf(click.Option):
-    def __init__(self, *args, **kwargs):
-        self.required_if = kwargs.pop('required_if')
-        assert self.required_if, "'required_if' parameter required"
-        kwargs['help'] = f"{kwargs.get('help', '')} NOTE: This argument is required if {self.required_if} " \
-                         f"is supplied".strip()
-        super(RequiredIf, self).__init__(*args, **kwargs)
-
-    def handle_parse_result(self, ctx, opts, args):
-        we_are_present = self.name in opts
-        other_present = self.required_if in opts
-
-        if other_present:
-            if not we_are_present:
-                raise click.UsageError(f"Illegal usage: {self.name} is required when {self.required_if} is supplied")
-            else:
-                self.prompt = None
-
-        return super(RequiredIf, self).handle_parse_result(ctx, opts, args)
-
-
-class MXWith(click.Option):
-    def __init__(self, *args, **kwargs):
-        self.mx_with = kwargs.pop('mx_with')
-        assert self.mx_with, "'mx_with' parameter required"
-        kwargs['help'] = f"{kwargs.get('help', '')} NOTE: This argument is mutually exclusive with " \
-                         f"{self.mx_with}.".strip()
-        super(MXWith, self).__init__(*args, **kwargs)
-
-    def handle_parse_result(self, ctx, opts, args):
-        we_are_present = self.name in opts
-        other_present = self.mx_with in opts
-
-        if other_present:
-            if we_are_present:
-                raise click.UsageError(f"Illegal usage: {self.name} is mutually exclusive with {self.mx_with}.")
-            else:
-                self.prompt = None
-
-        return super(MXWith, self).handle_parse_result(ctx, opts, args)
 
 
 @click.group()
