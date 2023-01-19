@@ -1,3 +1,7 @@
+v0.11.0
+-------
+Added --fix_header to FilterCartReport to allow for a bug in Rivendell 3.6.4-3.6.6
+
 v0.10.6
 -------
 Improve crash handling in import_with_file_system_metadata when the problem is a network burp.

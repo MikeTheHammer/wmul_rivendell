@@ -28,6 +28,7 @@ import csv
 from collections import OrderedDict
 from dataclasses import dataclass
 from enum import Enum
+from io import StringIO
 from pathlib import Path
 
 import wmul_logger
@@ -128,11 +129,21 @@ class FilterCartReportForMusicScheduler:
     include_macros: bool
     include_all_cuts: bool
     use_trailing_comma: bool
+    fix_header: bool
 
     def _load_rivendell_carts(self):
         with open(str(self.rivendell_cart_data_filename), newline="", mode="rt", errors="replace") as \
                 rivendell_source_file:
-            rivendell_reader = csv.DictReader(rivendell_source_file)
+            if self.fix_header:
+                source_file = rivendell_source_file.readlines()
+                first_line = source_file[0]
+                first_line = first_line.replace('"', '')
+                new_contents = "\n".join([first_line, *source_file[1:]])
+                string_buffer = StringIO(initial_value=new_contents)
+            else:
+                string_buffer = StringIO(initial_value=rivendell_source_file.read())
+            
+            rivendell_reader = csv.DictReader(string_buffer)
             rivendell_carts = [RivendellCart.from_dict(rivendell_cart) for rivendell_cart in rivendell_reader]
         return rivendell_carts
 

@@ -114,8 +114,10 @@ def wmul_rivendell_cli(log_name, log_level):
 @click.option('--use_trailing_comma', is_flag=True,
               help="Include a comma at the end of each line. Required by some scheduling software, such as Natural "
                    "Music, to see the final field.")
+@click.option('--fix_header', is_flag=True, 
+              help="Whether to fix the header bug in Rivendell 3.6.4 - 3.6.6.")
 def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_filename, include_macros,
-                       include_all_cuts, use_trailing_comma):
+                       include_all_cuts, use_trailing_comma, fix_header):
     _logger.debug(f"With {locals()}")
 
     with open(desired_fields_filename, "rt") as desired_fields_reader:
@@ -127,7 +129,8 @@ def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_
         desired_field_list=desired_fields,
         include_macros=include_macros,
         include_all_cuts=include_all_cuts,
-        use_trailing_comma=use_trailing_comma
+        use_trailing_comma=use_trailing_comma,
+        fix_header=fix_header
     )
     x.run_script()
 

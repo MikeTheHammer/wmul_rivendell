@@ -154,11 +154,12 @@ In addition to filtering out data fields, this script can optionally remove MACR
     a. **RIVENDELL_CART_FILENAME** is the name of the Cart Data Dump file.
     b. **OUTPUT_FILENAME** is the name of the file to which the script should write. This is the file that you will load into your music scheduler. (If a file with this name already exists, it will be overwritten.)
     c. **DESIRED_FIELDS_FILENAME** is the name of the file containing the list of desired fields. This is the file you created in step 1.
-    d. There are three **[OPTIONS]**:
+    d. There are four **[OPTIONS]**:
 
         i. **--include_macros** If this flag is set, MACROS will be included in the output.
         ii. **--include_all_cuts** If this flag is set, all the cuts will be included in the output. If this flag is left off, only the lowest numbered cut will be output.
         iii. **--use_trailing_comma** If this flag is set, each line of the output file will include a comma at the end. If your music scheduler cannot see the final field, try this setting. Natural Music 5 needs this flag.
+        iv. **--fix_header** Versions 3.6.4-3.6.6 of Rivendell included a bug in the Cart Data Dump (csv) where the header was malformed. Setting this flag causes that header to be fixed.
 
     e. For an explanation of **[LOGGING]**, see `Logging`_.
 
