@@ -1,0 +1,44 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "wmul_rivendell"
+authors = [{name = "Michael Stanley", email = "stanley50@marshall.edu"}]
+readme = "README.rst"
+license = {file = "LICENSE"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Development Status :: 5 - Production/Stable",
+]
+
+dynamic = ["version"]
+description = "Various scripts to help use Rivendell Radio Automation 3.4.1+"
+
+dependencies = [
+  "wmul_logger>=0.5.1",
+  "wmul_emailer>=0.5.0",
+  "click",
+  "mysql-connector-python<8.0.29;python_version < '3.7.0'",
+  "mysql-connector-python>8.0;python_version > '3.7.0'",
+  "cachetools",
+  "protobuf>=3.19.0;python_version > '3.7.0'",
+  "protobuf<=3.19.4;python_version < '3.7.0'",
+  "dataclasses;python_version < '3.7.0'"
+]
+
+
+[project.optional-dependencies]
+test = [
+  "pytest", "pytest-mock", "pyfakefs", "wmul_test_utils>=0.3.1"
+]
+tox = [
+  "tox"
+]
+
+
+[project.urls]
+Home = "https://github.com/MikeTheHammer/wmul_rivendell"
+"Bug Tracker" = "https://github.com/MikeTheHammer/wmul_rivendell/issues"
