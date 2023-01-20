@@ -1,17 +1,19 @@
 Description
 ===========
 
-This project provides several utility scripts to help in the use of Rivendell Radio Automation 3.4.0+
+This project provides several utility scripts to help in the use of Rivendell 
+Radio Automation 3.4.0+
 
 
-"Filter Cart Report For Music Scheduler" takes the Rivendell Cart Data Dump (.csv) and filters out
-the fields, cart types, and cuts that are not needed by external scheduling software.
+``Filter Cart Report For Music Scheduler`` takes the Rivendell Cart Data Dump 
+(.csv) and filters out the fields, cart types, and cuts that are not needed by 
+external scheduling software.
 
-"Load Current Log Line" selects which log to use and which line in the log to use based on the
-current date and time.
+``Load Current Log Line`` selects which log to use and which line in the log to 
+use based on the current date and time.
 
-"Import With File System Metadata" uses the folder structure to find the group and scheduler code(s) to
-which a file should be imported.
+``Import With File System Metadata`` uses the folder structure to find the 
+group and scheduler code(s) to which a file should be imported.
 
 
 `Installation - Linux`_
@@ -35,13 +37,9 @@ which a file should be imported.
 Installation - Linux
 ====================
 
-#. If you are using a CentOS 7, you will need to install Python 3. (Ubuntu Studio has Python 3.8 installed by default.) This command will install Python 3.6.8, which is the most recent version in the default CentOS 7 repos. This module should work with newer versions of Python as well.
+#. If you are using a CentOS 7, you will need to install Python 3. (Ubuntu 22.04 Jammy Jellyfish and Linux Mint 21.2 Vera both have Python 3.10 installed by default.) This command will install Python 3.6.8, which is the most recent version in the default CentOS 7 repos. This module is tested on Python 3.6-3.11.
 
     ``sudo yum -y install python3``
-
-#. Install Git, which will be used to download the code from GitHub.
-
-    ``sudo yum -y install git``
 
 #. Go to your home directory.
 
@@ -59,31 +57,18 @@ Installation - Linux
 
     ``pip3 install --upgrade pip``
 
-#. Change into the virtual environment directory.
+#. pip install this package.
 
-    ``cd wmul_rivendell_venv``
-
-#. Clone this repo. The options -b, --single-branch, and --depth will cause git to download only the code needed for the install and not the entire repo.
-
-    ``git clone -b 'v0.10.5' --single-branch --depth 1 https://github.com/MikeTheHammer/wmul_rivendell.git``
-
-
-#. Change into the git repo directory.
-
-    ``cd wmul_rivendell``
-
-#. pip install using the requirements.txt file in this directory. You have to run pip while in the repo directory so that requirements.txt correctly points to the code in this directory.
-
-    ``pip3 install -r requirements.txt``
+    ``pip3 install wmul_rivendell``
 
 
 Installation - Windows
 ======================
-While "Load Current Log Line" and "Rivendell Audio Importer" are only usable on the same machine as the Rivendell install, "Filter Cart Report For Music Scheduler" can be run on a Windows machine as well. (Presumably the same machine as the music scheduler software.)
+While ``Load Current Log Line`` and ``Rivendell Audio Importer`` are only usable on the same machine as the Rivendell install, ``Filter Cart Report For Music Scheduler`` can be run on a Windows machine as well. (Presumably the same machine as the music scheduler software.)
 
-#. Download and install a recent version of Python 3 from https://www.python.org/downloads/ . This software has only been tested with 3.6 and 3.10, but should work with any intermediate version.
+#. Download and install a recent version of Python 3 from https://www.python.org/downloads/ . This software has been tested with Python 3.6-3.11.
 
-    #. Check "Install Launcher for all users (recommended)" and "Add Python 3.10 to PATH". (Or whichever Python version you are installing.)
+    #. Check "Install Launcher for all users (recommended)" and "Add Python 3.11 to PATH". (Or whichever Python version you are installing.)
     #. Click "Customize Installation".
     #. Make certain that "pip" is checked.
     #. Click "Next".
@@ -91,8 +76,6 @@ While "Load Current Log Line" and "Rivendell Audio Importer" are only usable on 
     #. Click "Install".
     #. Confirm the UAC dialog when it appears.
     #. Once the install is complete, click "Close".
-
-#. Download and install the Windows Git Client from https://git-scm.com/download/win . Use all the default settings.
 
 #. Open a Windows Powershell terminal.
 
@@ -112,21 +95,9 @@ While "Load Current Log Line" and "Rivendell Audio Importer" are only usable on 
 
     ``pip install --upgrade pip``
 
-#. Change into the virtual environment directory.
-
-    ``cd wmul_rivendell_venv``
-
-#. Clone this repo. The options -b, --single-branch, and --depth will cause git to download only the code needed for the install and not the entire repo.
-
-    ``git clone -b 'v0.10.5' --single-branch --depth 1 https://github.com/MikeTheHammer/wmul_rivendell.git``
-
-#. Change into the git repo directory.
-
-    ``cd wmul_rivendell``
-
 #. pip install using the requirements.txt file in this directory. You have to run pip while in the repo directory so that requirements.txt correctly points to the code in this directory.
 
-    ``pip3 install -r requirements.txt``
+    ``pip3 install wmul_rivendell``
 
 
 Usage
@@ -145,11 +116,11 @@ In addition to filtering out data fields, this script can optionally remove MACR
 
 (A future version will also be able to remove specified groups from the data dump so that the Music Scheduler doesn't have to see the non-music carts.)
 
-#. To begin, you will need to create a text file containing the field names that you want to keep. Each field needs to be on its own line. Field names are case-insensitive. Two example files are in the repo folder: ``~/wmul_rivendell_venv/wmul_rivendell/example_files/`` or ``C:\wmul_rivendell_venv\wmul_rivendell\example_files\`` . "all_fields.txt" is every field included in Cart Data Dump. "desired_fields.txt" is an example of a file containing only the desired fields.
+#. To begin, you will need to create a text file containing the field names that you want to keep. Each field needs to be on its own line. Field names are case-insensitive. Two example files are in the github repo: ``https://github.com/MikeTheHammer/wmul_rivendell/tree/main/example_files/``. "all_fields.txt" is every field included in Cart Data Dump. "desired_fields.txt" is an example of a file containing only the desired fields. Use Notepad on Windows, or "Text Editor" on Linux.
 
 #. Use RD Library to create a Cart Data Dump (.csv) file and save it.
 
-#. Usage: ``wmul_rivendell [LOGGING] filter-cart-report RIVENDELL_CART_FILENAME  OUTPUT_FILENAME  DESIRED_FIELDS_FILENAME  [OPTIONS]`` .
+#. Run the filter script. Usage: ``wmul_rivendell [LOGGING] filter-cart-report RIVENDELL_CART_FILENAME  OUTPUT_FILENAME  DESIRED_FIELDS_FILENAME  [OPTIONS]`` .
 
     a. **RIVENDELL_CART_FILENAME** is the name of the Cart Data Dump file.
     b. **OUTPUT_FILENAME** is the name of the file to which the script should write. This is the file that you will load into your music scheduler. (If a file with this name already exists, it will be overwritten.)
@@ -210,17 +181,17 @@ Running Load Current Log Line at Startup
 
 This section explains how to setup a shell script to start RD AirPlay and run this script at startup.
 
-#. Copy the example shell script from the repo folder to your home folder: ``cp ~/wmul_rivendell_venv/wmul_rivendell/example_files/start_rivendell_and_load_current_log.sh ~/``
+#. Copy the example shell script from the github repo to a text editor. "Text Editor" is installed by default. The sample shell script is at: ``https://github.com/MikeTheHammer/wmul_rivendell/blob/main/example_files/start_rivendell_and_load_current_log.sh`` .
 
-#. Edit the shell script using your preferred text editor. gedit is installed by default. ``gedit start_rivendell_and_load_current_log.sh``
+#. Edit the shell script.
 
     a. The first line of this script ``rdairplay &`` starts RD AirPlay as a separate process.
     b. The second line ``sleep 5s`` causes the shell script to sleep for 5 seconds. Sleeping gives time for RD AirPlay to load completely before the next part of the shell script runs. The 5 second pause works on my machine, which is a Core i7 9700 with an M.2 SSD. A lower performance machine may need a longer sleep.
     c. The third line is the meat and potatoes of the shell script. Alter this line as needed to match the settings on your system.
 
-#. Click "Save" in the upper right-hand corner to save the changes. Click "X" to exit gedit.
+#. "Save" the file and exit your text editor.
 
-#. Enter ``chmod 700 start_rivendell_and_load_current_log.sh`` to make the shell script executable.
+#. In a terminal window, enter ``chmod 700 start_rivendell_and_load_current_log.sh`` to make the shell script executable.
 
 #. In xfce, open "Applications | Settings | Session and Startup".
 
@@ -236,7 +207,7 @@ This section explains how to setup a shell script to start RD AirPlay and run th
 
 #. Select ``start_rivendell_and_load_current_log.sh`` and then click "OK".
 
-#. Click "OK" again. This script should now run the each time someone logs in.
+#. Click "OK" again. This script should now run each time the ``rd`` user logs in.
 
 Import With File System Metadata
 --------------------------------
@@ -245,7 +216,7 @@ This script is different than the others. It is intended to run as a service. It
 
 This script is the almost the equivalent of being able to configure a dropbox with the Metadata Pattern of ``%g/%i.wav`` . (There is no metadata wildcard for scheduler codes.)
 
-This script must run on a system that has Rivendell installed since it depends on the rdimport module.
+This script must run on a system that has Rivendell installed since it depends on the ``rdimport`` module.
 
 Examples:
 
@@ -255,7 +226,7 @@ Examples:
 
 #. ``/Rivendell Import/FLASHBACK/1980/Vinyl/Queen - Save Me.wav`` - Will be imported into the "FLASHBACK" group, with the "1980" and "Vinyl" scheduler codes.
 
-Note: This script makes no attempt to verify that the group or scheduler code(s) are valid before calling rdimport.
+Note: This script makes no attempt to verify that the group or scheduler code(s) are valid before calling ``rdimport``.
 
 Limitations:
 
@@ -288,13 +259,15 @@ Usage:
 Running Import With File System Metadata as a Service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You almost certainly want to run ``Import With File System Metadata`` as a service that will load and restart automatically. An example ``.service`` file is in the ``example_files`` subdirectory within the repo.
+You almost certainly want to run ``Import With File System Metadata`` as a service that will load and restart automatically. An example ``.service`` file is at: ``https://github.com/MikeTheHammer/wmul_rivendell/blob/main/example_files/wmul_rivendell_importer.service`` .
 
 #. Login as a user with ``sudo`` permission.
 
-#. Copy the example file to ``systemd`` system directory. ``sudo cp /home/rd/wmul_rivendell_venv/wmul_rivendell/example_files/wmul_rivendell_importer.service /lib/systemd/system/`` .
+#. Copy the example to a text editor. Save the file as ``wmul_rivendell_importer.service`` in your home folder. 
 
-#. Edit the ``wmul_rivendell_importer.service`` file. Alter the line starting with ``ExecStart=/home/rd/wmul_rivendell_venv/bin/wmul_rivendell`` as needed to match the settings on your system.
+#. Alter the line starting with ``ExecStart=/home/rd/wmul_rivendell_venv/bin/wmul_rivendell`` as needed to match the settings on your system.
+
+#. Copy file to the ``/lib/systemd/system/`` directory. ``sudo cp /home/rd/wmul_rivendell_importer.service /lib/systemd/system/`` .
 
 #. Make the service file executable. ``sudo chmod 644 /lib/systemd/system/wmul_rivendell_importer.service`` .
 

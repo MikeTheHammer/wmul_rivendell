@@ -1,3 +1,8 @@
+v0.11.1
+-------
+Convert to pyproject.toml and publish to PyPI, vastly simplifying the 
+installation process.
+
 v0.11.0
 -------
 Added --fix_header to FilterCartReport to allow for a bug in Rivendell 3.6.4-3.6.6
