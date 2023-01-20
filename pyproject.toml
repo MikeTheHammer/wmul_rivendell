@@ -29,6 +29,9 @@ dependencies = [
   "dataclasses;python_version < '3.7.0'"
 ]
 
+[project.scripts]
+wmul_rivendell = "wmul_rivendell.cli:wmul_rivendell_cli"
+
 
 [project.optional-dependencies]
 test = [
