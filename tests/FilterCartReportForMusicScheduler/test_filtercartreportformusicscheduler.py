@@ -1,9 +1,9 @@
 """
 @Author = 'Michael Stanley'
 
-Describe this file.
-
 ============ Change Log ============
+2023-Jan-20 = Change license from GPLv2 to GPLv3.
+
 2023-Jan-11 = Added tests that deal with a bug introduced in version 3.6.4. 
               The bug causes the header for the "FILENAME" and "LENGTH" to be 
               combined. Only the headers are combined, the actual data is 
@@ -12,7 +12,7 @@ Describe this file.
 2021-Jan-29 = Created.
 
 ============ License ============
-Copyright (C) 2022 Michael Stanley
+Copyright (C) 2021, 2023 Michael Stanley
 
 This file is part of wmul_rivendell.
 

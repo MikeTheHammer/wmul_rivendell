@@ -1,13 +1,30 @@
 """
 @Author = 'Michael Stanley'
 
-Describe this file.
+Command-Line-Interface for the various modules in this package.
 
 ============ Change Log ============
+2023-Jan-20 = Change license from GPLv2 to GPLv3.
+              Back-insert items into change log.
+              Update description.
+
+2023-Jan-19 = Add --fix_header to filter_cart_report. 
+              Change the cli options to use the versions of RequiredIf and 
+                MXWith now in wmul_click_utils.
+
+2022-May-16 = Fix cli help for load_current_log_line.
+
+2022-May-06 = Update documentation.
+
+2020-Oct-15 = Add current version number to logging.
+              Add ability for RivendellAudioImporter to tell rdimport where to
+                log.
+              Log final crashes of RivendellAudioImporter.
+
 2020-Jun-26 = Created.
 
 ============ License ============
-Copyright (C) 2020 Michael Stanley
+Copyright (C) 2020, 2022-2023 Michael Stanley
 
 This file is part of wmul_rivendell.
 

@@ -4,12 +4,34 @@
 This is the setup file for the package.
 
 ============ Change Log ============
+2023-Jan-20 = Back-insert items into change log.
+              Change license from GPLv2 to GPLv3.
+
+2023-Jan-19 = Update version number.
+
+2022-Aug-08 = Update version number.
+
+2022-Jun-06 = Update version number.
+              Update requirements because protobuf dropped support for 
+                Python 3.6
+
+2022-May-17 = Update version number.
+
+2022-May-09 = Backported to Python 3.6, since that is what is available on 
+                CentOS 7.
+              Update requirements.
+
+2021-May-26 = Update version number and description.
+
+2020-Oct-15 = Update version number.
+              Update test requirements.
+
 2020-Jul-25 = Added GPL notice.
 
 2020-Jun-25 = Created.
 
 ============ License ============
-Copyright (C) 2020 Michael Stanley
+Copyright (C) 2020-2023 Michael Stanley
 
 This file is part of wmul_rivendell.
 

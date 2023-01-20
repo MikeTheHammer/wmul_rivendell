@@ -4,12 +4,19 @@
 Tests for RivendellAudioImporter.py
 
 ============ Change Log ============
+2023-Jan-20 = Change license from GPLv2 to GPLv3.
+
+2023-Jan-19 = Fix an improperly failing test.
+
+2022-May-09 = Backported to Python 3.6, since that is what is available on 
+                CentOS 7.
+
 2020-Jul-25 = Added GPL notice.
 
 2020-Jul-01 = Created.
 
 ============ License ============
-Copyright (C) 2020 Michael Stanley
+Copyright (C) 2020, 2022-2023 Michael Stanley
 
 This file is part of wmul_rivendell.
 

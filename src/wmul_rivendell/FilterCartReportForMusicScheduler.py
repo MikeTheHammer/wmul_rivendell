@@ -5,10 +5,25 @@ This script takes the "Cart Data Dump (CSV)" from RD Library and eliminates data
 cannot use. It does this because some music schedulers, such as Natural Music 5, cannot import the full data dump.
 
 ============ Change Log ============
+2023-Jan-20 = Back-insert items into change log.
+              Change license from GPLv2 to GPLv3.
+
+2023-Jan-19 = Modify to accomodate a bug in Rivendell 3.6.4-3.6.6 where two 
+                fields in the header are malformed.
+
+2022-May-06 = Update documentation.
+
+2021-May-26 = Change RivendellCart to keep cart_number, cut_number, and year as
+                strings. 
+              Refactor from_csv to from_dict, to more accurately reflect the 
+                way it works.
+              Refactor to make the removal of macro carts into a method, for
+                easier unit testing.
+
 2020-Jun-25 = Created.
 
 ============ License ============
-Copyright (C) 2020 Michael Stanley
+Copyright (C) 2020-2023 Michael Stanley
 
 This file is part of wmul_rivendell.
 

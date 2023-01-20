@@ -4,15 +4,26 @@
 Describe this file.
 
 ============ Change Log ============
+2023-Jan-20 = Back-insert items into change log.
+              Change license from GPLv2 to GPLv3.
+
 2022-Jun-09 = Improve the crash handling when the problem is a network burp.
 
 2022-May-16 = Fix bug in subprocess due to back-porting behind Python 3.7. Python 3.6 does not have the subprocess.run
               capture_output param.
 
+2022-May-05 = Make .wav case-insensitive.
+
+2021-May-26 = Added recovery from certain network burps.
+
+2020-Oct-15 = Added ability to tell rdimport where to log.
+              Now renamed files as _FAILED when rdimport rejects them.
+              Improve own logging.
+
 2020-Jun-30 = Created.
 
 ============ License ============
-Copyright (C) 2020 Michael Stanley
+Copyright (C) 2020-2023 Michael Stanley
 
 This file is part of wmul_rivendell.
 

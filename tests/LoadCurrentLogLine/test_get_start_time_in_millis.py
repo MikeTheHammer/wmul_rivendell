@@ -1,13 +1,13 @@
 """
 @Author = 'Michael Stanley'
 
-Describe this file.
-
 ============ Change Log ============
+2023-Jan-20 = Change license from GPLv2 to GPLv3.
+
 2021-Mar-11 = Created.
 
 ============ License ============
-Copyright (C) 2021 Michael Stanley
+Copyright (C) 2021, 2023 Michael Stanley
 
 This file is part of wmul_rivendell.
 

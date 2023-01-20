@@ -2,6 +2,8 @@
 @Author = 'Michael Stanley'
 
 ============ Change Log ============
+2023-Jan-20 = Change license from GPLv2 to GPLv3.
+
 2023-Jan-19 = Created.
 
 ============ License ============

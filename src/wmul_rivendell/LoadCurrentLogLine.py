@@ -7,10 +7,18 @@ However, I did not document my source at the time I originally wrote this.
 That module is BSD 2-Clause licensed. 
 
 ============ Change Log ============
+2023-Jan-20 = Back-insert items into change log.
+              Updated description.
+              Change license from GPLv2 to GPLv3.
+
+2022-May-09 = Added description and credit.
+
+2021-May-26 = Inline finding the log name from the date.
+
 2020-Jun-26 = Created.
 
 ============ License ============
-Copyright (C) 2020 Michael Stanley
+Copyright (C) 2020-2023 Michael Stanley
 
 This file is part of wmul_rivendell.
 
