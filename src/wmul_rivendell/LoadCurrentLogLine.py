@@ -4,6 +4,7 @@
 I am reasonably certain that this was based on Open Source Radio's 'load-log-skip-to-current-line':
 https://github.com/opensourceradio/ram/blob/e112952d87a64d92d564ab9693d37c9e63740607/usr/local/bin/load-log-skip-to-current-time .
 However, I did not document my source at the time I originally wrote this.
+That module is BSD 2-Clause licensed. 
 
 ============ Change Log ============
 2020-Jun-26 = Created.
@@ -11,19 +12,19 @@ However, I did not document my source at the time I originally wrote this.
 ============ License ============
 Copyright (C) 2020 Michael Stanley
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+This file is part of wmul_rivendell.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+wmul_rivendell is free software: you can redistribute it and/or modify it 
+under the terms of the GNU General Public License as published by the Free 
+Software Foundation, either version 3 of the License, or (at your option) any 
+later version.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+wmul_rivendell is distributed in the hope that it will be useful, but WITHOUT 
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with 
+wmul_rivendell. If not, see <https://www.gnu.org/licenses/>. 
 """
 from dataclasses import dataclass
 from datetime import datetime, timedelta
