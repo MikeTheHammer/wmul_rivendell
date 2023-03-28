@@ -151,10 +151,8 @@ def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_
 @click.option("--mail_server", type=str, cls=RequiredIf, required_if="email_address",
               help="The address of the e-mail SMTP server to use.")
 @click.option("--mail_port", type=int, default=25, help="The port of the e-mail server. Defaults to 25")
-@click.option("--mail_username", type=str, cls=RequiredIf, required_if="email_address",
-              help="The username to authenticate with the e-mail server.")
-@click.option("--mail_password", type=str, cls=RequiredIf, required_if="email_address",
-              help="The password to authenticate with the e-mail server.")
+@click.option("--mail_username", type=str, help="The username to authenticate with the e-mail server.")
+@click.option("--mail_password", type=str, help="The password to authenticate with the e-mail server.")
 def load_current_log_line(log_name_format, rivendell_host, sql_host, sql_user, sql_pass, sql_database_name, use_date,
                           use_time, dry_run, start_immediately, days_back, default_log, log_machine, email_address,
                           mail_server, mail_port, mail_username, mail_password):
