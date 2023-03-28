@@ -141,6 +141,7 @@ class FilterCartReportForMusicScheduler:
     rivendell_cart_data_filename: Path
     output_filename: Path
     desired_field_list: list
+    excluded_group_list: list
     include_macros: bool
     include_all_cuts: bool
     use_trailing_comma: bool
@@ -161,6 +162,10 @@ class FilterCartReportForMusicScheduler:
             rivendell_reader = csv.DictReader(string_buffer)
             rivendell_carts = [RivendellCart.from_dict(rivendell_cart) for rivendell_cart in rivendell_reader]
         return rivendell_carts
+
+    def _remove_excluded_groups(self, rivendell_carts):
+        return (rivendell_cart for rivendell_cart in rivendell_carts if
+                rivendell_cart.group_name not in self.excluded_group_list)
 
     def _remove_macro_carts(self, rivendell_carts):
         return (rivendell_cart for rivendell_cart in rivendell_carts if not rivendell_cart.type == CartType.Macro)
@@ -198,6 +203,8 @@ class FilterCartReportForMusicScheduler:
         _logger.debug(f"Starting run_script with {self}")
         rivendell_carts = self._load_rivendell_carts()
 
+        if self.excluded_group_list:
+            rivendell_carts = self._remove_exluded_groups(rivendell_carts)
         if not self.include_macros:
             rivendell_carts = self._remove_macro_carts(rivendell_carts)
         if not self.include_all_cuts:

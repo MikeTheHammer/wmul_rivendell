@@ -87,17 +87,25 @@ def wmul_rivendell_cli(log_name, log_level):
 @click.option('--include_all_cuts', is_flag=True,
               help="Include all the individual cuts in the output file. If this is left unset, then the output file "
                    "will only include the lowest numbered cut in each cart.")
+@click.option('--excluded_groups_file_name', type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+              help="File path to a text file containing a list of groups to be exluded. The file should have one group name on each line. If a group name is present in this file, but not in the cart data dump, ")
 @click.option('--use_trailing_comma', is_flag=True,
               help="Include a comma at the end of each line. Required by some scheduling software, such as Natural "
                    "Music, to see the final field.")
 @click.option('--fix_header', is_flag=True, 
               help="Whether to fix the header bug in Rivendell 3.6.4 - 3.6.6.")
 def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_filename, include_macros,
-                       include_all_cuts, use_trailing_comma, fix_header):
+                       include_all_cuts, excluded_groups_file_name, use_trailing_comma, fix_header):
     _logger.debug(f"With {locals()}")
 
     with open(desired_fields_filename, "rt") as desired_fields_reader:
         desired_fields = [desired_field.strip("\n\r") for desired_field in desired_fields_reader]
+
+    if excluded_groups_file_name:
+        with open(excluded_groups_file_name, "rt") as excluded_groups_reader:
+            excluded_groups = [excluded_group.strip("\n\r") for excluded_group in excluded_groups_reader]
+    else:
+        excluded_groups = []
 
     x = FilterCartReportForMusicScheduler(
         rivendell_cart_data_filename=rivendell_cart_filename,
@@ -105,6 +113,7 @@ def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_
         desired_field_list=desired_fields,
         include_macros=include_macros,
         include_all_cuts=include_all_cuts,
+        excluded_group_list=excluded_groups,
         use_trailing_comma=use_trailing_comma,
         fix_header=fix_header
     )

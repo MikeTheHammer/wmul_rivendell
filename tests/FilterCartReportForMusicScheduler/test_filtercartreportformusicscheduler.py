@@ -28,7 +28,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 wmul_rivendell. If not, see <https://www.gnu.org/licenses/>. 
 """
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict
 import pytest
 import wmul_test_utils
 
@@ -53,6 +53,7 @@ def setup_standard_cart_filter(cart_source_file_contents, request):
         desired_field_list=[],
         fix_header=fix_bad_header,
         include_macros=False,
+        excluded_group_list=[],
         include_all_cuts=False,
         use_trailing_comma=False
     )
@@ -105,12 +106,12 @@ def cart_source_file_contents(request):
         source_file_contents = \
             'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,"FILENAME,LENGTH",START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\n' \
             '1,1,audio,"LEGAL_ID","Alternative","Legal ID","","","","","","","","","","","","","We Are Marshall (Cheer)","","000001_001.wav",:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,""\n' \
-            '6,2,audio,"LEGAL_ID","Flashback","Legal ID","","","","","","","","","","","","","Every Hour Commercial Free","","000006_002.wav",:11,0,11023,-1,-1,-1,-1,-1,-1,-1,-1,""\n'
+            '6,2,audio,"ALTERNATIV","Flashback","Legal ID","","","","","","","","","","","","","Every Hour Commercial Free","","000006_002.wav",:11,0,11023,-1,-1,-1,-1,-1,-1,-1,-1,""\n'
     else:
         source_file_contents = \
             'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\n' \
             '1,1,audio,"LEGAL_ID","Alternative","Legal ID","","","","","","","","","","","","","We Are Marshall (Cheer)","","000001_001.wav",:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,""\n' \
-            '6,2,audio,"LEGAL_ID","Flashback","Legal ID","","","","","","","","","","","","","Every Hour Commercial Free","","000006_002.wav",:11,0,11023,-1,-1,-1,-1,-1,-1,-1,-1,""\n'
+            '6,2,audio,"ALTERNATIV","Flashback","Legal ID","","","","","","","","","","","","","Every Hour Commercial Free","","000006_002.wav",:11,0,11023,-1,-1,-1,-1,-1,-1,-1,-1,""\n'
     
     return wmul_test_utils.make_namedtuple(
         "cart_source_file_contents",
@@ -195,7 +196,7 @@ def defined_rivendell_carts():
         cart_number='2',
         cut_number='2',
         type=CartType.Audio,
-        group_name="LEGAL_ID",
+        group_name="ALTERNATIV",
         title="Streetbeat",
         artist="Legal ID",
         album="",
@@ -230,7 +231,7 @@ def defined_rivendell_carts():
         cart_number='6',
         cut_number='2',
         type=CartType.Audio,
-        group_name="LEGAL_ID",
+        group_name="ALTERNATIV",
         title="Flashback",
         artist="Legal ID",
         album="",
@@ -265,7 +266,7 @@ def defined_rivendell_carts():
         cart_number='101',
         cut_number='1',
         type=CartType.Audio,
-        group_name="LEGAL_ID",
+        group_name="ALT_IMAGE",
         title="Student Broadcast Voice",
         artist="Dry Legal ID",
         album="",
@@ -592,6 +593,108 @@ def test__remove_extra_cuts_extra_cuts_out_of_order(setup_standard_cart_filter,
 
     result_carts = setup_standard_cart_filter.cart_filter\
         ._remove_extra_cuts(rivendell_carts=rivendell_carts_for_test)
+
+    assert list(result_carts) == expected_carts
+
+
+def test__remove_excluded_groups_empty_list(setup_standard_cart_filter, defined_rivendell_carts):
+    rivendell_carts_for_test = [
+        defined_rivendell_carts.rivendell_cart_1_1,
+        defined_rivendell_carts.rivendell_cart_2_1,
+        defined_rivendell_carts.rivendell_cart_2_2,
+        defined_rivendell_carts.rivendell_cart_6_2,
+        defined_rivendell_carts.rivendell_cart_101_1,
+        defined_rivendell_carts.rivendell_cart_500_1,
+    ]
+
+    expected_carts = [
+        defined_rivendell_carts.rivendell_cart_1_1,
+        defined_rivendell_carts.rivendell_cart_2_1,
+        defined_rivendell_carts.rivendell_cart_2_2,
+        defined_rivendell_carts.rivendell_cart_6_2,
+        defined_rivendell_carts.rivendell_cart_101_1,
+        defined_rivendell_carts.rivendell_cart_500_1,
+    ]
+
+    result_carts = setup_standard_cart_filter.cart_filter\
+        ._remove_excluded_groups(rivendell_carts=rivendell_carts_for_test)
+
+    assert list(result_carts) == expected_carts
+
+
+def test__remove_excluded_groups_no_carts_from_groups(setup_standard_cart_filter, defined_rivendell_carts):
+    rivendell_carts_for_test = [
+        defined_rivendell_carts.rivendell_cart_1_1,
+        defined_rivendell_carts.rivendell_cart_2_1,
+        defined_rivendell_carts.rivendell_cart_2_2,
+        defined_rivendell_carts.rivendell_cart_6_2,
+        defined_rivendell_carts.rivendell_cart_101_1,
+        defined_rivendell_carts.rivendell_cart_500_1,
+    ]
+
+    expected_carts = [
+        defined_rivendell_carts.rivendell_cart_1_1,
+        defined_rivendell_carts.rivendell_cart_2_1,
+        defined_rivendell_carts.rivendell_cart_2_2,
+        defined_rivendell_carts.rivendell_cart_6_2,
+        defined_rivendell_carts.rivendell_cart_101_1,
+        defined_rivendell_carts.rivendell_cart_500_1,
+    ]
+
+    excluded_groups = ["STREETBEAT", "SG_MISC"]
+    setup_standard_cart_filter.cart_filter.excluded_group_list = excluded_groups
+
+    result_carts = setup_standard_cart_filter.cart_filter\
+        ._remove_excluded_groups(rivendell_carts=rivendell_carts_for_test)
+
+    assert list(result_carts) == expected_carts
+
+
+
+def test__remove_excluded_groups_some_carts_from_groups(setup_standard_cart_filter, defined_rivendell_carts):
+    rivendell_carts_for_test = [
+        defined_rivendell_carts.rivendell_cart_1_1,
+        defined_rivendell_carts.rivendell_cart_2_1,
+        defined_rivendell_carts.rivendell_cart_2_2,
+        defined_rivendell_carts.rivendell_cart_6_2,
+        defined_rivendell_carts.rivendell_cart_101_1,
+        defined_rivendell_carts.rivendell_cart_500_1,
+    ]
+
+    expected_carts = [
+        defined_rivendell_carts.rivendell_cart_1_1,
+        defined_rivendell_carts.rivendell_cart_2_1,
+        defined_rivendell_carts.rivendell_cart_2_2,
+        defined_rivendell_carts.rivendell_cart_6_2,
+    ]
+
+    excluded_groups = ["STREETBEAT", "SG_MISC", "ALT_IMAGE"]
+    setup_standard_cart_filter.cart_filter.excluded_group_list = excluded_groups
+
+    result_carts = setup_standard_cart_filter.cart_filter\
+        ._remove_excluded_groups(rivendell_carts=rivendell_carts_for_test)
+
+    assert list(result_carts) == expected_carts
+
+
+def test__remove_excluded_groups_all_carts_from_groups(setup_standard_cart_filter, defined_rivendell_carts):
+    rivendell_carts_for_test = [
+        defined_rivendell_carts.rivendell_cart_1_1,
+        defined_rivendell_carts.rivendell_cart_2_1,
+        defined_rivendell_carts.rivendell_cart_2_2,
+        defined_rivendell_carts.rivendell_cart_6_2,
+        defined_rivendell_carts.rivendell_cart_101_1,
+        defined_rivendell_carts.rivendell_cart_500_1,
+    ]
+
+    expected_carts = [
+    ]
+
+    excluded_groups = ["STREETBEAT", "SG_MISC", "ALT_IMAGE", "LEGAL_ID", "ALTERNATIV"]
+    setup_standard_cart_filter.cart_filter.excluded_group_list = excluded_groups
+
+    result_carts = setup_standard_cart_filter.cart_filter\
+        ._remove_excluded_groups(rivendell_carts=rivendell_carts_for_test)
 
     assert list(result_carts) == expected_carts
 
@@ -928,6 +1031,7 @@ def setup_run_script(request, caplog, mocker):
         fix_header=params.fix_header,
         desired_field_list=[],
         include_macros=params.include_macros,
+        excluded_group_list=[],
         include_all_cuts=params.include_all_cuts,
         use_trailing_comma=True
     )

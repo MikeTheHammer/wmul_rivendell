@@ -36,7 +36,8 @@ filter_cart_report_params, filter_cart_report_ids = \
             "include_macros",
             "include_all_cuts",
             "use_trailing_comma",
-            "fix_header"
+            "fix_header",
+            "exclude_groups"
         ]
 
     )
@@ -90,6 +91,16 @@ def test_filter_cart_report(fs, params, mocker, caplog):
     if params.fix_header:
         cli_args.append("--fix_header")
 
+    if params.exclude_groups:
+        exclude_groups_file_contents = "ALTERNATIV\nSG_MISC\n"
+        mock_exclude_groups_filename = "/test/mock_exclude_groups_filename.txt"
+        fs.create_file(mock_exclude_groups_filename, contents=exclude_groups_file_contents)
+        cli_args.append("--excluded_groups_file_name")
+        cli_args.append(mock_exclude_groups_filename)
+        expected_exclude_groups = ["ALTERNATIV", "SG_MISC"]
+    else:
+        expected_exclude_groups = []
+
     runner = CliRunner()
     result = runner.invoke(
         cli.filter_cart_report,
@@ -104,6 +115,7 @@ def test_filter_cart_report(fs, params, mocker, caplog):
         desired_field_list=expected_desired_fields,
         include_macros=params.include_macros,
         include_all_cuts=params.include_all_cuts,
+        excluded_group_list=expected_exclude_groups,
         use_trailing_comma=params.use_trailing_comma,
         fix_header=params.fix_header
     )
