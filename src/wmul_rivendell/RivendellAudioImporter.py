@@ -1,16 +1,17 @@
 """
 @Author = 'Michael Stanley'
 
-Describe this file.
-
 ============ Change Log ============
+2023-Feb-27 = Catch crashes that occur when renaming a bad file and the file 
+              is locked by another user.
+
 2023-Jan-20 = Back-insert items into change log.
               Change license from GPLv2 to GPLv3.
 
 2022-Jun-09 = Improve the crash handling when the problem is a network burp.
 
-2022-May-16 = Fix bug in subprocess due to back-porting behind Python 3.7. Python 3.6 does not have the subprocess.run
-              capture_output param.
+2022-May-16 = Fix bug in subprocess due to back-porting behind Python 3.7. 
+              Python 3.6 does not have the subprocess.run capture_output param.
 
 2022-May-05 = Make .wav case-insensitive.
 
@@ -120,7 +121,14 @@ class FileInformation:
     def _failed(self, new_suffix):
         old_suffix = self.file_path.suffix
         new_path = self.file_path.with_suffix(old_suffix + new_suffix)
-        self.file_path.rename(new_path)
+        try: 
+            self.file_path.rename(new_path)
+        except OSError as ose:
+            _logger.debug(ose)
+            if ose.errno == 16: # Device or Resource Busy (Someone else has the file locked).
+                return
+            else:
+                raise
 
     def failed_rdimport(self):
         self._failed("_RDIMPORT_FAILED")
