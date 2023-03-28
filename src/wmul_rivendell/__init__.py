@@ -24,5 +24,5 @@ You should have received a copy of the GNU General Public License along with
 wmul_rivendell. If not, see <https://www.gnu.org/licenses/>. 
 """
 
-__version__ = "0.11.1"
+__version__ = "0.12.0"
 

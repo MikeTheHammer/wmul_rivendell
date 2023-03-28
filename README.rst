@@ -37,9 +37,14 @@ group and scheduler code(s) to which a file should be imported.
 Installation - Linux
 ====================
 
-#. If you are using a CentOS 7, you will need to install Python 3. (Ubuntu 22.04 Jammy Jellyfish and Linux Mint 21.2 Vera both have Python 3.10 installed by default.) This command will install Python 3.6.8, which is the most recent version in the default CentOS 7 repos. This module is tested on Python 3.6-3.11.
+#. If you are using a CentOS 7, you will need to install Python 3. (Ubuntu 22.04 Jammy Jellyfish and Linux Mint 21.1 Vera both have Python 3.10 installed by default.) This command will install Python 3.6.8, which is the most recent version in the default CentOS 7 repos. This module is tested on Python 3.6-3.11.
 
     ``sudo yum -y install python3``
+
+#. If you are using Ubuntu 22.04 Jammy Jellyfish or Mint 21.1 Vera, you will need to install python3-venv.
+ 
+    ``sudo apt-get update``
+    ``sudo apt-get install python3.10-venv``
 
 #. Go to your home directory.
 
@@ -112,9 +117,10 @@ This script takes the Rivendell Cart Data Dump (.csv) and filters out the fields
 
 In particular, Natural Music 5 has trouble importing the full Cart Data Dump. It seems to be due to the number of fields. The Cart Data Dump includes 33 fields and Natural Music 5 seems to only be able to handle 32.
 
-In addition to filtering out data fields, this script can optionally remove MACRO carts from the data dump and reduce the entry for each cart down to a single cut.
+This script can optionally remove MACRO carts from the data dump and reduce the entry for each cart down to a single cut.
 
-(A future version will also be able to remove specified groups from the data dump so that the Music Scheduler doesn't have to see the non-music carts.)
+This script can optionally remove any cuts belonging to specified groups. Use the ``--excluded_groups_file_name [FILENAME]`` option. The ``FILENAME`` should contain a list of group names that are to be excluded from the output file. 
+Each group name should be on a separate line. Any cuts belonging to any of those groups will be exluded from the output. Usefull for keeping your non-music cuts out of your music scheduler.
 
 #. To begin, you will need to create a text file containing the field names that you want to keep. Each field needs to be on its own line. Field names are case-insensitive. Two example files are in the github repo: ``https://github.com/MikeTheHammer/wmul_rivendell/tree/main/example_files/``. "all_fields.txt" is every field included in Cart Data Dump. "desired_fields.txt" is an example of a file containing only the desired fields. Use Notepad on Windows, or "Text Editor" on Linux.
 
@@ -125,12 +131,13 @@ In addition to filtering out data fields, this script can optionally remove MACR
     a. **RIVENDELL_CART_FILENAME** is the name of the Cart Data Dump file.
     b. **OUTPUT_FILENAME** is the name of the file to which the script should write. This is the file that you will load into your music scheduler. (If a file with this name already exists, it will be overwritten.)
     c. **DESIRED_FIELDS_FILENAME** is the name of the file containing the list of desired fields. This is the file you created in step 1.
-    d. There are four **[OPTIONS]**:
+    d. There are five **[OPTIONS]**:
 
         i. **--include_macros** If this flag is set, MACROS will be included in the output.
         ii. **--include_all_cuts** If this flag is set, all the cuts will be included in the output. If this flag is left off, only the lowest numbered cut will be output.
         iii. **--use_trailing_comma** If this flag is set, each line of the output file will include a comma at the end. If your music scheduler cannot see the final field, try this setting. Natural Music 5 needs this flag.
         iv. **--fix_header** Versions 3.6.4-3.6.6 of Rivendell included a bug in the Cart Data Dump (csv) where the header was malformed. Setting this flag causes that header to be fixed.
+        v. **--excluded_groups_file_name [FILENAME]** Allows you to supply a filename with a list of groups to exclude. Any cuts belonging to any of those groups will be exluded from the output. Usefull for keeping your non-music cuts out of your music scheduler.
 
     e. For an explanation of **[LOGGING]**, see `Logging`_.
 
@@ -169,8 +176,8 @@ Usage: ``wmul_rivendell [LOGGING] load-current-log-line LOG_NAME_FORMAT RIVENDEL
     l. **--email_address**: The e-mail address to which the report should be sent.
     m. **--mail_server**: The address of the e-mail SMTP server to use. This argument is required if email_address is supplied.
     n. **--mail_port**: The port of the e-mail server. Defaults to 25.
-    o. **--mail_username**: The username to authenticate with the e-mail server. This argument is required if email_address is supplied.
-    p. **--mail_password**: The password to authenticate with the e-mail server. This argument is required if email_address is supplied.
+    o. **--mail_username**: The username to authenticate with the e-mail server. 
+    p. **--mail_password**: The password to authenticate with the e-mail server.
 
 #. For an explanation of **[LOGGING]**, see `Logging`_.
 

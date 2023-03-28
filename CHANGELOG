@@ -1,3 +1,13 @@
+v0.12.0
+-------
+RivendellAudioImporter: Catch crashes that occur when renaming a bad file and 
+the file is locked by another user.
+
+FilterCartReportForMusicScheduler: Add ability to exclude cuts by group name.
+
+cli - load_current_log_line: Make the mail_username and mail_password optional, 
+even when using the mail function.
+
 v0.11.1
 -------
 Convert to pyproject.toml and publish to PyPI, vastly simplifying the 
