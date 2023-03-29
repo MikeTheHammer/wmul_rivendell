@@ -980,7 +980,8 @@ run_script_params, run_script_ids = wmul_test_utils\
         [
             "include_macros",
             "include_all_cuts",
-            "fix_header"
+            "fix_header",
+            "exclude_groups"
         ]
     )
 
@@ -996,6 +997,13 @@ def setup_run_script(request, caplog, mocker):
     mocker.patch(
         "wmul_rivendell.FilterCartReportForMusicScheduler.FilterCartReportForMusicScheduler._load_rivendell_carts",
         mock_load_rivendell_carts
+    )
+
+    mock_rivendell_carts_without_excluded_groups = "mock_rivendell_carts_without_excluded_groups"
+    mock_remove_excluded_groups = mocker.Mock(return_value=mock_rivendell_carts_without_excluded_groups)
+    mocker.patch(
+        "wmul_rivendell.FilterCartReportForMusicScheduler.FilterCartReportForMusicScheduler._remove_excluded_groups",
+        mock_remove_excluded_groups
     )
 
     mock_rivendell_carts_without_macros = "mock_rivendell_carts_without_macros"
@@ -1031,7 +1039,7 @@ def setup_run_script(request, caplog, mocker):
         fix_header=params.fix_header,
         desired_field_list=[],
         include_macros=params.include_macros,
-        excluded_group_list=[],
+        excluded_group_list=params.exclude_groups,
         include_all_cuts=params.include_all_cuts,
         use_trailing_comma=True
     )
@@ -1043,6 +1051,8 @@ def setup_run_script(request, caplog, mocker):
         params=params,
         mock_load_rivendell_carts=mock_load_rivendell_carts,
         mock_rivendell_carts=mock_rivendell_carts,
+        mock_rivendell_carts_without_excluded_groups=mock_rivendell_carts_without_excluded_groups,
+        mock_remove_excluded_groups=mock_remove_excluded_groups,
         mock_remove_macro_carts=mock_remove_macro_carts,
         mock_rivendell_carts_without_macros=mock_rivendell_carts_without_macros,
         mock_remove_extra_cuts=mock_remove_extra_cuts,
@@ -1062,7 +1072,10 @@ def test_run_script_remove_macro_carts_called_correctly(setup_run_script):
     if setup_run_script.params.include_macros:
         setup_run_script.mock_remove_macro_carts.assert_not_called()
     else:
-        setup_run_script.mock_remove_macro_carts.assert_called_once_with(setup_run_script.mock_rivendell_carts)
+        if setup_run_script.params.exclude_groups:
+            setup_run_script.mock_remove_macro_carts.assert_called_once_with(setup_run_script.mock_rivendell_carts_without_excluded_groups)
+        else:
+            setup_run_script.mock_remove_macro_carts.assert_called_once_with(setup_run_script.mock_rivendell_carts)
 
 
 def test_run_script_remove_extra_cuts_called_correctly(setup_run_script):
@@ -1070,7 +1083,11 @@ def test_run_script_remove_extra_cuts_called_correctly(setup_run_script):
         setup_run_script.mock_remove_extra_cuts.assert_not_called()
     else:
         if setup_run_script.params.include_macros:
-            setup_run_script.mock_remove_extra_cuts.assert_called_once_with(setup_run_script.mock_rivendell_carts)
+            if setup_run_script.params.exclude_groups:
+                setup_run_script.mock_remove_extra_cuts.assert_called_once_with(setup_run_script.mock_rivendell_carts_without_excluded_groups)
+                pass
+            else:
+                setup_run_script.mock_remove_extra_cuts.assert_called_once_with(setup_run_script.mock_rivendell_carts)
         else:
             setup_run_script.mock_remove_extra_cuts.assert_called_once_with(
                 setup_run_script.mock_rivendell_carts_without_macros
@@ -1088,9 +1105,12 @@ def test_run_script_remove_unwanted_fields_called_correctly(setup_run_script):
                 setup_run_script.mock_rivendell_carts_without_macros
             )
         else:
-            setup_run_script.mock_remove_unwanted_fields.assert_called_once_with(
-                setup_run_script.mock_rivendell_carts
-            )
+            if setup_run_script.params.exclude_groups:
+                setup_run_script.mock_remove_unwanted_fields.assert_called_once_with(setup_run_script.mock_rivendell_carts_without_excluded_groups)
+            else:
+                setup_run_script.mock_remove_unwanted_fields.assert_called_once_with(
+                    setup_run_script.mock_rivendell_carts
+                )
 
 
 def test_run_script_export_carts_to_csv_called_correctly(setup_run_script):

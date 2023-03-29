@@ -204,7 +204,7 @@ class FilterCartReportForMusicScheduler:
         rivendell_carts = self._load_rivendell_carts()
 
         if self.excluded_group_list:
-            rivendell_carts = self._remove_exluded_groups(rivendell_carts)
+            rivendell_carts = self._remove_excluded_groups(rivendell_carts)
         if not self.include_macros:
             rivendell_carts = self._remove_macro_carts(rivendell_carts)
         if not self.include_all_cuts:
