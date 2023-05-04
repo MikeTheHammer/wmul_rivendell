@@ -43,7 +43,8 @@ Installation - Linux
 
 #. If you are using Ubuntu 22.04 Jammy Jellyfish or Mint 21.1 Vera, you will need to install python3-venv.
  
-    ``sudo apt-get update``
+    ``sudo apt-get update``  
+    
     ``sudo apt-get install python3.10-venv``
 
 #. Go to your home directory.
