@@ -32,7 +32,8 @@ from collections import OrderedDict
 import pytest
 import wmul_test_utils
 
-from wmul_rivendell.FilterCartReportForMusicScheduler import FilterCartReportForMusicScheduler, RivendellCart, CartType
+from wmul_rivendell.FilterCartReportForMusicScheduler import FilterCartReportForMusicScheduler
+from wmul_rivendell.LoadCartDataDump import RivendellCart, CartType
 
 
 cart_filter_params, cart_filter_ids = \
@@ -42,83 +43,23 @@ cart_filter_params, cart_filter_ids = \
 
 @pytest.fixture(scope="function", params=cart_filter_params, 
     ids=cart_filter_ids )
-def setup_standard_cart_filter(cart_source_file_contents, request):
-    mock_rivendell_cart_data_filename = "mock_rivendell_cart_data_filename"
+def setup_standard_cart_filter():
     mock_output_filename = "mock_output_filename"
-    fix_bad_header = request.param.fix_bad_header
+    mock_rivendell_carts = "mock_rivendell_carts"
 
     cart_filter = FilterCartReportForMusicScheduler(
-        rivendell_cart_data_filename=mock_rivendell_cart_data_filename,
+        rivendell_carts=mock_rivendell_carts,
         output_filename=mock_output_filename,
         desired_field_list=[],
-        fix_header=fix_bad_header,
-        include_macros=False,
-        excluded_group_list=[],
-        include_all_cuts=False,
         use_trailing_comma=False
     )
 
     return wmul_test_utils.make_namedtuple(
         "setup_standard_cart_filter",
-        cart_filter=cart_filter,
-        cart_source_file_contents=\
-            cart_source_file_contents.source_file_contents,
-        fix_bad_header=fix_bad_header,
-        use_bad_header=cart_source_file_contents.use_bad_header
+        mock_output_filename=mock_output_filename,
+        mock_rivendell_carts=mock_rivendell_carts,
+        cart_filter=cart_filter
     )
-
-
-def test__load_rivendell_carts_file_does_not_exist(
-        fs, 
-        setup_standard_cart_filter
-    ):
-
-    cart_filter = setup_standard_cart_filter.cart_filter
-    import pathlib
-    rivendell_cart_data_filename = pathlib.Path(r"\fakepath\fakefile.csv")
-    assert not rivendell_cart_data_filename.exists()
-
-    output_file_path = pathlib.Path(r"\fakepath\fake_output_file.csv")
-
-    cart_filter.rivendell_cart_data_filename = rivendell_cart_data_filename
-    cart_filter.output_filename = output_file_path
-
-    with pytest.raises(OSError) as oserror:
-        cart_filter._load_rivendell_carts()
-
-
-cart_source_file_contents_params, cart_source_file_ids = \
-    wmul_test_utils.generate_true_false_matrix_from_list_of_strings(
-        "cart_source_file_contents_options", ["use_bad_header"]
-    )
-
-@pytest.fixture(scope="function", params=cart_source_file_contents_params, 
-    ids=cart_source_file_ids )
-def cart_source_file_contents(request):
-    """Source file contents should parse to rivendell_cart_1_1 and 
-        rivendell_cart_6_2 in the defined_carts fixture. """
-
-    use_bad_header = request.param.use_bad_header
-
-    if use_bad_header:
-        """ This has the bad header that is present in Rivendell 3.6.4 - 3.6.6 """
-        
-        source_file_contents = \
-            'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,"FILENAME,LENGTH",START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\n' \
-            '1,1,audio,"LEGAL_ID","Alternative","Legal ID","","","","","","","","","","","","","We Are Marshall (Cheer)","","000001_001.wav",:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,""\n' \
-            '6,2,audio,"ALTERNATIV","Flashback","Legal ID","","","","","","","","","","","","","Every Hour Commercial Free","","000006_002.wav",:11,0,11023,-1,-1,-1,-1,-1,-1,-1,-1,""\n'
-    else:
-        source_file_contents = \
-            'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\n' \
-            '1,1,audio,"LEGAL_ID","Alternative","Legal ID","","","","","","","","","","","","","We Are Marshall (Cheer)","","000001_001.wav",:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,""\n' \
-            '6,2,audio,"ALTERNATIV","Flashback","Legal ID","","","","","","","","","","","","","Every Hour Commercial Free","","000006_002.wav",:11,0,11023,-1,-1,-1,-1,-1,-1,-1,-1,""\n'
-    
-    return wmul_test_utils.make_namedtuple(
-        "cart_source_file_contents",
-        use_bad_header=use_bad_header,
-        source_file_contents=source_file_contents
-    )
-
 
 @pytest.fixture(scope="function")
 def defined_rivendell_carts():
@@ -415,290 +356,6 @@ def defined_rivendell_carts():
     )
 
 
-def test__load_rivendell_carts(fs, setup_standard_cart_filter, 
-                               defined_rivendell_carts):
-    cart_filter = setup_standard_cart_filter.cart_filter
-    import pathlib
-    rivendell_cart_data_filename = pathlib.Path(r"\fakepath\source_file.csv")
-    assert not rivendell_cart_data_filename.exists()
-
-    output_file_path = pathlib.Path(r"\fakepath\output_file.csv")
-
-    fs.create_file(
-        rivendell_cart_data_filename, 
-        contents=setup_standard_cart_filter.cart_source_file_contents
-    )
-
-    cart_filter.rivendell_cart_data_filename = rivendell_cart_data_filename
-    cart_filter.output_filename = output_file_path
-
-    if (setup_standard_cart_filter.use_bad_header and 
-            not setup_standard_cart_filter.fix_bad_header):
-        with pytest.raises(KeyError) as ke:
-            result_carts = cart_filter._load_rivendell_carts()
-            assert "KeyError: 'FILENAME'" in str(ke)
-    else:
-        result_carts = cart_filter._load_rivendell_carts()
-
-        expected_carts = [
-            defined_rivendell_carts.rivendell_cart_1_1,
-            defined_rivendell_carts.rivendell_cart_6_2
-        ]
-
-        assert result_carts == expected_carts
-
-
-def test__remove_macro_carts_no_carts(setup_standard_cart_filter):
-    rivendell_carts = []
-    expected_carts = []
-    result_carts = setup_standard_cart_filter.cart_filter\
-        ._remove_macro_carts(rivendell_carts=rivendell_carts)
-    assert list(result_carts) == expected_carts
-
-
-def test__remove_macro_carts_all_audio_carts(setup_standard_cart_filter, 
-                                             defined_rivendell_carts):
-    rivendell_carts = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-        defined_rivendell_carts.rivendell_cart_500_1
-    ]
-
-    expected_carts = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-        defined_rivendell_carts.rivendell_cart_500_1
-    ]
-
-    result_carts = setup_standard_cart_filter.cart_filter\
-        ._remove_macro_carts(rivendell_carts=rivendell_carts)
-    assert expected_carts == list(result_carts)
-
-
-def test__remove_macro_carts_mixed_carts(setup_standard_cart_filter, 
-                                         defined_rivendell_carts):
-    rivendell_carts = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-        defined_rivendell_carts.rivendell_cart_500_1,
-        defined_rivendell_carts.rivendell_cart_970000_1,
-        defined_rivendell_carts.rivendell_cart_970001_1
-    ]
-
-    expected_carts = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-        defined_rivendell_carts.rivendell_cart_500_1
-    ]
-
-    result_carts = setup_standard_cart_filter.cart_filter\
-        ._remove_macro_carts(rivendell_carts=rivendell_carts)
-    assert expected_carts == list(result_carts)
-
-
-def test__remove_macro_carts_all_macro_carts(setup_standard_cart_filter, 
-                                             defined_rivendell_carts):
-    rivendell_carts = [
-        defined_rivendell_carts.rivendell_cart_970000_1,
-        defined_rivendell_carts.rivendell_cart_970001_1
-    ]
-    expected_carts = []
-
-    result_carts = setup_standard_cart_filter.cart_filter.\
-        _remove_macro_carts(rivendell_carts=rivendell_carts)
-    assert expected_carts == list(result_carts)
-
-
-def test__remove_extra_cuts_no_cuts(setup_standard_cart_filter):
-    rivendell_carts = []
-    result_carts = setup_standard_cart_filter.cart_filter.\
-        _remove_extra_cuts(rivendell_carts=rivendell_carts)
-
-    assert len(result_carts) == 0
-    assert result_carts is not rivendell_carts
-
-
-def test__remove_extra_cuts_no_extra_cuts(setup_standard_cart_filter, defined_rivendell_carts):
-    rivendell_carts_for_test = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-    ]
-
-    expected_carts = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-    ]
-
-    result_carts = setup_standard_cart_filter.cart_filter\
-        ._remove_extra_cuts(rivendell_carts=rivendell_carts_for_test)
-
-    assert list(result_carts) == expected_carts
-
-
-def test__remove_extra_cuts_extra_cuts_in_order(setup_standard_cart_filter, 
-                                                defined_rivendell_carts):
-    rivendell_carts_for_test = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-    ]
-
-    expected_carts = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-    ]
-
-    result_carts = setup_standard_cart_filter.cart_filter\
-        ._remove_extra_cuts(rivendell_carts=rivendell_carts_for_test)
-
-    assert list(result_carts) == expected_carts
-
-
-def test__remove_extra_cuts_extra_cuts_out_of_order(setup_standard_cart_filter, 
-                                                    defined_rivendell_carts):
-    rivendell_carts_for_test = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-    ]
-
-    expected_carts = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-    ]
-
-    result_carts = setup_standard_cart_filter.cart_filter\
-        ._remove_extra_cuts(rivendell_carts=rivendell_carts_for_test)
-
-    assert list(result_carts) == expected_carts
-
-
-def test__remove_excluded_groups_empty_list(setup_standard_cart_filter, defined_rivendell_carts):
-    rivendell_carts_for_test = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-        defined_rivendell_carts.rivendell_cart_500_1,
-    ]
-
-    expected_carts = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-        defined_rivendell_carts.rivendell_cart_500_1,
-    ]
-
-    result_carts = setup_standard_cart_filter.cart_filter\
-        ._remove_excluded_groups(rivendell_carts=rivendell_carts_for_test)
-
-    assert list(result_carts) == expected_carts
-
-
-def test__remove_excluded_groups_no_carts_from_groups(setup_standard_cart_filter, defined_rivendell_carts):
-    rivendell_carts_for_test = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-        defined_rivendell_carts.rivendell_cart_500_1,
-    ]
-
-    expected_carts = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-        defined_rivendell_carts.rivendell_cart_500_1,
-    ]
-
-    excluded_groups = ["STREETBEAT", "SG_MISC"]
-    setup_standard_cart_filter.cart_filter.excluded_group_list = excluded_groups
-
-    result_carts = setup_standard_cart_filter.cart_filter\
-        ._remove_excluded_groups(rivendell_carts=rivendell_carts_for_test)
-
-    assert list(result_carts) == expected_carts
-
-
-
-def test__remove_excluded_groups_some_carts_from_groups(setup_standard_cart_filter, defined_rivendell_carts):
-    rivendell_carts_for_test = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-        defined_rivendell_carts.rivendell_cart_500_1,
-    ]
-
-    expected_carts = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-    ]
-
-    excluded_groups = ["STREETBEAT", "SG_MISC", "ALT_IMAGE"]
-    setup_standard_cart_filter.cart_filter.excluded_group_list = excluded_groups
-
-    result_carts = setup_standard_cart_filter.cart_filter\
-        ._remove_excluded_groups(rivendell_carts=rivendell_carts_for_test)
-
-    assert list(result_carts) == expected_carts
-
-
-def test__remove_excluded_groups_all_carts_from_groups(setup_standard_cart_filter, defined_rivendell_carts):
-    rivendell_carts_for_test = [
-        defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_2_1,
-        defined_rivendell_carts.rivendell_cart_2_2,
-        defined_rivendell_carts.rivendell_cart_6_2,
-        defined_rivendell_carts.rivendell_cart_101_1,
-        defined_rivendell_carts.rivendell_cart_500_1,
-    ]
-
-    expected_carts = [
-    ]
-
-    excluded_groups = ["STREETBEAT", "SG_MISC", "ALT_IMAGE", "LEGAL_ID", "ALTERNATIV"]
-    setup_standard_cart_filter.cart_filter.excluded_group_list = excluded_groups
-
-    result_carts = setup_standard_cart_filter.cart_filter\
-        ._remove_excluded_groups(rivendell_carts=rivendell_carts_for_test)
-
-    assert list(result_carts) == expected_carts
-
-
 all_fields = [
         "cart_number",
         "cut_number",
@@ -907,11 +564,9 @@ def test__export_carts_to_csv_trailing_comma(fs, setup_standard_cart_filter,
     cart_filter = setup_standard_cart_filter.cart_filter
 
     import pathlib
-    rivendell_cart_data_filename = pathlib.Path(r"\fakefile.csv")
     output_file_path = pathlib.Path(r"\fake_output_file.csv")
     assert not output_file_path.exists()
 
-    cart_filter.rivendell_cart_data_filename = rivendell_cart_data_filename
     cart_filter.output_filename = output_file_path
     cart_filter.use_trailing_comma = True
 
@@ -943,11 +598,9 @@ def test__export_carts_to_csv_no_trailing_comma(fs, setup_standard_cart_filter,
     cart_filter = setup_standard_cart_filter.cart_filter
 
     import pathlib
-    rivendell_cart_data_filename = pathlib.Path(r"\fakefile.csv")
     output_file_path = pathlib.Path(r"\fake_output_file.csv")
     assert not output_file_path.exists()
 
-    cart_filter.rivendell_cart_data_filename = rivendell_cart_data_filename
     cart_filter.output_filename = output_file_path
     cart_filter.use_trailing_comma = False
 
@@ -974,51 +627,11 @@ def test__export_carts_to_csv_no_trailing_comma(fs, setup_standard_cart_filter,
     assert expected_file_contents == result_file_contents
 
 
-run_script_params, run_script_ids = wmul_test_utils\
-    .generate_true_false_matrix_from_list_of_strings(
-        "run_script_options",
-        [
-            "include_macros",
-            "include_all_cuts",
-            "fix_header",
-            "exclude_groups"
-        ]
-    )
-
-
-@pytest.fixture(scope="function", params=run_script_params, ids=run_script_ids)
-def setup_run_script(request, caplog, mocker):
-    params = request.param
-    mock_rivendell_cart_data_filename = "mock_rivendell_cart_data_filename"
+@pytest.fixture(scope="function")
+def setup_run_script(caplog, mocker):
     mock_output_filename = "mock_output_filename"
 
     mock_rivendell_carts = "mock_rivendell_carts"
-    mock_load_rivendell_carts = mocker.Mock(return_value=mock_rivendell_carts)
-    mocker.patch(
-        "wmul_rivendell.FilterCartReportForMusicScheduler.FilterCartReportForMusicScheduler._load_rivendell_carts",
-        mock_load_rivendell_carts
-    )
-
-    mock_rivendell_carts_without_excluded_groups = "mock_rivendell_carts_without_excluded_groups"
-    mock_remove_excluded_groups = mocker.Mock(return_value=mock_rivendell_carts_without_excluded_groups)
-    mocker.patch(
-        "wmul_rivendell.FilterCartReportForMusicScheduler.FilterCartReportForMusicScheduler._remove_excluded_groups",
-        mock_remove_excluded_groups
-    )
-
-    mock_rivendell_carts_without_macros = "mock_rivendell_carts_without_macros"
-    mock_remove_macro_carts = mocker.Mock(return_value=mock_rivendell_carts_without_macros)
-    mocker.patch(
-        "wmul_rivendell.FilterCartReportForMusicScheduler.FilterCartReportForMusicScheduler._remove_macro_carts",
-        mock_remove_macro_carts
-    )
-
-    mock_rivendell_carts_without_extra_cuts = "mock_rivendell_carts_without_extra_cuts"
-    mock_remove_extra_cuts = mocker.Mock(return_value=mock_rivendell_carts_without_extra_cuts)
-    mocker.patch(
-        "wmul_rivendell.FilterCartReportForMusicScheduler.FilterCartReportForMusicScheduler._remove_extra_cuts",
-        mock_remove_extra_cuts
-    )
 
     mock_music_scheduler_carts = "mock_music_scheduler_cuts"
     mock_remove_unwanted_fields = mocker.Mock(return_value=mock_music_scheduler_carts)
@@ -1034,13 +647,9 @@ def setup_run_script(request, caplog, mocker):
     )
 
     cart_filter = FilterCartReportForMusicScheduler(
-        rivendell_cart_data_filename=mock_rivendell_cart_data_filename,
+        rivendell_carts=mock_rivendell_carts,
         output_filename=mock_output_filename,
-        fix_header=params.fix_header,
         desired_field_list=[],
-        include_macros=params.include_macros,
-        excluded_group_list=params.exclude_groups,
-        include_all_cuts=params.include_all_cuts,
         use_trailing_comma=True
     )
 
@@ -1048,15 +657,7 @@ def setup_run_script(request, caplog, mocker):
 
     return wmul_test_utils.make_namedtuple(
         "setup_run_script",
-        params=params,
-        mock_load_rivendell_carts=mock_load_rivendell_carts,
         mock_rivendell_carts=mock_rivendell_carts,
-        mock_rivendell_carts_without_excluded_groups=mock_rivendell_carts_without_excluded_groups,
-        mock_remove_excluded_groups=mock_remove_excluded_groups,
-        mock_remove_macro_carts=mock_remove_macro_carts,
-        mock_rivendell_carts_without_macros=mock_rivendell_carts_without_macros,
-        mock_remove_extra_cuts=mock_remove_extra_cuts,
-        mock_rivendell_carts_without_extra_cuts=mock_rivendell_carts_without_extra_cuts,
         mock_remove_unwanted_fields=mock_remove_unwanted_fields,
         mock_music_scheduler_carts=mock_music_scheduler_carts,
         mock_export_carts_to_csv=mock_export_carts_to_csv,
@@ -1064,53 +665,10 @@ def setup_run_script(request, caplog, mocker):
     )
 
 
-def test_run_script_load_rivendell_carts_called_correctly(setup_run_script):
-    setup_run_script.mock_load_rivendell_carts.assert_called_once_with()
-
-
-def test_run_script_remove_macro_carts_called_correctly(setup_run_script):
-    if setup_run_script.params.include_macros:
-        setup_run_script.mock_remove_macro_carts.assert_not_called()
-    else:
-        if setup_run_script.params.exclude_groups:
-            setup_run_script.mock_remove_macro_carts.assert_called_once_with(setup_run_script.mock_rivendell_carts_without_excluded_groups)
-        else:
-            setup_run_script.mock_remove_macro_carts.assert_called_once_with(setup_run_script.mock_rivendell_carts)
-
-
-def test_run_script_remove_extra_cuts_called_correctly(setup_run_script):
-    if setup_run_script.params.include_all_cuts:
-        setup_run_script.mock_remove_extra_cuts.assert_not_called()
-    else:
-        if setup_run_script.params.include_macros:
-            if setup_run_script.params.exclude_groups:
-                setup_run_script.mock_remove_extra_cuts.assert_called_once_with(setup_run_script.mock_rivendell_carts_without_excluded_groups)
-                pass
-            else:
-                setup_run_script.mock_remove_extra_cuts.assert_called_once_with(setup_run_script.mock_rivendell_carts)
-        else:
-            setup_run_script.mock_remove_extra_cuts.assert_called_once_with(
-                setup_run_script.mock_rivendell_carts_without_macros
-            )
-
-
 def test_run_script_remove_unwanted_fields_called_correctly(setup_run_script):
-    if not setup_run_script.params.include_all_cuts:
-        setup_run_script.mock_remove_unwanted_fields.assert_called_once_with(
-            setup_run_script.mock_rivendell_carts_without_extra_cuts
-        )
-    else:
-        if not setup_run_script.params.include_macros:
-            setup_run_script.mock_remove_unwanted_fields.assert_called_once_with(
-                setup_run_script.mock_rivendell_carts_without_macros
-            )
-        else:
-            if setup_run_script.params.exclude_groups:
-                setup_run_script.mock_remove_unwanted_fields.assert_called_once_with(setup_run_script.mock_rivendell_carts_without_excluded_groups)
-            else:
-                setup_run_script.mock_remove_unwanted_fields.assert_called_once_with(
-                    setup_run_script.mock_rivendell_carts
-                )
+    setup_run_script.mock_remove_unwanted_fields.assert_called_once_with(
+        setup_run_script.mock_rivendell_carts
+    )
 
 
 def test_run_script_export_carts_to_csv_called_correctly(setup_run_script):

@@ -65,6 +65,16 @@ def test_filter_cart_report(fs, params, mocker, caplog):
     fs.create_file(mock_desired_fields_filename, 
                    contents=desired_fields_file_contents)
 
+    mock_rivendell_carts = "mock_rivendell_carts"
+    mock_load_carts = mocker.Mock(return_value=mock_rivendell_carts)
+
+    mock_load_cart_data_dump_object = mocker.Mock(load_carts=mock_load_carts)
+    mock_load_cart_data_dump_constructor = mocker.patch(
+        "wmul_rivendell.cli.LoadCartDataDump",
+        return_value=mock_load_cart_data_dump_object,
+        autospec=True
+    )
+
     mock_filter_cart_report_object = mocker.Mock()
 
     mock_filter_cart_report_constructor = mocker.patch(
@@ -109,15 +119,21 @@ def test_filter_cart_report(fs, params, mocker, caplog):
 
     assert result.exit_code == 0
 
-    mock_filter_cart_report_constructor.assert_called_once_with(
+    mock_load_cart_data_dump_constructor.assert_called_once_with(
         rivendell_cart_data_filename=mock_rivendell_cart_filename,
-        output_filename=mock_output_filename,
-        desired_field_list=expected_desired_fields,
         include_macros=params.include_macros,
         include_all_cuts=params.include_all_cuts,
         excluded_group_list=expected_exclude_groups,
-        use_trailing_comma=params.use_trailing_comma,
         fix_header=params.fix_header
+    )
+
+    mock_load_carts.assert_called_once_with()
+
+    mock_filter_cart_report_constructor.assert_called_once_with(
+        rivendell_carts=mock_rivendell_carts,
+        output_filename=mock_output_filename,
+        desired_field_list=expected_desired_fields,
+        use_trailing_comma=params.use_trailing_comma
     )
 
     mock_filter_cart_report_object.run_script.assert_called_once_with()

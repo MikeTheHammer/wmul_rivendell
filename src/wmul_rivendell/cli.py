@@ -4,6 +4,9 @@
 Command-Line-Interface for the various modules in this package.
 
 ============ Change Log ============
+2023-May-25 = Refactor filter_cart_report to reflect that the loading of the
+                cart data from a file has been refactored into LoadCartDataDump.
+
 2023-Jan-20 = Change license from GPLv2 to GPLv3.
               Back-insert items into change log.
               Update description.
@@ -46,6 +49,7 @@ import datetime
 from pathlib import Path
 
 from wmul_rivendell.FilterCartReportForMusicScheduler import FilterCartReportForMusicScheduler
+from wmul_rivendell.LoadCartDataDump import LoadCartDataDump
 from wmul_rivendell.LoadCurrentLogLine import LoadCurrentLogLineArguments, run_script as load_current_log_lines
 from wmul_rivendell.RivendellAudioImporter import \
     ImportRivendellFileWithFileSystemMetadataArguments, run_script as import_rivendell_file
@@ -107,15 +111,21 @@ def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_
     else:
         excluded_groups = []
 
-    x = FilterCartReportForMusicScheduler(
+    lcdd = LoadCartDataDump(
         rivendell_cart_data_filename=rivendell_cart_filename,
-        output_filename=output_filename,
-        desired_field_list=desired_fields,
         include_macros=include_macros,
         include_all_cuts=include_all_cuts,
         excluded_group_list=excluded_groups,
-        use_trailing_comma=use_trailing_comma,
         fix_header=fix_header
+    )
+
+    rivendell_carts = lcdd.load_carts()
+
+    x = FilterCartReportForMusicScheduler(
+        rivendell_carts=rivendell_carts,
+        output_filename=output_filename,
+        desired_field_list=desired_fields,
+        use_trailing_comma=use_trailing_comma
     )
     x.run_script()
 

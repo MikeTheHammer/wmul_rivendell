@@ -2,6 +2,9 @@
 @Author = 'Michael Stanley'
 
 ============ Change Log ============
+2023-May-25 = Moved from tests/FilterCartReportForMusicScheduler when the 
+                code under test was refactored into LoadCartDataDump.
+
 2023-Jan-20 = Change license from GPLv2 to GPLv3.
 
 2020-Oct-21 = Created.
@@ -24,7 +27,7 @@ You should have received a copy of the GNU General Public License along with
 wmul_rivendell. If not, see <https://www.gnu.org/licenses/>. 
 """
 from collections import namedtuple
-from wmul_rivendell.FilterCartReportForMusicScheduler import CartType, RivendellCart
+from wmul_rivendell.LoadCartDataDump import CartType, RivendellCart
 import pytest
 import wmul_test_utils
 
