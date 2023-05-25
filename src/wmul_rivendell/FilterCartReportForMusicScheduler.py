@@ -46,10 +46,8 @@ wmul_rivendell. If not, see <https://www.gnu.org/licenses/>.
 import csv
 from collections import OrderedDict
 from dataclasses import dataclass
-from enum import Enum
-from io import StringIO
 from pathlib import Path
-from wmul_rivendell.LoadCartDataDump import LoadCartDataDump
+
 
 import wmul_logger
 
