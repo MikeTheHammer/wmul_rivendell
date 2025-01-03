@@ -2,6 +2,10 @@
 @Author = 'Michael Stanley'
 
 ============ Change Log ============
+2025-Jan-03 = Add two additional checks. The first checks to see if generate_importer_command returned None. 
+              If so, then the file has no group. (It is in the root folder.) The second checks the result from 
+              rdimport to see if it failed to open the file.
+
 2023-Feb-27 = Catch crashes that occur when renaming a bad file and the file 
               is locked by another user.
 
@@ -24,7 +28,7 @@
 2020-Jun-30 = Created.
 
 ============ License ============
-Copyright (C) 2020-2023 Michael Stanley
+Copyright (C) 2020-2023, 2025 Michael Stanley
 
 This file is part of wmul_rivendell.
 
