@@ -230,10 +230,13 @@ def _run_importer_on_selected_files(files_for_importer, previously_sent_to_impor
         _logger.info(f"Sending to the importer: {file_for_importer.file_path}")
         importer_command = file_for_importer.generate_importer_command(log_argument)
         _logger.info(f"Importer command: {importer_command}")
+        if not importer_command:
+            file_for_importer.failed_group()
         previously_sent_to_importer_cache[file_for_importer.file_path] = True
         results = subprocess.run(["rdimport", *importer_command], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if results.returncode == 0:
-            if b"is not readable or not a recognized format, skipping..." in results.stdout:
+            if ((b"is not readable or not a recognized format, skipping..." in results.stdout) or 
+                (b"Unable to open " in results.stdout)):
                 _logger.error(f"Error on {importer_command[-1]}, {results.args}, {results.stderr}, {results.stdout}")
                 file_for_importer.failed_rdimport()
             else:
