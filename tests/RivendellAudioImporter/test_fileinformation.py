@@ -470,10 +470,10 @@ def test_generate_importer_command_group_sched_codes_return_value_correct(
 
 
 def test__failed(fs):
-    mock_file_path = pathlib.Path("\\source\\mock_group\\mock_filename.mp3")
+    mock_file_path = pathlib.Path(r"\source\mock_group\mock_filename.mp3")
     fs.create_file(mock_file_path)
     mock_time_stamp = datetime.datetime.now()
-    mock_source_path = pathlib.Path(r"\\source")
+    mock_source_path = pathlib.Path(r"\source")
 
     mock_file_info = RivendellAudioImporter.FileInformation(
         mock_file_path, mock_time_stamp, mock_source_path
@@ -483,7 +483,7 @@ def test__failed(fs):
 
     mock_file_info._failed(mock_suffix)
 
-    expected_file = pathlib.Path("\\source\\mock_group\\mock_filename.mp3_mock_suffix")
+    expected_file = pathlib.Path(r"\source\mock_group\mock_filename.mp3_mock_suffix")
     assert expected_file.exists()
     assert not mock_file_path.exists()
 
@@ -495,10 +495,10 @@ def setup_failed_with_reason(fs, mocker):
     mocker.patch("wmul_rivendell.RivendellAudioImporter.FileInformation._failed",
                  mock_failed)
 
-    mock_file_path = pathlib.Path("\\source\\mock_group\\mock_filename.mp3")
+    mock_file_path = pathlib.Path(r"\source\mock_group\mock_filename.mp3")
     fs.create_file(mock_file_path)
     mock_time_stamp = datetime.datetime.now()
-    mock_source_path = pathlib.Path(r"\\source")
+    mock_source_path = pathlib.Path(r"\source")
 
     mock_file_info = RivendellAudioImporter.FileInformation(
         mock_file_path, mock_time_stamp, mock_source_path
