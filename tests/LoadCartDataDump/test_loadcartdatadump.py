@@ -29,21 +29,12 @@ import wmul_test_utils
 
 from wmul_rivendell.LoadCartDataDump import LoadCartDataDump, RivendellCart, CartType
 
-
-cart_filter_params, cart_filter_ids = \
-    wmul_test_utils.generate_true_false_matrix_from_list_of_strings(
-        "cart_filter_params", ["fix_bad_header"]
-    )
-
-@pytest.fixture(scope="function", params=cart_filter_params, 
-    ids=cart_filter_ids )
-def setup_standard_cart_filter(cart_source_file_contents, request):
+@pytest.fixture(scope="function")
+def setup_standard_cart_filter(cart_source_file_contents):
     mock_rivendell_cart_data_filename = "mock_rivendell_cart_data_filename"
-    fix_bad_header = request.param.fix_bad_header
 
     cart_filter = LoadCartDataDump(
         rivendell_cart_data_filename=mock_rivendell_cart_data_filename,
-        fix_header=fix_bad_header,
         include_macros=False,
         excluded_group_list=[],
         include_all_cuts=False
@@ -54,8 +45,6 @@ def setup_standard_cart_filter(cart_source_file_contents, request):
         cart_filter=cart_filter,
         cart_source_file_contents=\
             cart_source_file_contents.source_file_contents,
-        fix_bad_header=fix_bad_header,
-        use_bad_header=cart_source_file_contents.use_bad_header
     )
 
 
@@ -78,37 +67,20 @@ def test__load_rivendell_carts_file_does_not_exist(
         cart_filter._load_rivendell_carts()
 
 
-cart_source_file_contents_params, cart_source_file_ids = \
-    wmul_test_utils.generate_true_false_matrix_from_list_of_strings(
-        "cart_source_file_contents_options", ["use_bad_header"]
-    )
+@pytest.fixture(scope="function")
+def cart_source_file_contents():
+    """Source file contents should parse to rivendell_cart_1_1, rivendell_cart_5_1, rivendell_cart_5071_1, and 
+       rivendell_cart_100249_1 in the defined_carts fixture."""
 
-@pytest.fixture(scope="function", params=cart_source_file_contents_params, 
-    ids=cart_source_file_ids )
-def cart_source_file_contents(request):
-    """Source file contents should parse to rivendell_cart_1_1 and 
-        rivendell_cart_6_2 in the defined_carts fixture. """
-
-    use_bad_header = request.param.use_bad_header
-
-    if use_bad_header:
-        """ This has the bad header that is present in Rivendell 3.6.4 - 3.6.6 """
-        
-        source_file_contents = \
-            'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,"FILENAME,LENGTH",START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\n' \
-            '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\n' \
-            '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\n' \
-            '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\n'
-    else:
-        source_file_contents = \
-            'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\n' \
-            '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\n' \
-            '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\n' \
-            '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\n'
+    source_file_contents = \
+        'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\n' \
+        '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\n' \
+        '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\n' \
+        '5071,1,audio,PSA_E_30,Arm Chair Officials,Interscholastic Athletics,,,,,,David Adkins,,,,,,"NFHS, NIAAA, WVSSAC\r\n2023","""1_Armchair Officials 30_WV.wav""",,005071_001.wav,:30,0,30000,30000,30001,-1,-1,0,0,-1,-1,\n' \
+        '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\n'
     
     return wmul_test_utils.make_namedtuple(
         "cart_source_file_contents",
-        use_bad_header=use_bad_header,
         source_file_contents=source_file_contents
     )
 
@@ -360,6 +332,41 @@ def defined_rivendell_carts():
         fadedown_point="-1",
         sched_codes=""
     )
+    rivendell_cart_5071_1 = RivendellCart(
+        cart_number='5071',
+        cut_number='1',
+        type=CartType.Audio,
+        group_name="PSA_E_30",
+        title="Arm Chair Officials",
+        artist="Interscholastic Athletics",
+        album="",
+        year="",
+        isrc="",
+        isci="",
+        label="",
+        client="David Adkins",
+        agency="",
+        publisher="",
+        composer="",
+        conductor="",
+        song_id="",
+        user_defined="NFHS, NIAAA, WVSSAC\r\n2023",
+        description='"1_Armchair Officials 30_WV.wav"',
+        outcue="",
+        filename="005071_001.wav",
+        length=':30',
+        start_point="0",
+        end_point="30000",
+        segue_start_point="30000",
+        segue_end_point="30001",
+        hook_start_point="-1",
+        hook_end_point="-1",
+        talk_start_point="0",
+        talk_end_point="0",
+        fadeup_point="-1",
+        fadedown_point="-1",
+        sched_codes=""
+    )
     rivendell_cart_100249_1 = RivendellCart(
         cart_number='100249',
         cut_number='1',
@@ -474,6 +481,7 @@ def defined_rivendell_carts():
         rivendell_cart_6_2=rivendell_cart_6_2,
         rivendell_cart_101_1=rivendell_cart_101_1,
         rivendell_cart_500_1=rivendell_cart_500_1,
+        rivendell_cart_5071_1=rivendell_cart_5071_1,
         rivendell_cart_100249_1=rivendell_cart_100249_1,
         rivendell_cart_970000_1=rivendell_cart_970000_1,
         rivendell_cart_970001_1=rivendell_cart_970001_1
@@ -497,22 +505,16 @@ def test__load_rivendell_carts(fs, setup_standard_cart_filter,
     cart_filter.rivendell_cart_data_filename = rivendell_cart_data_filename
     cart_filter.output_filename = output_file_path
 
-    if (setup_standard_cart_filter.use_bad_header and 
-            not setup_standard_cart_filter.fix_bad_header):
-        with pytest.raises(KeyError) as ke:
-            result_carts = cart_filter._load_rivendell_carts()
-            assert "KeyError: 'FILENAME'" in str(ke)
-    else:
-        result_carts = cart_filter._load_rivendell_carts()
+    result_carts = cart_filter._load_rivendell_carts()
 
-        expected_carts = [
-            defined_rivendell_carts.rivendell_cart_1_1,
-            defined_rivendell_carts.rivendell_cart_5_1,
-            defined_rivendell_carts.rivendell_cart_100249_1
+    expected_carts = [
+        defined_rivendell_carts.rivendell_cart_1_1,
+        defined_rivendell_carts.rivendell_cart_5_1,
+        defined_rivendell_carts.rivendell_cart_5071_1,
+        defined_rivendell_carts.rivendell_cart_100249_1
+    ]
 
-        ]
-
-        assert result_carts == expected_carts
+    assert result_carts == expected_carts
 
 
 def test__remove_macro_carts_no_carts(setup_standard_cart_filter):
@@ -771,7 +773,6 @@ load_carts_params, rload_carts_ids = wmul_test_utils\
         [
             "include_macros",
             "include_all_cuts",
-            "fix_header",
             "exclude_groups"
         ]
     )
@@ -812,7 +813,6 @@ def setup_run_script(request, caplog, mocker):
 
     cart_filter = LoadCartDataDump(
         rivendell_cart_data_filename=mock_rivendell_cart_data_filename,
-        fix_header=params.fix_header,
         include_macros=params.include_macros,
         excluded_group_list=params.exclude_groups,
         include_all_cuts=params.include_all_cuts
