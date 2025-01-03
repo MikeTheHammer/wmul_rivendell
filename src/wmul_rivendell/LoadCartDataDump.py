@@ -126,6 +126,17 @@ class RivendellCart:
             sched_codes=source_dict["SCHED_CODES"]
         )
 
+    def length_in_seconds(self):
+        _logger.info(self)
+        minutes, seconds = self.length.split(":")
+
+        if minutes:
+            minutes = int(minutes)
+        else:
+            minutes = 0
+        seconds = int(seconds)
+
+        return (minutes * 60) + seconds
 
 
 @dataclass

@@ -72,6 +72,7 @@ def setup_from_dict(request):
     expected_outcue = '""'
     expected_filename = '"100340_001.wav"'
     expected_length = '7:14'
+    expected_length_in_seconds = 434
     expected_start_point = '0'
     expected_end_point = '434000'
     expected_segue_start_point = '432000'
@@ -146,6 +147,7 @@ def setup_from_dict(request):
         expected_outcue=expected_outcue,
         expected_filename=expected_filename,
         expected_length=expected_length,
+        expected_length_in_seconds=expected_length_in_seconds,
         expected_start_point=expected_start_point,
         expected_end_point=expected_end_point,
         expected_segue_start_point=expected_segue_start_point,
@@ -324,3 +326,7 @@ def test_from_dict_fadedown_point_correct(setup_from_dict):
 def test_from_dict_sched_codes_correct(setup_from_dict):
     result_rivendell_cart = setup_from_dict.result_rivendell_cart
     assert setup_from_dict.expected_sched_codes == result_rivendell_cart.sched_codes
+
+def test_length_in_seconds_correct(setup_from_dict):
+    result_rivendell_cart = setup_from_dict.result_rivendell_cart
+    assert setup_from_dict.expected_length_in_seconds == result_rivendell_cart.length_in_seconds()
