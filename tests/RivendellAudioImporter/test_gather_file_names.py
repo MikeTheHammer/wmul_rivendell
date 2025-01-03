@@ -163,8 +163,8 @@ def test_log_messages_correct(setup__gather_file_names):
 
 
 def test__gather_file_names_end_to_end(fs, mocker):
-    source_path_1 = pathlib.Path(r"\\source\\group1\\")
-    source_path_2 = pathlib.Path(r"\\source\\group2\\")
+    source_path_1 = pathlib.Path(r"\source\group1")
+    source_path_2 = pathlib.Path(r"\source\group2")
 
     fs.create_dir(source_path_1)
     fs.create_dir(source_path_2)
