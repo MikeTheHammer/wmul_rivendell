@@ -96,13 +96,15 @@ def cart_source_file_contents(request):
         
         source_file_contents = \
             'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,"FILENAME,LENGTH",START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\n' \
-            '1,1,audio,"LEGAL_ID","Alternative","Legal ID","","","","","","","","","","","","","We Are Marshall (Cheer)","","000001_001.wav",:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,""\n' \
-            '6,2,audio,"ALTERNATIV","Flashback","Legal ID","","","","","","","","","","","","","Every Hour Commercial Free","","000006_002.wav",:11,0,11023,-1,-1,-1,-1,-1,-1,-1,-1,""\n'
+            '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\n' \
+            '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\n' \
+            '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\n'
     else:
         source_file_contents = \
             'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\n' \
-            '1,1,audio,"LEGAL_ID","Alternative","Legal ID","","","","","","","","","","","","","We Are Marshall (Cheer)","","000001_001.wav",:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,""\n' \
-            '6,2,audio,"ALTERNATIV","Flashback","Legal ID","","","","","","","","","","","","","Every Hour Commercial Free","","000006_002.wav",:11,0,11023,-1,-1,-1,-1,-1,-1,-1,-1,""\n'
+            '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\n' \
+            '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\n' \
+            '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\n'
     
     return wmul_test_utils.make_namedtuple(
         "cart_source_file_contents",
@@ -218,6 +220,41 @@ def defined_rivendell_carts():
         fadedown_point="-1",
         sched_codes=""
     )
+    rivendell_cart_5_1 = RivendellCart(
+        cart_number='5',
+        cut_number='1',
+        type=CartType.Audio,
+        group_name="LEGAL_ID",
+        title="Jazz",
+        artist="Legal ID",
+        album="",
+        year="",
+        isrc="",
+        isci="",
+        label="",
+        client="",
+        agency="",
+        publisher="",
+        composer="",
+        conductor="",
+        song_id="",
+        user_defined="",
+        description="From the Campus of Marshall University",
+        outcue="",
+        filename="000005_001.wav",
+        length=':04',
+        start_point="0",
+        end_point="4806",
+        segue_start_point="-1",
+        segue_end_point="-1",
+        hook_start_point="-1",
+        hook_end_point="-1",
+        talk_start_point="-1",
+        talk_end_point="-1",
+        fadeup_point="-1",
+        fadedown_point="-1",
+        sched_codes=""
+    )
     rivendell_cart_6_2 = RivendellCart(
         cart_number='6',
         cut_number='2',
@@ -323,6 +360,41 @@ def defined_rivendell_carts():
         fadedown_point="-1",
         sched_codes=""
     )
+    rivendell_cart_100249_1 = RivendellCart(
+        cart_number='100249',
+        cut_number='1',
+        type=CartType.Audio,
+        group_name="ALTERNATIV",
+        title="Calm Is Intention Devouring Its Frailty",
+        artist="Morning Teleportation",
+        album="",
+        year="2017",
+        isrc="",
+        isci="",
+        label="",
+        client="",
+        agency="",
+        publisher="",
+        composer="Imported from WOAFR: A17/0370",
+        conductor="",
+        song_id="",
+        user_defined="",
+        description="Calm Is Intention Devouring Its Frailty",
+        outcue="",
+        filename="100249_001.wav",
+        length='4:17',
+        start_point="0",
+        end_point="257000",
+        segue_start_point="252000",
+        segue_end_point="257000",
+        hook_start_point="-1",
+        hook_end_point="-1",
+        talk_start_point="0",
+        talk_end_point="3000",
+        fadeup_point="-1",
+        fadedown_point="-1",
+        sched_codes="2015s"
+    )
     rivendell_cart_970000_1 = RivendellCart(
         cart_number='970000',
         cut_number='1',
@@ -398,9 +470,11 @@ def defined_rivendell_carts():
         rivendell_cart_1_1=rivendell_cart_1_1,
         rivendell_cart_2_1=rivendell_cart_2_1,
         rivendell_cart_2_2=rivendell_cart_2_2,
+        rivendell_cart_5_1=rivendell_cart_5_1,
         rivendell_cart_6_2=rivendell_cart_6_2,
         rivendell_cart_101_1=rivendell_cart_101_1,
         rivendell_cart_500_1=rivendell_cart_500_1,
+        rivendell_cart_100249_1=rivendell_cart_100249_1,
         rivendell_cart_970000_1=rivendell_cart_970000_1,
         rivendell_cart_970001_1=rivendell_cart_970001_1
     )
@@ -433,7 +507,9 @@ def test__load_rivendell_carts(fs, setup_standard_cart_filter,
 
         expected_carts = [
             defined_rivendell_carts.rivendell_cart_1_1,
-            defined_rivendell_carts.rivendell_cart_6_2
+            defined_rivendell_carts.rivendell_cart_5_1,
+            defined_rivendell_carts.rivendell_cart_100249_1
+
         ]
 
         assert result_carts == expected_carts
@@ -788,6 +864,7 @@ def test_run_script_remove_extra_cuts_called_correctly(setup_run_script):
             setup_run_script.mock_remove_extra_cuts.assert_called_once_with(
                 setup_run_script.mock_rivendell_carts_without_macros
             )
+
 
 def test_run_script_returns_correct_item(setup_run_script):
     if not setup_run_script.params.include_all_cuts:
