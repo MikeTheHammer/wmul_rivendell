@@ -128,8 +128,10 @@ def database_statistics(rivendell_cart_filename, output_filename, include_all_cu
 @click.option('--include_all_cuts', is_flag=True,
               help="Include all the individual cuts in the output file. If this is left unset, then the output file "
                    "will only include the lowest numbered cut in each cart.")
-@click.option('--excluded_groups_file_name', type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
-              help="File path to a text file containing a list of groups to be exluded. The file should have one group name on each line. If a group name is present in this file, but not in the cart data dump, it will be ignored.")
+@click.option('--excluded_groups_file_name', 
+              type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+              help="File path to a text file containing a list of groups to be exluded. The file should have one "
+              "group name on each line. A group name may be present in this file but not in the cart data dump.")
 @click.option('--use_trailing_comma', is_flag=True,
               help="Include a comma at the end of each line. Required by some scheduling software, such as Natural "
                    "Music, to see the final field.")
