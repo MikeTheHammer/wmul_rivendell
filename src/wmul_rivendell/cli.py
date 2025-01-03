@@ -142,11 +142,7 @@ def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_
     with open(desired_fields_filename, "rt") as desired_fields_reader:
         desired_fields = [desired_field.strip("\n\r") for desired_field in desired_fields_reader]
 
-    if excluded_groups_file_name:
-        with open(excluded_groups_file_name, "rt") as excluded_groups_reader:
-            excluded_groups = [excluded_group.strip("\n\r") for excluded_group in excluded_groups_reader]
-    else:
-        excluded_groups = []
+    excluded_groups = get_excluded_groups(excluded_groups_file_name)
 
     lcdd = LoadCartDataDump(
         rivendell_cart_data_filename=rivendell_cart_filename,
