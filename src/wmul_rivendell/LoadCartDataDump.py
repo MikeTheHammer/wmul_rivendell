@@ -43,6 +43,9 @@ class CartType(Enum):
     Audio = 1
     Macro = 2
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}.{self.name}"
+
 
 @dataclass
 class RivendellCart:
