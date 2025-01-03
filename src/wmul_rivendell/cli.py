@@ -4,6 +4,9 @@
 Command-Line-Interface for the various modules in this package.
 
 ============ Change Log ============
+2025-Jan-03 = Add database_statistics option.
+              Fix type in help text of filter_cart_report.
+
 2023-May-25 = Refactor filter_cart_report to reflect that the loading of the
                 cart data from a file has been refactored into LoadCartDataDump.
 
@@ -27,7 +30,7 @@ Command-Line-Interface for the various modules in this package.
 2020-Jun-26 = Created.
 
 ============ License ============
-Copyright (C) 2020, 2022-2023 Michael Stanley
+Copyright (C) 2020, 2022-2023, 2025 Michael Stanley
 
 This file is part of wmul_rivendell.
 
@@ -47,13 +50,14 @@ import click
 import datetime
 
 from pathlib import Path
-
+from wmul_rivendell.DatabaseStatistics import DatabaseStatistics
 from wmul_rivendell.FilterCartReportForMusicScheduler import FilterCartReportForMusicScheduler
 from wmul_rivendell.LoadCartDataDump import LoadCartDataDump
 from wmul_rivendell.LoadCurrentLogLine import LoadCurrentLogLineArguments, run_script as load_current_log_lines
 from wmul_rivendell.RivendellAudioImporter import \
     ImportRivendellFileWithFileSystemMetadataArguments, run_script as import_rivendell_file
 from wmul_click_utils import RequiredIf, MXWith
+
 import wmul_emailer
 import wmul_logger
 
@@ -78,6 +82,39 @@ def wmul_rivendell_cli(log_name, log_level):
         version = pkg_resources.require("wmul_rivendell")[0].version
         _logger.warning(f"Version: {version}")
         _logger.warning("In command_line_interface")
+
+
+@wmul_rivendell_cli.command()
+@click.argument('rivendell_cart_filename', type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+                nargs=1)
+@click.argument('output_filename', type=click.Path(exists=False, file_okay=True, dir_okay=False, writable=True),
+                nargs=1)
+@click.option('--include_all_cuts', is_flag=True,
+              help="Whether to use every cut in the cart when making the calculations. If this is set, every cut from "
+              "each cart will be used in the calculations. If it is not set, only the lowest numbered cut will be " 
+              "used.")
+@click.option('--excluded_groups_file_name', type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+              help="File path to a text file containing a list of groups to be exluded. The file should have one "
+              "group name on each line. A group name may be present in this file but not in the cart data dump.")
+def database_statistics(rivendell_cart_filename, output_filename, include_all_cuts, excluded_groups_file_name):
+    _logger.debug(f"With {locals()}")
+
+    excluded_groups = get_excluded_groups(excluded_groups_file_name)
+
+    lcdd = LoadCartDataDump(
+        rivendell_cart_data_filename=rivendell_cart_filename,
+        include_all_cuts=include_all_cuts,
+        include_macros=False,
+        excluded_group_list=excluded_groups
+    )
+
+    rivendell_carts = lcdd.load_carts()
+
+    x = DatabaseStatistics(
+        rivendell_carts=rivendell_carts,
+        output_filename=output_filename,
+    )
+    x.run_script()
 
 
 @wmul_rivendell_cli.command()
@@ -247,3 +284,12 @@ def import_with_file_system_metadata(source_paths, cache_duration, rdimport_sysl
         import_rivendell_file(arguments=args)
     except Exception as e:
         _logger.exception(f"Final crash: {e}")
+
+
+def get_excluded_groups(excluded_groups_file_name):
+    if excluded_groups_file_name:
+        with open(excluded_groups_file_name, "rt") as excluded_groups_reader:
+            return [excluded_group.strip("\n\r") for excluded_group in excluded_groups_reader]
+    else:
+        return []
+
