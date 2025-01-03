@@ -71,13 +71,12 @@ class FilterCartReportForMusicScheduler:
         return music_scheduler_carts
 
     def _export_carts_to_csv(self, music_scheduler_carts):
+        fieldnames = list(music_scheduler_carts[0].keys())
         if self.use_trailing_comma:
-            dialect = "TrailingComma"
-        else:
-            dialect = "excel"
+            fieldnames.append("Placeholder")
         with open(str(self.output_filename), newline="", mode="wt", errors="replace") as music_scheduler_file:
-            natural_music_writer = csv.DictWriter(music_scheduler_file, music_scheduler_carts[0].keys(),
-                                                  dialect=dialect)
+            natural_music_writer = csv.DictWriter(music_scheduler_file, fieldnames,
+                                                  dialect="excel")
             natural_music_writer.writerows(music_scheduler_carts)
 
     def run_script(self):
@@ -85,10 +84,3 @@ class FilterCartReportForMusicScheduler:
         
         music_scheduler_carts = self._remove_unwanted_fields(self.rivendell_carts)
         self._export_carts_to_csv(music_scheduler_carts)
-
-
-class TrailingCommaDialect(csv.excel):
-    lineterminator = ',\r\n'
-
-
-csv.register_dialect("TrailingComma", TrailingCommaDialect)
