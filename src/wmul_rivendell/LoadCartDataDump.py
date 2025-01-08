@@ -31,6 +31,7 @@ import csv
 from dataclasses import dataclass
 from enum import Enum
 from io import StringIO
+from os import SEEK_SET
 from pathlib import Path
 
 import wmul_logger
@@ -148,6 +149,39 @@ class RivendellCart:
         return (minutes * 60) + seconds
 
 
+def _fix_rivendell_csv_file(rivendell_source_file):
+    text_buffer = StringIO()
+
+    file_iterator = iter(rivendell_source_file)
+    expected_fields = next(file_iterator)
+    text_buffer.write(expected_fields)
+
+    line_buffer = StringIO(expected_fields)
+    line_parsed_as_csv = list(csv.reader(line_buffer))[0]
+
+    count_of_expected_fields = len(line_parsed_as_csv)
+
+    try:
+        while True:
+            text_line = next(file_iterator)
+            text_line_buffer = StringIO(text_line)
+            text_line_parsed_as_csv = list(csv.reader(text_line_buffer))[0]
+            
+            while len(text_line_parsed_as_csv) < count_of_expected_fields:
+                text_line = text_line.strip()
+                next_line = next(file_iterator)
+                text_line = text_line + " " + next_line
+                text_line_buffer = StringIO(text_line)
+                text_line_parsed_as_csv = list(csv.reader(text_line_buffer))[0]
+
+                if len(text_line_parsed_as_csv) > count_of_expected_fields:
+                    raise ValueError(f"There are errors in the csv file that cannot be automatically fixed. {text_line_buffer.getvalue()}")
+            text_buffer.write(text_line_buffer.getvalue())
+    except StopIteration:
+        text_buffer.seek(0, SEEK_SET)
+        return text_buffer
+
+
 @dataclass
 class LoadCartDataDump:
     rivendell_cart_data_filename: Path
@@ -158,7 +192,8 @@ class LoadCartDataDump:
     def _load_rivendell_carts(self):
         with open(str(self.rivendell_cart_data_filename), newline="", mode="rt", errors="replace") as \
                 rivendell_source_file:
-            rivendell_reader = csv.DictReader(rivendell_source_file)
+            rivendell_fixed_data = _fix_rivendell_csv_file(rivendell_source_file)
+            rivendell_reader = csv.DictReader(rivendell_fixed_data)
             rivendell_carts = [RivendellCart.from_dict(rivendell_cart) for rivendell_cart in rivendell_reader]
         return rivendell_carts
 
