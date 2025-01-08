@@ -85,10 +85,19 @@ class RivendellCart:
 
     @classmethod
     def from_dict(cls, source_dict):
+        _logger.debug(source_dict)
         if source_dict["TYPE"] == "audio":
             cart_type = CartType.Audio
         else:
             cart_type = CartType.Macro
+
+        description=source_dict["DESCRIPTION"]
+        if isinstance(description, str):
+            description = description.strip()
+
+        outcue=source_dict["OUTCUE"]
+        if isinstance(outcue, str):
+            outcue = outcue.strip()
 
         return cls(
             cart_number=source_dict["CART_NUMBER"],
@@ -109,8 +118,8 @@ class RivendellCart:
             conductor=source_dict["CONDUCTOR"].strip(),
             song_id=source_dict["SONG_ID"].strip(),
             user_defined=source_dict["USER_DEFINED"].strip(),
-            description=source_dict["DESCRIPTION"].strip(),
-            outcue=source_dict["OUTCUE"].strip(),
+            description=description,
+            outcue=outcue,
             filename=source_dict["FILENAME"],
             length=source_dict["LENGTH"],
             start_point=source_dict["START_POINT"],
