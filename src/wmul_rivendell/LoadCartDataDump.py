@@ -138,7 +138,13 @@ class RivendellCart:
 
     def length_in_seconds(self):
         _logger.info(self)
-        minutes, seconds = self.length.split(":")
+        length = self.length
+        if length.count(":") > 1:
+            hours, minutes, seconds = length.split(":")
+            hours = int(hours)
+        else:
+            minutes, seconds = self.length.split(":")
+            hours = 0
 
         if minutes:
             minutes = int(minutes)
@@ -146,7 +152,7 @@ class RivendellCart:
             minutes = 0
         seconds = int(seconds)
 
-        return (minutes * 60) + seconds
+        return (hours * 3600) + (minutes * 60) + seconds
 
 
 def _fix_rivendell_csv_file(rivendell_source_file):

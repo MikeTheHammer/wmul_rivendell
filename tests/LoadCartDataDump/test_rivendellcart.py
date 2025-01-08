@@ -330,3 +330,46 @@ def test_from_dict_sched_codes_correct(setup_from_dict):
 def test_length_in_seconds_correct(setup_from_dict):
     result_rivendell_cart = setup_from_dict.result_rivendell_cart
     assert setup_from_dict.expected_length_in_seconds == result_rivendell_cart.length_in_seconds()
+
+def test_length_in_seconds_longer_than_one_hour():
+    source_dict = {
+        "CART_NUMBER": '100340',
+        "CUT_NUMBER": '1',
+        "TYPE": "audio",
+        "GROUP_NAME": '"ALTERNATIV"',
+        "TITLE": '"Do You Want Love"',
+        "ARTIST": '"Dave Depper"',
+        "ALBUM": '""',
+        "YEAR": '"2017"',
+        "ISRC": '""',
+        "ISCI": '""',
+        "LABEL": '""',
+        "CLIENT": '""',
+        "AGENCY": '""',
+        "PUBLISHER": '""',
+        "COMPOSER": '"Imported from WOAFR: A17/0461"',
+        "CONDUCTOR": '""',
+        "SONG_ID": '""',
+        "USER_DEFINED": '""',
+        "DESCRIPTION": '"Do You Want Love"',
+        "OUTCUE": '""',
+        "FILENAME": '"100340_001.wav"',
+        "LENGTH": '1:07:14',
+        "START_POINT": '0',
+        "END_POINT": '434000',
+        "SEGUE_START_POINT": '432000',
+        "SEGUE_END_POINT": '434000',
+        "HOOK_START_POINT": '-1',
+        "HOOK_END_POINT": '-1',
+        "TALK_START_POINT": '0',
+        "TALK_END_POINT": '40000',
+        "FADEUP_POINT": '-1',
+        "FADEDOWN_POINT": '-1',
+        "SCHED_CODES": '"2015s"'
+    }
+
+    result_rivendell_cart = RivendellCart.from_dict(source_dict=source_dict)
+
+    expected_length_in_seconds = 4034
+
+    assert result_rivendell_cart.length_in_seconds() == expected_length_in_seconds
