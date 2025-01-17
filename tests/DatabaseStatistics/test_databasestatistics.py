@@ -113,60 +113,38 @@ def test__organize_by_rivendell_group():
     assert len(STREETBEAT_carts) == 20
 
 
-def test__calculate_statistics_of_this_group():
-    alt_carts = [
-        RivendellCart(cart_number='100000', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title="There's a Star", artist='Ash', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0001', conductor='', song_id='', user_defined='', description="There's a Star", outcue='', filename='100000_001.wav', length='4:22', start_point='0', end_point='262000', segue_start_point='260000', segue_end_point='262000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='10000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100001', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Six Feet Under', artist='No Doubt', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0002', conductor='', song_id='', user_defined='', description='Six Feet Under', outcue='', filename='100001_001.wav', length='2:28', start_point='0', end_point='148000', segue_start_point='146000', segue_end_point='148000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='6000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100002', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Portions for Foxes', artist='Rilo Kiley', album='', year='2004', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0003', conductor='', song_id='', user_defined='', description='Portions for Foxes', outcue='', filename='100002_001.wav', length='4:43', start_point='0', end_point='283000', segue_start_point='280000', segue_end_point='283000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='34000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s'),
-        RivendellCart(cart_number='100003', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Maybe Tomorrow', artist='Stereophonics', album='', year='2004', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0004', conductor='', song_id='', user_defined='', description='Maybe Tomorrow', outcue='', filename='100003_001.wav', length='4:35', start_point='0', end_point='275000', segue_start_point='271000', segue_end_point='275000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='30000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100004', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Existentialism on Prom Night', artist='Straylight Run', album='', year='2004', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0005', conductor='', song_id='', user_defined='', description='Existentialism on Prom Night', outcue='', filename='100004_001.wav', length='3:59', start_point='0', end_point='239000', segue_start_point='234000', segue_end_point='239000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='28000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
+def test__write_csv(fs, mocker):
+    alternative_line = ["alternative", "mock", "line"]
+    alternative_mock = mocker.Mock(
+        to_list_for_csv=mocker.Mock(return_value=alternative_line)
+    )
 
-        RivendellCart(cart_number='100005', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Your Ex-Lover is Dead', artist='Stars', album='', year='2004', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0006', conductor='', song_id='', user_defined='', description='Your Ex-Lover is Dead', outcue='', filename='100005_001.wav', length='4:13', start_point='0', end_point='253000', segue_start_point='251000', segue_end_point='253000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='0', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100006', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Neighborhood #1 (Tunnels)', artist='Arcade Fire', album='', year='2004', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0007', conductor='', song_id='', user_defined='', description='Neighborhood #1 (Tunnels)', outcue='', filename='100006_001.wav', length='4:47', start_point='0', end_point='287000', segue_start_point='285000', segue_end_point='287000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='25000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100007', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='How to Disappear Completely', artist='Radiohead', album='', year='2000', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0008', conductor='', song_id='', user_defined='', description='How to Disappear Completely', outcue='', filename='100007_001.wav', length='5:53', start_point='0', end_point='353000', segue_start_point='351000', segue_end_point='353000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='41000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100008', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Pin', artist='Yeah Yeah Yeahs', album='', year='2003', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0009', conductor='', song_id='', user_defined='', description='Pin', outcue='', filename='100008_001.wav', length='1:59', start_point='0', end_point='119000', segue_start_point='117000', segue_end_point='119000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='22000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100009', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Juxtapozed with U', artist='Super Furry Animals', album='', year='2001', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0010', conductor='', song_id='', user_defined='', description='Juxtapozed with U', outcue='', filename='100009_001.wav', length='3:09', start_point='0', end_point='189000', segue_start_point='188000', segue_end_point='189000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='25000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        
-        RivendellCart(cart_number='100010', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='New Slang', artist='The Shins', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0011', conductor='', song_id='', user_defined='', description='New Slang', outcue='', filename='100010_001.wav', length='3:45', start_point='0', end_point='225000', segue_start_point='221000', segue_end_point='225000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='36000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100011', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='War on War', artist='Wilco', album='', year='2002', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0012', conductor='', song_id='', user_defined='', description='War on War', outcue='', filename='100011_001.wav', length='3:49', start_point='0', end_point='229000', segue_start_point='227000', segue_end_point='229000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='50000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100012', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Drift Away', artist='Uncle Kracker', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0013', conductor='', song_id='', user_defined='', description='Drift Away', outcue='', filename='100012_001.wav', length='4:13', start_point='0', end_point='253000', segue_start_point='246000', segue_end_point='253000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='12000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100013', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Neighborhood #2 (Laika)', artist='Arcade Fire', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0014', conductor='', song_id='', user_defined='', description='Neighborhood #2 (Laika)', outcue='', filename='100013_001.wav', length='3:27', start_point='0', end_point='207000', segue_start_point='205000', segue_end_point='207000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='23000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100014', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Neighborhood #3 (Power Out)', artist='Arcade Fire', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0015', conductor='', song_id='', user_defined='', description='Neighborhood #3 (Power Out)', outcue='', filename='100014_001.wav', length='5:08', start_point='0', end_point='308000', segue_start_point='308000', segue_end_point='308000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='15000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        
-        RivendellCart(cart_number='100015', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Neighborhood #4 (7 Kettles)', artist='Arcade Fire', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0016', conductor='', song_id='', user_defined='', description='Neighborhood #4 (7 Kettles)', outcue='', filename='100015_001.wav', length='4:40', start_point='0', end_point='280000', segue_start_point='272000', segue_end_point='280000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='22000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100016', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='5/4', artist='Gorillaz', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0017', conductor='', song_id='', user_defined='', description='5/4', outcue='', filename='100016_001.wav', length='2:39', start_point='0', end_point='159000', segue_start_point='156000', segue_end_point='159000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='12000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100017', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Cute Without the E', artist='Taking Back Sunday', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0018', conductor='', song_id='', user_defined='', description='Cute Without the E', outcue='', filename='100017_001.wav', length='3:31', start_point='0', end_point='211000', segue_start_point='207000', segue_end_point='211000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='5000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100018', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Pinch Me', artist='Barenaked Ladies', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0019', conductor='', song_id='', user_defined='', description='Pinch Me', outcue='', filename='100018_001.wav', length='4:37', start_point='0', end_point='277000', segue_start_point='270000', segue_end_point='277000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='13000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-        RivendellCart(cart_number='100019', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Move Your Feet', artist='Junior Senior', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0020', conductor='', song_id='', user_defined='', description='Move Your Feet', outcue='', filename='100019_001.wav', length='3:02', start_point='0', end_point='182000', segue_start_point='180000', segue_end_point='182000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='6000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
-    ]
+    streetbeat_line = ["streetbeat", "abcd", "efgh"]
+    streetbeat_mock = mocker.Mock(
+        to_list_for_csv=mocker.Mock(return_value=streetbeat_line)
+    )
 
-    expected_mean = 237
-    expected_stdev = 57
-    expected_lower_bound = 123
-    expected_upper_bound = 351
+    pro_30_line = ["pro_30", "jklm", "nopq"]
+    pro_30_mock = mocker.Mock(
+        to_list_for_csv=mocker.Mock(return_value=pro_30_line)
+    )
 
-    mock_rivendell_carts = "mock_rivendell_carts"
-    mock_filename = "mock_filename"
+    pro_60_line = ["pro_60", "rstu", "vwxy"]
+    pro_60_mock = mocker.Mock(
+        to_list_for_csv=mocker.Mock(return_value=pro_60_line)
+    )
 
-    ds = DatabaseStatistics(rivendell_carts=mock_rivendell_carts, output_filename=mock_filename)
-
-    mean_this_group, stdev_this_group, lower_bound, upper_bound = ds._calculate_statistics_of_this_group(alt_carts)
-
-    assert mean_this_group == expected_mean
-    assert stdev_this_group == expected_stdev
-    assert lower_bound == expected_lower_bound
-    assert upper_bound == expected_upper_bound
-
-
-def test__write_csv(fs):
     statistics_per_group = {
-        "ALTERNATIV": (237, 57, 123, 351),
-        "STREETBEAT": (229, 42, 145, 313),
-        "PRO_30": (29, 1, 27, 31),
-        "PRO_60": (60, 0, 60, 60)
+        "ALTERNATIV": alternative_mock,
+        "STREETBEAT": streetbeat_mock,
+        "PRO_30": pro_30_mock,
+        "PRO_60": pro_60_mock
     }
 
-    expected_file_contents = "Group Name,Mean,Standard Deviation,Lower Bound,Upper Bound\nALTERNATIV,237,57,123,351\nPRO_30,29,1,27,31\nPRO_60,60,0,60,60\nSTREETBEAT,229,42,145,313\n"
+    expected_file_contents = "Group Name,Number of Songs,Shortest Song Length,Longest Song Length,Outlier Limits," \
+        "Mean,Standard Deviation,Lower Bound,Number of Songs < Lower Bound,Upper Bound," \
+        "Number of Songs > Upper Bound\nalternative,mock,line\npro_30,jklm,nopq\npro_60,rstu,vwxy\n" \
+        "streetbeat,abcd,efgh\n"
 
     root_dir = Path(r"test")
     root_dir.mkdir()
