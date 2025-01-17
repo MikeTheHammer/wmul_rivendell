@@ -137,7 +137,7 @@ class RivendellCart:
         )
 
     def length_in_seconds(self):
-        _logger.info(self)
+        _logger.info(f"{self.group_name}:{self.cart_number} {self.length}")
         length = self.length
         if length.count(":") > 1:
             hours, minutes, seconds = length.split(":")
