@@ -50,6 +50,7 @@ class RivendellGroupStatistics:
         self.longest_song_length = times_of_this_group.max()
         outliers_exluded, outlier_lower_limit, outlier_upper_limit = RivendellGroupStatistics._remove_outliers(times_of_this_group)
 
+        _logger.debug(f"{outliers_exluded=}: {outlier_lower_limit=}: {outlier_upper_limit=}")
         self.outlier_limits = (round(outlier_lower_limit), round(outlier_upper_limit))
         self.mean = round(outliers_exluded.mean())
         
@@ -76,10 +77,17 @@ class RivendellGroupStatistics:
         self.number_of_songs_longer_than_upper_bound = len(longer_than_upper_bound)
     
     @staticmethod
-    def _remove_outliers(times_of_this_group):
+    def _remove_outliers(times_of_this_group: np.array):
         if times_of_this_group.size < 4:
             # Population too small for there to be meaningful outliers.
             # Return the full list, unchanged, with 0 seconds as the lower limit and 24 hours as the upper
+            _logger.debug("Population < 4, no outliers.")
+            return times_of_this_group, 0, 86_400
+        std_of_all_times = times_of_this_group.std()
+        if std_of_all_times < 15:
+            # Too small standard deviation, no outliers.
+            # Return the full list, unchanged, with 0 seconds as the lower limit and 24 hours as the upper
+            _logger.debug(f"Too small standard deviation, {std_of_all_times}, no outliers.")
             return times_of_this_group, 0, 86_400
         q25, q75 = np.percentile(times_of_this_group, [25, 75])
         iqr = q75 - q25
