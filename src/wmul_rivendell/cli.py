@@ -96,10 +96,17 @@ def wmul_rivendell_cli(log_name, log_level):
 @click.option('--excluded_groups_file_name', type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
               help="File path to a text file containing a list of groups to be exluded. The file should have one "
               "group name on each line. A group name may be present in this file but not in the cart data dump.")
-def database_statistics(rivendell_cart_filename, output_filename, include_all_cuts, excluded_groups_file_name):
+@click.option('--smallest_stdev', type=int, default=15, help="The smallest standard deviation (in seconds) permitted for "
+              "calculating outliers, and upper and lower bounds for excluding songs. If the group population standard "
+              "deviation is less than this number, then no outliers will be excluded. If the population (excluding "
+              "outliers) standard deviation is less than this number, then no lower and upper boundes will be "
+              "calculated. This limit helps avoid unwanted behaviour when a group is mostly the same length. E.G. a "
+              "group containing only 30 second spots.")
+def database_statistics(rivendell_cart_filename, output_filename, include_all_cuts, excluded_groups_file_name, 
+                        smallest_stdev):
     _logger.debug(f"With {locals()}")
 
-    stats_limits = StatisticsLimits()
+    stats_limits = StatisticsLimits(smallest_stdev=smallest_stdev)
 
     excluded_groups = get_excluded_groups(excluded_groups_file_name)
     output_filename = Path(output_filename)
