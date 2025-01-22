@@ -102,11 +102,17 @@ def wmul_rivendell_cli(log_name, log_level):
               "outliers) standard deviation is less than this number, then no lower and upper boundes will be "
               "calculated. This limit helps avoid unwanted behaviour when a group is mostly the same length. E.G. a "
               "group containing only 30 second spots.")
+@click.option("--minimum_population", type=int, default=4, help="The smallest population for calculating outliers. If "
+              "the population of the group is smaller than or equal to this number, then outliers will not be " 
+              "calculated and excluded.")
 def database_statistics(rivendell_cart_filename, output_filename, include_all_cuts, excluded_groups_file_name, 
-                        smallest_stdev):
+                        smallest_stdev, minimum_population):
     _logger.debug(f"With {locals()}")
 
-    stats_limits = StatisticsLimits(smallest_stdev=smallest_stdev)
+    stats_limits = StatisticsLimits(
+        smallest_stdev=smallest_stdev,
+        minimum_population_for_outliers=minimum_population
+    )
 
     excluded_groups = get_excluded_groups(excluded_groups_file_name)
     output_filename = Path(output_filename)

@@ -33,7 +33,8 @@ database_statistic_params, database_statistic_ids = \
         [
             "include_all_cuts",
             "exclude_groups",
-            "provide_smallest_stdev"
+            "provide_smallest_stdev",
+            "provide_minimum_population"
         ]
 
     )
@@ -96,6 +97,13 @@ def test_database_statistics(fs, params, mocker, caplog):
     else:
         expected_smallest_stdev = 15
 
+    if params.provide_minimum_population:
+        expected_minimum_population = 10
+        cli_args.append("--minimum_population")
+        cli_args.append(expected_minimum_population)
+    else:
+        expected_minimum_population = 4
+
     runner = CliRunner()
     result = runner.invoke(
         cli.database_statistics,
@@ -104,7 +112,10 @@ def test_database_statistics(fs, params, mocker, caplog):
 
     assert result.exit_code == 0
 
-    mock_stats_limits_constructor.assert_called_once_with(smallest_stdev=expected_smallest_stdev)
+    mock_stats_limits_constructor.assert_called_once_with(
+        smallest_stdev=expected_smallest_stdev,
+        minimum_population_for_outliers=expected_minimum_population
+    )
 
     mock_load_cart_data_dump_constructor.assert_called_once_with(
         rivendell_cart_data_filename=mock_rivendell_cart_filename,

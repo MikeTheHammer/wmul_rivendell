@@ -44,6 +44,7 @@ _MAX_TIME = 86_399
 @dataclass
 class StatisticsLimits:
     smallest_stdev: int = 15
+    minimum_population_for_outliers: int = 4
 
 class RivendellGroupStatistics:
 
@@ -165,8 +166,8 @@ class RivendellGroupStatistics:
 
 
 def _remove_outliers(times_of_this_group: np.array, stats_limits: StatisticsLimits):
-    if (times_of_this_group.size > 4) and (times_of_this_group.std() >= stats_limits.smallest_stdev):
-        # Need at least a population of 4 and a STDev of 15 for there to be meaninful outliers.
+    if ((times_of_this_group.size > stats_limits.minimum_population_for_outliers) and 
+        (times_of_this_group.std() >= stats_limits.smallest_stdev)):
         q25, q75 = np.percentile(times_of_this_group, [25, 75])
         iqr = q75 - q25
         iqr_times_1_point_5 = iqr * 1.5
