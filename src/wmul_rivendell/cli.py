@@ -100,6 +100,7 @@ def database_statistics(rivendell_cart_filename, output_filename, include_all_cu
     _logger.debug(f"With {locals()}")
 
     excluded_groups = get_excluded_groups(excluded_groups_file_name)
+    output_filename = Path(output_filename)
 
     lcdd = LoadCartDataDump(
         rivendell_cart_data_filename=rivendell_cart_filename,

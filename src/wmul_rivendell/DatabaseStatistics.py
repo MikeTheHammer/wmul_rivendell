@@ -211,4 +211,7 @@ class DatabaseStatistics:
         _logger.debug(f"Starting DatabaseStatistics.run_script()")
         organized_by_rivendell_group = self._organize_by_rivendell_group(unorganized_carts=self.rivendell_carts)
         statistics_per_group = self._calculate_statistics_per_group(organized_carts=organized_by_rivendell_group)
-        self._write_excel(statistics_per_group)
+        if self.output_filename.suffix == '.xlsx':
+            self._write_excel(statistics_per_group)
+        else:
+            self._write_csv(statistics_per_group=statistics_per_group)
