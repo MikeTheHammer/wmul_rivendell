@@ -40,10 +40,16 @@ _logger = wmul_logger.get_logger()
 
 _MAX_TIME = 86_399
 
+
+@dataclass
+class StatisticsLimits:
+    smallest_stdev: int = 15
+
 class RivendellGroupStatistics:
 
-    def __init__(self, group_name, songs_in_group):
+    def __init__(self, group_name: str, songs_in_group: list, stats_limits: StatisticsLimits):
         self.group_name = group_name
+        self.stats_limits = stats_limits
         times_of_this_group = np.array([this_item.length_in_seconds() for this_item in songs_in_group])
         times_of_this_group.sort()
         
@@ -62,7 +68,7 @@ class RivendellGroupStatistics:
         else:
             self.stdev = round(stdev)
 
-        if stdev > 15:
+        if stdev > self.stats_limits.smallest_stdev:
             lower_bound = self.mean - (1.5 * stdev)
             if lower_bound < 0:
                 self.lower_bound = 0
@@ -86,8 +92,8 @@ class RivendellGroupStatistics:
             percentage_of_songs_excluded = round(percentage_of_songs_excluded, 1)
             self.percentage_of_songs_excluded = percentage_of_songs_excluded
         else:
-            # If STDev is below 15, there is not enough variance in the lengths of the songs for the exclusion to be 
-            # meaningful and correct.
+            # If STDev is below stats_limits.smallest_stdev, there is not enough variance in the lengths of the songs 
+            # for the exclusion to be meaningful and correct.
             self.lower_bound = 0
             self.number_of_songs_shorter_than_lower_bound = 0
             self.upper_bound = _MAX_TIME
@@ -174,6 +180,7 @@ class RivendellGroupStatistics:
 class DatabaseStatistics:
     rivendell_carts: list
     output_filename: Path
+    stats_limits: StatisticsLimits
 
     def _organize_by_rivendell_group(self, unorganized_carts):
         organized_by_rivendell_group = defaultdict(list)
@@ -187,7 +194,11 @@ class DatabaseStatistics:
         statistics_per_group = dict()
         for group_name, songs_in_group in organized_carts.items():
             _logger.debug(f"Working on {group_name}")
-            statistics_per_group[group_name] = RivendellGroupStatistics(group_name=group_name, songs_in_group=songs_in_group)
+            statistics_per_group[group_name] = RivendellGroupStatistics(
+                group_name=group_name, 
+                songs_in_group=songs_in_group,
+                stats_limits=self.stats_limits
+            )
         return statistics_per_group
 
     def _write_csv(self, statistics_per_group):

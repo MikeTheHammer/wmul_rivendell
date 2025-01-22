@@ -23,7 +23,7 @@ wmul_rivendell. If not, see <https://www.gnu.org/licenses/>.
 """
 import pytest
 from wmul_rivendell.LoadCartDataDump import RivendellCart, CartType
-from wmul_rivendell.DatabaseStatistics import RivendellGroupStatistics
+from wmul_rivendell.DatabaseStatistics import RivendellGroupStatistics, StatisticsLimits
 from wmul_test_utils import make_namedtuple
 
 
@@ -62,8 +62,10 @@ def setup_rivendellgroupstatistics():
 
     ]
 
+    stats_limits = StatisticsLimits(smallest_stdev=15)
+
     group_name = "ALTERNATIV"
-    group_stats = RivendellGroupStatistics(group_name=group_name, songs_in_group=alt_carts)
+    group_stats = RivendellGroupStatistics(group_name=group_name, songs_in_group=alt_carts, stats_limits=stats_limits)
 
     expected_number_of_songs = 25
     expected_shortest_song_length = 14 # 0:15
@@ -161,8 +163,10 @@ def test_stdev_is_nan():
         RivendellCart(cart_number='100000', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title="There's a Star", artist='Ash', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0001', conductor='', song_id='', user_defined='', description="There's a Star", outcue='', filename='100000_001.wav', length='4:22', start_point='0', end_point='262000', segue_start_point='260000', segue_end_point='262000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='10000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback')
     ]
 
+    stats_limits = StatisticsLimits()
+
     group_name = "ALTERNATIV"
-    group_stats = RivendellGroupStatistics(group_name=group_name, songs_in_group=alt_carts)
+    group_stats = RivendellGroupStatistics(group_name=group_name, songs_in_group=alt_carts, stats_limits=stats_limits)
 
     assert group_stats.stdev == 0
 
@@ -192,8 +196,11 @@ def test_lower_bound_is_less_than_zero():
         RivendellCart(cart_number='517', cut_number='1', type=CartType.Audio, group_name='ALT_IMAGE', title='Imported from monarchsliner_01.wav', artist='', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='', conductor='', song_id='', user_defined='', description='"monarchsliner_01.wav"', outcue='', filename='000517_001.wav', length=':11', start_point='0', end_point='11000', segue_start_point='-1', segue_end_point='-1', hook_start_point='-1', hook_end_point='-1', talk_start_point='-1', talk_end_point='-1', fadeup_point='-1', fadedown_point='-1', sched_codes=''),
         RivendellCart(cart_number='518', cut_number='1', type=CartType.Audio, group_name='ALT_IMAGE', title='Imported from AFSliner_mixdown_01.wav', artist='', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='', conductor='', song_id='', user_defined='', description='"AFSliner_mixdown_01.wav"', outcue='', filename='000518_001.wav', length=':08', start_point='0', end_point='8935', segue_start_point='-1', segue_end_point='-1', hook_start_point='-1', hook_end_point='-1', talk_start_point='-1', talk_end_point='-1', fadeup_point='-1', fadedown_point='-1', sched_codes='')    
     ]
-    group_name = "ALT_IMAGE"
-    group_stats = RivendellGroupStatistics(group_name=group_name, songs_in_group=alt_image_carts)
+
+    stats_limits = StatisticsLimits()
+
+    group_name = "ALT_IMAGE"  
+    group_stats = RivendellGroupStatistics(group_name=group_name, songs_in_group=alt_image_carts, stats_limits=stats_limits)
 
     assert group_stats.lower_bound == 0
 
@@ -398,8 +405,10 @@ def test_to_list_for_csv_correct():
 
     ]
 
+    stats_limits = StatisticsLimits()
+
     group_name = "ALTERNATIV"
-    group_stats = RivendellGroupStatistics(group_name=group_name, songs_in_group=alt_carts)
+    group_stats = RivendellGroupStatistics(group_name=group_name, songs_in_group=alt_carts, stats_limits=stats_limits)
 
     expected_list_for_csv = [
         group_name,
@@ -461,7 +470,9 @@ def test_main_calculations_small_stdev():
         RivendellCart(cart_number='320', cut_number='1', type=CartType.Audio, group_name='SWEEPER', title='WMUL on Twitter', artist='Sweeper', album='', year='2013', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: SWP/0022', conductor='', song_id='', user_defined='AMC 8/20/2013', description='WMUL on Twitter', outcue='', filename='000320_001.wav', length=':08', start_point='0', end_point='8907', segue_start_point='-1', segue_end_point='-1', hook_start_point='-1', hook_end_point='-1', talk_start_point='-1', talk_end_point='-1', fadeup_point='-1', fadedown_point='-1', sched_codes='')
     ]
 
-    group_stats = RivendellGroupStatistics("SWEEPER", sweeper_carts)
+    stats_limits = StatisticsLimits()
+
+    group_stats = RivendellGroupStatistics("SWEEPER", sweeper_carts, stats_limits)
 
     assert group_stats.lower_bound == 0
     assert group_stats.number_of_songs_shorter_than_lower_bound == 0

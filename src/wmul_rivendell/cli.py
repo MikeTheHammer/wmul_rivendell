@@ -50,7 +50,7 @@ import click
 import datetime
 
 from pathlib import Path
-from wmul_rivendell.DatabaseStatistics import DatabaseStatistics
+from wmul_rivendell.DatabaseStatistics import DatabaseStatistics, StatisticsLimits
 from wmul_rivendell.FilterCartReportForMusicScheduler import FilterCartReportForMusicScheduler
 from wmul_rivendell.LoadCartDataDump import LoadCartDataDump
 from wmul_rivendell.LoadCurrentLogLine import LoadCurrentLogLineArguments, run_script as load_current_log_lines
@@ -99,6 +99,8 @@ def wmul_rivendell_cli(log_name, log_level):
 def database_statistics(rivendell_cart_filename, output_filename, include_all_cuts, excluded_groups_file_name):
     _logger.debug(f"With {locals()}")
 
+    stats_limits = StatisticsLimits()
+
     excluded_groups = get_excluded_groups(excluded_groups_file_name)
     output_filename = Path(output_filename)
 
@@ -114,6 +116,7 @@ def database_statistics(rivendell_cart_filename, output_filename, include_all_cu
     x = DatabaseStatistics(
         rivendell_carts=rivendell_carts,
         output_filename=output_filename,
+        stats_limits=stats_limits
     )
     x.run_script()
 

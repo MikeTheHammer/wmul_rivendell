@@ -39,9 +39,11 @@ database_statistic_params, database_statistic_ids = \
 
 @pytest.mark.parametrize("params", database_statistic_params, ids=database_statistic_ids)
 def test_database_statistics(fs, params, mocker, caplog):
+    from pathlib import Path
     mock_rivendell_cart_filename = "/test/mock_rivendell_cart_filename.txt"
     fs.create_file(mock_rivendell_cart_filename)
     mock_output_filename = "/test/mock_output_filename"
+    expected_output_filename = Path(mock_output_filename)
 
     mock_rivendell_carts = "mock_rivendell_carts"
     mock_load_carts = mocker.Mock(return_value=mock_rivendell_carts)
@@ -50,6 +52,13 @@ def test_database_statistics(fs, params, mocker, caplog):
     mock_load_cart_data_dump_constructor = mocker.patch(
         "wmul_rivendell.cli.LoadCartDataDump",
         return_value=mock_load_cart_data_dump_object,
+        autospec=True
+    )
+
+    mock_stats_limits_object = mocker.Mock()
+    mock_stats_limits_constructor = mocker.patch(
+        "wmul_rivendell.cli.StatisticsLimits",
+        return_value=mock_stats_limits_object,
         autospec=True
     )
 
@@ -87,6 +96,8 @@ def test_database_statistics(fs, params, mocker, caplog):
 
     assert result.exit_code == 0
 
+    mock_stats_limits_constructor.assert_called_once_with()
+
     mock_load_cart_data_dump_constructor.assert_called_once_with(
         rivendell_cart_data_filename=mock_rivendell_cart_filename,
         include_macros=False,
@@ -98,7 +109,8 @@ def test_database_statistics(fs, params, mocker, caplog):
 
     mock_database_statistics_constructor.assert_called_once_with(
         rivendell_carts=mock_rivendell_carts,
-        output_filename=mock_output_filename,
+        output_filename=expected_output_filename,
+        stats_limits=mock_stats_limits_object
     )
 
     mock_database_statistics_object.run_script.assert_called_once_with()

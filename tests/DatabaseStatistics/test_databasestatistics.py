@@ -24,7 +24,7 @@ wmul_rivendell. If not, see <https://www.gnu.org/licenses/>.
 from pathlib import Path
 
 from wmul_rivendell.LoadCartDataDump import RivendellCart, CartType
-from wmul_rivendell.DatabaseStatistics import DatabaseStatistics
+from wmul_rivendell.DatabaseStatistics import DatabaseStatistics, StatisticsLimits
 
 
 def test__organize_by_rivendell_group():
@@ -94,7 +94,13 @@ def test__organize_by_rivendell_group():
     mock_rivendell_carts = "mock_rivendell_carts"
     mock_filename = "mock_filename"
 
-    ds = DatabaseStatistics(rivendell_carts=mock_rivendell_carts, output_filename=mock_filename)
+    stats_limits = StatisticsLimits()
+
+    ds = DatabaseStatistics(
+        rivendell_carts=mock_rivendell_carts, 
+        output_filename=mock_filename, 
+        stats_limits=stats_limits
+    )
 
     organized_carts = ds._organize_by_rivendell_group(defined_carts)
 
@@ -153,7 +159,8 @@ def test__write_csv(fs, mocker):
 
     mock_rivendell_carts = "mock_rivendell_carts"
 
-    ds = DatabaseStatistics(rivendell_carts=mock_rivendell_carts, output_filename=pathname)
+    stats_limits = StatisticsLimits()
+    ds = DatabaseStatistics(rivendell_carts=mock_rivendell_carts, output_filename=pathname, stats_limits=stats_limits)
 
     ds._write_csv(statistics_per_group=statistics_per_group)
 
