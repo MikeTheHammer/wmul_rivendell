@@ -37,6 +37,7 @@ import wmul_logger
 
 _logger = wmul_logger.get_logger()
 
+_MAX_TIME = 86_399
 
 class RivendellGroupStatistics:
 
@@ -44,13 +45,13 @@ class RivendellGroupStatistics:
         self.group_name = group_name
         times_of_this_group = np.array([this_item.length_in_seconds() for this_item in songs_in_group])
         times_of_this_group.sort()
-                
+        
         self.number_of_songs = times_of_this_group.size
         self.shortest_song_length = times_of_this_group.min()
         self.longest_song_length = times_of_this_group.max()
+
         outliers_exluded, outlier_lower_limit, outlier_upper_limit = RivendellGroupStatistics._remove_outliers(times_of_this_group)
 
-        _logger.debug(f"{outliers_exluded=}: {outlier_lower_limit=}: {outlier_upper_limit=}")
         self.outlier_limits = (round(outlier_lower_limit), round(outlier_upper_limit))
         self.mean = round(outliers_exluded.mean())
         
@@ -59,22 +60,32 @@ class RivendellGroupStatistics:
             self.stdev = 0
         else:
             self.stdev = round(stdev)
-        
-        lower_bound = self.mean - (1.5 * stdev)
-        if lower_bound < 0:
-            self.lower_bound = 0
+
+        if stdev > 15:
+            lower_bound = self.mean - (1.5 * stdev)
+            if lower_bound < 0:
+                self.lower_bound = 0
+            else:
+                self.lower_bound = RivendellGroupStatistics._nearest_15(lower_bound)
+            upper_bound = self.mean + (3 * stdev)
+            self.upper_bound = RivendellGroupStatistics._nearest_15(upper_bound)
+
+            shorter_than_lower_bound = [
+                song_length for song_length in times_of_this_group if song_length < self.lower_bound
+            ]
+            self.number_of_songs_shorter_than_lower_bound = len(shorter_than_lower_bound)
+
+            longer_than_upper_bound = [
+                song_length for song_length in times_of_this_group if song_length > self.upper_bound
+            ]
+            self.number_of_songs_longer_than_upper_bound = len(longer_than_upper_bound)
         else:
-            self.lower_bound = RivendellGroupStatistics._nearest_15(lower_bound)
-        upper_bound = self.mean + (3 * stdev)
-        self.upper_bound = RivendellGroupStatistics._nearest_15(upper_bound)
-
-        shorter_than_lower_bound = [
-            song_length for song_length in times_of_this_group if song_length < self.lower_bound
-        ]
-        self.number_of_songs_shorter_than_lower_bound = len(shorter_than_lower_bound)
-
-        longer_than_upper_bound = [song_length for song_length in times_of_this_group if song_length > self.upper_bound]
-        self.number_of_songs_longer_than_upper_bound = len(longer_than_upper_bound)
+            # If STDev is below 15, there is not enough variance in the lengths of the songs for the exclusion to be 
+            # meaningful and correct.
+            self.lower_bound = 0
+            self.number_of_songs_shorter_than_lower_bound = 0
+            self.upper_bound = _MAX_TIME
+            self.number_of_songs_longer_than_upper_bound = 0
     
     @staticmethod
     def _remove_outliers(times_of_this_group: np.array):
