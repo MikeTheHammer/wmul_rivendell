@@ -274,7 +274,7 @@ def test_remove_outliers():
 def test_remove_outliers_not_enough_population():
     """
     If the population is < 4, then the remove_outliers function should return the list unchanged.
-    The lower limit should be 0 and the upper limit should be 86,400 (24 hours).
+    The lower limit should be 0 and the upper limit should be 86,399 (23 hours, 59 minutes, 59 seconds).
     """
     import numpy as np
 
@@ -287,7 +287,7 @@ def test_remove_outliers_not_enough_population():
     times_of_this_group = np.array([this_item.length_in_seconds() for this_item in alt_carts])
 
     expected_lower_outlier_limit = 0 
-    expected_upper_outlier_limit = 86_400 # 24 hours
+    expected_upper_outlier_limit = 86_399 # 23:59:59
 
     outliers_excluded, lower_limit, upper_limit = \
         RivendellGroupStatistics._remove_outliers(times_of_this_group=times_of_this_group)
@@ -329,7 +329,7 @@ def test_remove_ouliers_too_small_stdev():
     times_of_this_group = np.array([this_item.length_in_seconds() for this_item in sweeper_carts])
 
     expected_lower_outlier_limit = 0 
-    expected_upper_outlier_limit = 86_400 # 24 hours
+    expected_upper_outlier_limit = 86_399 # 23:59:59
 
     outliers_excluded, lower_limit, upper_limit = \
         RivendellGroupStatistics._remove_outliers(times_of_this_group=times_of_this_group)
