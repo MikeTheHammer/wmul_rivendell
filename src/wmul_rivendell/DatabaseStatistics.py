@@ -28,6 +28,7 @@ wmul_rivendell. If not, see <https://www.gnu.org/licenses/>.
 import csv
 import math
 import numpy as np
+import pandas as pd
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import timedelta
@@ -128,6 +129,22 @@ class RivendellGroupStatistics:
             self.number_of_songs_longer_than_upper_bound
         ]
 
+    def to_pandas_series(self):
+        return pd.Series(
+            {
+                "Number of Songs": self.number_of_songs,
+                "Shortest Song Length": str(timedelta(seconds=int(self.shortest_song_length))),
+                "Longest Song Length": str(timedelta(seconds=int(self.longest_song_length))),
+                "Outlier Limits": self.outlier_limits,
+                "Mean": str(timedelta(seconds=int(self.mean))),
+                "Standard Deviation": str(timedelta(seconds=int(self.stdev))),
+                "Lower Bound": str(timedelta(seconds=int(self.lower_bound))),
+                "Number of Songs < Lower Bound": self.number_of_songs_shorter_than_lower_bound,
+                "Upper Bound": str(timedelta(seconds=int(self.upper_bound))),
+                "Number of Songs > Upper Bound": self.number_of_songs_longer_than_upper_bound
+            }
+        )
+
     @staticmethod
     def get_header_list():
         return [
@@ -173,8 +190,17 @@ class DatabaseStatistics:
                 statistics_this_group = statistics_per_group[group]
                 statistics_writer.writerow(statistics_this_group.to_list_for_csv())
 
+    def _write_excel(self, statistics_per_group):
+        group_names = sorted(statistics_per_group.keys())
+        df = pd.DataFrame(
+            { group_name: statistics_per_group[group_name].to_pandas_series() for group_name in group_names }
+        )
+
+        df = df.T
+        df.to_excel(self.output_filename)
+
     def run_script(self):
         _logger.debug(f"Starting DatabaseStatistics.run_script()")
         organized_by_rivendell_group = self._organize_by_rivendell_group(unorganized_carts=self.rivendell_carts)
         statistics_per_group = self._calculate_statistics_per_group(organized_carts=organized_by_rivendell_group)
-        self._write_csv(statistics_per_group)
+        self._write_excel(statistics_per_group)
