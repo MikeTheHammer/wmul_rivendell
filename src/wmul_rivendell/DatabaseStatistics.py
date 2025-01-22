@@ -57,7 +57,10 @@ class RivendellGroupStatistics:
         self.shortest_song_length = times_of_this_group.min()
         self.longest_song_length = times_of_this_group.max()
 
-        outliers_exluded, outlier_lower_limit, outlier_upper_limit = _remove_outliers(times_of_this_group)
+        outliers_exluded, outlier_lower_limit, outlier_upper_limit = _remove_outliers(
+            times_of_this_group=times_of_this_group, 
+            stats_limits=stats_limits
+        )
 
         self.outlier_limits = (round(outlier_lower_limit), round(outlier_upper_limit))
         self.mean = round(outliers_exluded.mean())
@@ -161,8 +164,8 @@ class RivendellGroupStatistics:
         ]
 
 
-def _remove_outliers(times_of_this_group: np.array):
-    if (times_of_this_group.size > 4) and (times_of_this_group.std() >= 15):
+def _remove_outliers(times_of_this_group: np.array, stats_limits: StatisticsLimits):
+    if (times_of_this_group.size > 4) and (times_of_this_group.std() >= stats_limits.smallest_stdev):
         # Need at least a population of 4 and a STDev of 15 for there to be meaninful outliers.
         q25, q75 = np.percentile(times_of_this_group, [25, 75])
         iqr = q75 - q25

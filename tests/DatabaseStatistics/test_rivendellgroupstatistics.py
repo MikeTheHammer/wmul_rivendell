@@ -245,7 +245,12 @@ def test_remove_outliers():
     expected_lower_outlier_limit = 44.5 
     expected_upper_outlier_limit = 416.5 
 
-    outliers_excluded, lower_limit, upper_limit = _remove_outliers(times_of_this_group=times_of_this_group)
+    stats_limits = StatisticsLimits()
+
+    outliers_excluded, lower_limit, upper_limit = _remove_outliers(
+        times_of_this_group=times_of_this_group, 
+        stats_limits=stats_limits
+    )
     
     alt_carts_without_outliers = [
         RivendellCart(cart_number='100000', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title="There's a Star", artist='Ash', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0001', conductor='', song_id='', user_defined='', description="There's a Star", outcue='', filename='100000_001.wav', length='4:22', start_point='0', end_point='262000', segue_start_point='260000', segue_end_point='262000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='10000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s|Flashback'),
@@ -303,7 +308,12 @@ def test_remove_outliers_not_enough_population():
     expected_lower_outlier_limit = 0 
     expected_upper_outlier_limit = 86_399 # 23:59:59
 
-    outliers_excluded, lower_limit, upper_limit = _remove_outliers(times_of_this_group=times_of_this_group)
+    stats_limits = StatisticsLimits()
+
+    outliers_excluded, lower_limit, upper_limit = _remove_outliers(
+        times_of_this_group=times_of_this_group, 
+        stats_limits=stats_limits
+    )
     
     assert (outliers_excluded == times_of_this_group).all()
     assert lower_limit == expected_lower_outlier_limit
@@ -344,7 +354,12 @@ def test_remove_ouliers_too_small_stdev():
     expected_lower_outlier_limit = 0 
     expected_upper_outlier_limit = 86_399 # 23:59:59
 
-    outliers_excluded, lower_limit, upper_limit = _remove_outliers(times_of_this_group=times_of_this_group)
+    stats_limits = StatisticsLimits()
+
+    outliers_excluded, lower_limit, upper_limit = _remove_outliers(
+        times_of_this_group=times_of_this_group, 
+        stats_limits=stats_limits
+    )
     
     assert (outliers_excluded == times_of_this_group).all()
     assert lower_limit == expected_lower_outlier_limit
