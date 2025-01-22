@@ -89,25 +89,18 @@ class RivendellGroupStatistics:
     
     @staticmethod
     def _remove_outliers(times_of_this_group: np.array):
-        if times_of_this_group.size < 4:
-            # Population too small for there to be meaningful outliers.
-            # Return the full list, unchanged, with 0 seconds as the lower limit and 24 hours as the upper
-            _logger.debug("Population < 4, no outliers.")
-            return times_of_this_group, 0, 86_400
-        std_of_all_times = times_of_this_group.std()
-        if std_of_all_times < 15:
-            # Too small standard deviation, no outliers.
-            # Return the full list, unchanged, with 0 seconds as the lower limit and 24 hours as the upper
-            _logger.debug(f"Too small standard deviation, {std_of_all_times}, no outliers.")
-            return times_of_this_group, 0, 86_400
-        q25, q75 = np.percentile(times_of_this_group, [25, 75])
-        iqr = q75 - q25
-        iqr_times_1_point_5 = iqr * 1.5
-        lower_limit = q25 - iqr_times_1_point_5
-        upper_limit = q75 + iqr_times_1_point_5
-        outliers_excluded = np.array([this_item for this_item in times_of_this_group if lower_limit < this_item < upper_limit])
-        outliers_excluded.sort()
-        return outliers_excluded, lower_limit, upper_limit
+        if (times_of_this_group.size > 4) and (times_of_this_group.std() >= 15):
+            # Need at least a population of 4 and a STDev of 15 for there to be meaninful outliers.
+            q25, q75 = np.percentile(times_of_this_group, [25, 75])
+            iqr = q75 - q25
+            iqr_times_1_point_5 = iqr * 1.5
+            lower_limit = q25 - iqr_times_1_point_5
+            upper_limit = q75 + iqr_times_1_point_5
+            outliers_excluded = np.array([this_item for this_item in times_of_this_group if lower_limit < this_item < upper_limit])
+            outliers_excluded.sort()
+            return outliers_excluded, lower_limit, upper_limit
+        else:
+            return times_of_this_group, 0, _MAX_TIME
 
     @staticmethod
     def _nearest_15(input_number):
