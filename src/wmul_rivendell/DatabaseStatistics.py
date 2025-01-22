@@ -80,6 +80,11 @@ class RivendellGroupStatistics:
                 song_length for song_length in times_of_this_group if song_length > self.upper_bound
             ]
             self.number_of_songs_longer_than_upper_bound = len(longer_than_upper_bound)
+            total_songs_excluded = self.number_of_songs_shorter_than_lower_bound + \
+                self.number_of_songs_longer_than_upper_bound
+            percentage_of_songs_excluded = (total_songs_excluded / self.number_of_songs) * 100
+            percentage_of_songs_excluded = round(percentage_of_songs_excluded, 1)
+            self.percentage_of_songs_excluded = percentage_of_songs_excluded
         else:
             # If STDev is below 15, there is not enough variance in the lengths of the songs for the exclusion to be 
             # meaningful and correct.
@@ -87,6 +92,7 @@ class RivendellGroupStatistics:
             self.number_of_songs_shorter_than_lower_bound = 0
             self.upper_bound = _MAX_TIME
             self.number_of_songs_longer_than_upper_bound = 0
+            self.percentage_of_songs_excluded = 0
     
     @staticmethod
     def _remove_outliers(times_of_this_group: np.array):
@@ -126,7 +132,8 @@ class RivendellGroupStatistics:
             timedelta(seconds=int(self.lower_bound)),
             self.number_of_songs_shorter_than_lower_bound,
             timedelta(seconds=int(self.upper_bound)),
-            self.number_of_songs_longer_than_upper_bound
+            self.number_of_songs_longer_than_upper_bound,
+            self.percentage_of_songs_excluded
         ]
 
     def to_pandas_series(self):
@@ -141,7 +148,8 @@ class RivendellGroupStatistics:
                 "Lower Bound": str(timedelta(seconds=int(self.lower_bound))),
                 "Number of Songs < Lower Bound": self.number_of_songs_shorter_than_lower_bound,
                 "Upper Bound": str(timedelta(seconds=int(self.upper_bound))),
-                "Number of Songs > Upper Bound": self.number_of_songs_longer_than_upper_bound
+                "Number of Songs > Upper Bound": self.number_of_songs_longer_than_upper_bound,
+                "Percent of Songs Excluded": self.percentage_of_songs_excluded
             }
         )
 

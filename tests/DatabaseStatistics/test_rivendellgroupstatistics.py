@@ -82,6 +82,8 @@ def setup_rivendellgroupstatistics():
     expected_number_of_songs_shorter_than_lower_bound = 3
     expected_number_of_songs_longer_than_upper_bound = 1
 
+    expected_percentage_of_songs_excluded = 16.0
+
     return make_namedtuple(
         "setup_rivendellgroupstatistics",
         group_name=group_name,
@@ -95,7 +97,8 @@ def setup_rivendellgroupstatistics():
         expected_lower_bound=expected_lower_bound,
         expected_upper_bound=expected_upper_bound,
         expected_number_of_songs_shorter_than_lower_bound=expected_number_of_songs_shorter_than_lower_bound,
-        expected_number_of_songs_longer_than_upper_bound=expected_number_of_songs_longer_than_upper_bound
+        expected_number_of_songs_longer_than_upper_bound=expected_number_of_songs_longer_than_upper_bound,
+        expected_percentage_of_songs_excluded=expected_percentage_of_songs_excluded
     )
 
 def test_group_name_correct(setup_rivendellgroupstatistics):
@@ -143,6 +146,11 @@ def test_number_of_songs_longer_than_upper_bound_correct(setup_rivendellgroupsta
     group_stats = setup_rivendellgroupstatistics.group_stats
     assert (group_stats.number_of_songs_longer_than_upper_bound == 
         setup_rivendellgroupstatistics.expected_number_of_songs_longer_than_upper_bound)
+    
+def test_percentage_excluded_correct(setup_rivendellgroupstatistics):
+    group_stats = setup_rivendellgroupstatistics.group_stats
+    assert (group_stats.percentage_of_songs_excluded == 
+            setup_rivendellgroupstatistics.expected_percentage_of_songs_excluded)
 
 def test_stdev_is_nan():
     """
@@ -404,7 +412,8 @@ def test_to_list_for_csv_correct():
         timedelta(seconds=150),
         3,
         timedelta(seconds=405),
-        1
+        1,
+        16.0
     ]
 
     assert group_stats.to_list_for_csv() == expected_list_for_csv
@@ -458,3 +467,4 @@ def test_main_calculations_small_stdev():
     assert group_stats.number_of_songs_shorter_than_lower_bound == 0
     assert group_stats.upper_bound == 86_399
     assert group_stats.number_of_songs_longer_than_upper_bound == 0
+    assert group_stats.percentage_of_songs_excluded == 0
