@@ -147,7 +147,9 @@ def test__write_csv(fs, mocker):
         "PRO_60": pro_60_mock
     }
 
-    expected_file_contents = "Group Name,Number of Songs,Shortest Song Length,Longest Song Length,Outlier Limits," \
+    expected_file_contents = "Smallest Standard Deviation,Minimum Population for Outliers,Lower Bound Multiple," \
+        "Upper Bound Multiple\n0:00:15,4,1.5,3.0\n" \
+        "Group Name,Number of Songs,Shortest Song Length,Longest Song Length,Outlier Limits," \
         "Mean,Standard Deviation,Lower Bound,Number of Songs < Lower Bound,Upper Bound," \
         "Number of Songs > Upper Bound\nalternative,mock,line\npro_30,jklm,nopq\npro_60,rstu,vwxy\n" \
         "streetbeat,abcd,efgh\n"

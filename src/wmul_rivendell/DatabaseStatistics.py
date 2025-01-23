@@ -48,6 +48,34 @@ class StatisticsLimits:
     lower_bound_multiple: float = 1.5
     upper_bound_multiple: float = 3.0
 
+    def to_pandas_series(self):
+        return pd.Series(
+            {
+                "Smallest Standard Deviation": str(timedelta(seconds=int(self.smallest_stdev))),
+                "Minimum Population for Outliers": self.minimum_population_for_outliers,
+                "Lower Bound Multiple": self.lower_bound_multiple,
+                "Upper Bound Multiple": self.upper_bound_multiple
+            }
+        )
+
+    def to_list_for_csv(self):
+        return [
+            timedelta(seconds=int(self.smallest_stdev)),
+            self.minimum_population_for_outliers,
+            self.lower_bound_multiple,
+            self.upper_bound_multiple
+        ]
+
+    @staticmethod
+    def get_header_row():
+        return [
+            "Smallest Standard Deviation",
+            "Minimum Population for Outliers",
+            "Lower Bound Multiple",
+            "Upper Bound Multiple"
+        ]
+    
+
 
 class RivendellGroupStatistics:
 
@@ -211,19 +239,27 @@ class DatabaseStatistics:
     def _write_csv(self, statistics_per_group):
         with open(str(self.output_filename), newline="", mode="wt", errors="replace") as statistics_output:
             statistics_writer = csv.writer(statistics_output)
+            statistics_writer.writerow(StatisticsLimits.get_header_row())
+            statistics_writer.writerow(self.stats_limits.to_list_for_csv())
             statistics_writer.writerow(RivendellGroupStatistics.get_header_list())
             for group in sorted(statistics_per_group.keys()):
                 statistics_this_group = statistics_per_group[group]
                 statistics_writer.writerow(statistics_this_group.to_list_for_csv())
 
     def _write_excel(self, statistics_per_group):
+        df_limits = pd.DataFrame(
+            { "Statistics Limits": self.stats_limits.to_pandas_series() }
+        )
         group_names = sorted(statistics_per_group.keys())
-        df = pd.DataFrame(
+        df_data = pd.DataFrame(
             { group_name: statistics_per_group[group_name].to_pandas_series() for group_name in group_names }
         )
 
-        df = df.T
-        df.to_excel(self.output_filename)
+        df_data = df_data.T
+        with pd.ExcelWriter(self.output_filename) as writer:
+            df_limits.to_excel(writer, sheet_name="Limits")
+            df_data.to_excel(writer, sheet_name="Data")
+
 
     def run_script(self):
         _logger.debug(f"Starting DatabaseStatistics.run_script()")
