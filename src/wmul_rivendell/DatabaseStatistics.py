@@ -192,7 +192,8 @@ class RivendellGroupStatistics:
             "Lower Bound",
             "Number of Songs < Lower Bound",
             "Upper Bound",
-            "Number of Songs > Upper Bound"
+            "Number of Songs > Upper Bound",
+            "Percent of Songs Excluded"
         ]
 
 

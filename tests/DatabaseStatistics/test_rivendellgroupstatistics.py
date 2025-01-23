@@ -452,7 +452,8 @@ def test_get_header_list():
         "Lower Bound",
         "Number of Songs < Lower Bound",
         "Upper Bound",
-        "Number of Songs > Upper Bound"
+        "Number of Songs > Upper Bound",
+        "Percent of Songs Excluded"
     ]
 
     assert RivendellGroupStatistics.get_header_list() == expected_header

@@ -164,8 +164,8 @@ def test__write_csv(fs, mocker, params):
 
     data_contents = "Group Name,Number of Songs,Shortest Song Length,Longest Song Length,Outlier Limits," \
                     "Mean,Standard Deviation,Lower Bound,Number of Songs < Lower Bound,Upper Bound," \
-                    "Number of Songs > Upper Bound\nalternative,mock,line\npro_30,jklm,nopq\npro_60,rstu,vwxy\n" \
-                    "streetbeat,abcd,efgh\n"
+                    "Number of Songs > Upper Bound,Percent of Songs Excluded\nalternative,mock,line\n" \
+                    "pro_30,jklm,nopq\npro_60,rstu,vwxy\nstreetbeat,abcd,efgh\n"
 
     if params.write_limits:
         expected_file_contents = "Smallest Standard Deviation,Minimum Population for Outliers,Lower Bound Multiple," \
