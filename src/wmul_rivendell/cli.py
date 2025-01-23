@@ -105,13 +105,19 @@ def wmul_rivendell_cli(log_name, log_level):
 @click.option("--minimum_population", type=int, default=4, help="The smallest population for calculating outliers. If "
               "the population of the group is smaller than or equal to this number, then outliers will not be " 
               "calculated and excluded.")
+@click.option("--lower_bound_multiple", type=float, default=1.5, help="The standard deviation will be multiplied by " 
+              "this number and subtracted from the mean to generate the lower bound.")
+@click.option("--upper_bound_multiple", type=float, default=3.0, help="The standard deviation will be multiplied by " 
+              "this number and added to the mean to generate the upper bound.")
 def database_statistics(rivendell_cart_filename, output_filename, include_all_cuts, excluded_groups_file_name, 
-                        smallest_stdev, minimum_population):
+                        smallest_stdev, minimum_population, lower_bound_multiple, upper_bound_multiple):
     _logger.debug(f"With {locals()}")
 
     stats_limits = StatisticsLimits(
         smallest_stdev=smallest_stdev,
-        minimum_population_for_outliers=minimum_population
+        minimum_population_for_outliers=minimum_population,
+        lower_bound_multiple=lower_bound_multiple,
+        upper_bound_multiple=upper_bound_multiple
     )
 
     excluded_groups = get_excluded_groups(excluded_groups_file_name)

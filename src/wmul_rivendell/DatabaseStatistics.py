@@ -45,6 +45,9 @@ _MAX_TIME = 86_399
 class StatisticsLimits:
     smallest_stdev: int = 15
     minimum_population_for_outliers: int = 4
+    lower_bound_multiple: float = 1.5
+    upper_bound_multiple: float = 3.0
+
 
 class RivendellGroupStatistics:
 
@@ -73,12 +76,12 @@ class RivendellGroupStatistics:
             self.stdev = round(stdev)
 
         if stdev > self.stats_limits.smallest_stdev:
-            lower_bound = self.mean - (1.5 * stdev)
+            lower_bound = self.mean - (stats_limits.lower_bound_multiple * stdev)
             if lower_bound < 0:
                 self.lower_bound = 0
             else:
                 self.lower_bound = RivendellGroupStatistics._nearest_15(lower_bound)
-            upper_bound = self.mean + (3 * stdev)
+            upper_bound = self.mean + (stats_limits.upper_bound_multiple * stdev)
             self.upper_bound = RivendellGroupStatistics._nearest_15(upper_bound)
 
             shorter_than_lower_bound = [

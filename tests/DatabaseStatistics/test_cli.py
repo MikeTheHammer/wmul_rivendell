@@ -34,7 +34,9 @@ database_statistic_params, database_statistic_ids = \
             "include_all_cuts",
             "exclude_groups",
             "provide_smallest_stdev",
-            "provide_minimum_population"
+            "provide_minimum_population",
+            "provide_lower_bound_multiple",
+            "provide_upper_bound_multiple"
         ]
 
     )
@@ -104,6 +106,20 @@ def test_database_statistics(fs, params, mocker, caplog):
     else:
         expected_minimum_population = 4
 
+    if params.provide_lower_bound_multiple:
+        expected_lower_bound_multiple = 2
+        cli_args.append("--lower_bound_multiple")
+        cli_args.append(expected_lower_bound_multiple)
+    else:
+        expected_lower_bound_multiple = 1.5
+
+    if params.provide_upper_bound_multiple:
+        expected_upper_bound_multiple = 4.5
+        cli_args.append("--upper_bound_multiple")
+        cli_args.append(expected_upper_bound_multiple)
+    else:
+        expected_upper_bound_multiple = 3.0
+
     runner = CliRunner()
     result = runner.invoke(
         cli.database_statistics,
@@ -114,7 +130,9 @@ def test_database_statistics(fs, params, mocker, caplog):
 
     mock_stats_limits_constructor.assert_called_once_with(
         smallest_stdev=expected_smallest_stdev,
-        minimum_population_for_outliers=expected_minimum_population
+        minimum_population_for_outliers=expected_minimum_population,
+        lower_bound_multiple=expected_lower_bound_multiple,
+        upper_bound_multiple=expected_upper_bound_multiple
     )
 
     mock_load_cart_data_dump_constructor.assert_called_once_with(
