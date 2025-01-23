@@ -36,7 +36,8 @@ database_statistic_params, database_statistic_ids = \
             "provide_smallest_stdev",
             "provide_minimum_population",
             "provide_lower_bound_multiple",
-            "provide_upper_bound_multiple"
+            "provide_upper_bound_multiple",
+            "write_limits"
         ]
 
     )
@@ -120,6 +121,12 @@ def test_database_statistics(fs, params, mocker, caplog):
     else:
         expected_upper_bound_multiple = 3.0
 
+    if params.write_limits:
+        expected_write_limits = True
+        cli_args.append("--write_limits")
+    else:
+        expected_write_limits = False
+
     runner = CliRunner()
     result = runner.invoke(
         cli.database_statistics,
@@ -147,7 +154,8 @@ def test_database_statistics(fs, params, mocker, caplog):
     mock_database_statistics_constructor.assert_called_once_with(
         rivendell_carts=mock_rivendell_carts,
         output_filename=expected_output_filename,
-        stats_limits=mock_stats_limits_object
+        stats_limits=mock_stats_limits_object,
+        write_limits=expected_write_limits
     )
 
     mock_database_statistics_object.run_script.assert_called_once_with()

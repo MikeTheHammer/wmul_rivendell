@@ -21,11 +21,13 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 wmul_rivendell. If not, see <https://www.gnu.org/licenses/>. 
 """
+import pytest
 from pathlib import Path
 
 from wmul_rivendell.LoadCartDataDump import RivendellCart, CartType
 from wmul_rivendell.DatabaseStatistics import DatabaseStatistics, StatisticsLimits
 
+from wmul_test_utils import generate_true_false_matrix_from_list_of_strings
 
 def test__organize_by_rivendell_group():
     defined_carts = [
@@ -99,7 +101,8 @@ def test__organize_by_rivendell_group():
     ds = DatabaseStatistics(
         rivendell_carts=mock_rivendell_carts, 
         output_filename=mock_filename, 
-        stats_limits=stats_limits
+        stats_limits=stats_limits,
+        write_limits=False
     )
 
     organized_carts = ds._organize_by_rivendell_group(defined_carts)
@@ -119,7 +122,19 @@ def test__organize_by_rivendell_group():
     assert len(STREETBEAT_carts) == 20
 
 
-def test__write_csv(fs, mocker):
+
+
+write_csv_params, write_csv_ids = \
+    generate_true_false_matrix_from_list_of_strings(
+        "write_csv",
+        [
+            "write_limits"
+        ]
+
+    )
+
+@pytest.mark.parametrize("params", write_csv_params, ids=write_csv_ids)
+def test__write_csv(fs, mocker, params):
     alternative_line = ["alternative", "mock", "line"]
     alternative_mock = mocker.Mock(
         to_list_for_csv=mocker.Mock(return_value=alternative_line)
@@ -147,12 +162,17 @@ def test__write_csv(fs, mocker):
         "PRO_60": pro_60_mock
     }
 
-    expected_file_contents = "Smallest Standard Deviation,Minimum Population for Outliers,Lower Bound Multiple," \
-        "Upper Bound Multiple\n0:00:15,4,1.5,3.0\n" \
-        "Group Name,Number of Songs,Shortest Song Length,Longest Song Length,Outlier Limits," \
-        "Mean,Standard Deviation,Lower Bound,Number of Songs < Lower Bound,Upper Bound," \
-        "Number of Songs > Upper Bound\nalternative,mock,line\npro_30,jklm,nopq\npro_60,rstu,vwxy\n" \
-        "streetbeat,abcd,efgh\n"
+    data_contents = "Group Name,Number of Songs,Shortest Song Length,Longest Song Length,Outlier Limits," \
+                    "Mean,Standard Deviation,Lower Bound,Number of Songs < Lower Bound,Upper Bound," \
+                    "Number of Songs > Upper Bound\nalternative,mock,line\npro_30,jklm,nopq\npro_60,rstu,vwxy\n" \
+                    "streetbeat,abcd,efgh\n"
+
+    if params.write_limits:
+        expected_file_contents = "Smallest Standard Deviation,Minimum Population for Outliers,Lower Bound Multiple," \
+            "Upper Bound Multiple\n0:00:15,4,1.5,3.0\n" + data_contents
+    else:
+        expected_file_contents = data_contents
+
 
     root_dir = Path(r"test")
     root_dir.mkdir()
@@ -162,7 +182,12 @@ def test__write_csv(fs, mocker):
     mock_rivendell_carts = "mock_rivendell_carts"
 
     stats_limits = StatisticsLimits()
-    ds = DatabaseStatistics(rivendell_carts=mock_rivendell_carts, output_filename=pathname, stats_limits=stats_limits)
+    ds = DatabaseStatistics(
+        rivendell_carts=mock_rivendell_carts, 
+        output_filename=pathname, 
+        stats_limits=stats_limits,
+        write_limits=params.write_limits
+    )
 
     ds._write_csv(statistics_per_group=statistics_per_group)
 

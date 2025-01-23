@@ -109,8 +109,10 @@ def wmul_rivendell_cli(log_name, log_level):
               "this number and subtracted from the mean to generate the lower bound.")
 @click.option("--upper_bound_multiple", type=float, default=3.0, help="The standard deviation will be multiplied by " 
               "this number and added to the mean to generate the upper bound.")
+@click.option("--write_limits", is_flag=True, help="Whether to write the statistics limits (smallest_stdev, "
+              "minimum_population, lower_bound_multiple, and upper_bound_multiple) to the file.")
 def database_statistics(rivendell_cart_filename, output_filename, include_all_cuts, excluded_groups_file_name, 
-                        smallest_stdev, minimum_population, lower_bound_multiple, upper_bound_multiple):
+                        smallest_stdev, minimum_population, lower_bound_multiple, upper_bound_multiple, write_limits):
     _logger.debug(f"With {locals()}")
 
     stats_limits = StatisticsLimits(
@@ -135,7 +137,8 @@ def database_statistics(rivendell_cart_filename, output_filename, include_all_cu
     x = DatabaseStatistics(
         rivendell_carts=rivendell_carts,
         output_filename=output_filename,
-        stats_limits=stats_limits
+        stats_limits=stats_limits,
+        write_limits=write_limits
     )
     x.run_script()
 

@@ -216,6 +216,7 @@ class DatabaseStatistics:
     rivendell_carts: list
     output_filename: Path
     stats_limits: StatisticsLimits
+    write_limits: bool
 
     def _organize_by_rivendell_group(self, unorganized_carts):
         organized_by_rivendell_group = defaultdict(list)
@@ -239,8 +240,9 @@ class DatabaseStatistics:
     def _write_csv(self, statistics_per_group):
         with open(str(self.output_filename), newline="", mode="wt", errors="replace") as statistics_output:
             statistics_writer = csv.writer(statistics_output)
-            statistics_writer.writerow(StatisticsLimits.get_header_row())
-            statistics_writer.writerow(self.stats_limits.to_list_for_csv())
+            if self.write_limits:
+                statistics_writer.writerow(StatisticsLimits.get_header_row())
+                statistics_writer.writerow(self.stats_limits.to_list_for_csv())
             statistics_writer.writerow(RivendellGroupStatistics.get_header_list())
             for group in sorted(statistics_per_group.keys()):
                 statistics_this_group = statistics_per_group[group]
@@ -257,7 +259,8 @@ class DatabaseStatistics:
 
         df_data = df_data.T
         with pd.ExcelWriter(self.output_filename) as writer:
-            df_limits.to_excel(writer, sheet_name="Limits")
+            if self.write_limits:
+                df_limits.to_excel(writer, sheet_name="Limits")
             df_data.to_excel(writer, sheet_name="Data")
 
 
