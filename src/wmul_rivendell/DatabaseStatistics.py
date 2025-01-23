@@ -76,7 +76,6 @@ class StatisticsLimits:
         ]
     
 
-
 class RivendellGroupStatistics:
 
     def __init__(self, group_name: str, songs_in_group: list, stats_limits: StatisticsLimits):
@@ -147,12 +146,16 @@ class RivendellGroupStatistics:
             return input_number + (15 - mod_15)
         
     def to_list_for_csv(self):
+        lower_outlier_limit, upper_outlier_limit = self.outlier_limits
+        lower_outlier_limit = str(timedelta(seconds=int(lower_outlier_limit)))
+        upper_outlier_limit = str(timedelta(seconds=int(upper_outlier_limit)))
+
         return [
             self.group_name,
             self.number_of_songs,
             timedelta(seconds=int(self.shortest_song_length)),
             timedelta(seconds=int(self.longest_song_length)),
-            self.outlier_limits,
+            (lower_outlier_limit, upper_outlier_limit),
             timedelta(seconds=int(self.mean)),
             timedelta(seconds=int(self.stdev)),
             timedelta(seconds=int(self.lower_bound)),
@@ -163,12 +166,16 @@ class RivendellGroupStatistics:
         ]
 
     def to_pandas_series(self):
+        lower_outlier_limit, upper_outlier_limit = self.outlier_limits
+        lower_outlier_limit = str(timedelta(seconds=int(lower_outlier_limit)))
+        upper_outlier_limit = str(timedelta(seconds=int(upper_outlier_limit)))
+
         return pd.Series(
             {
                 "Number of Songs": self.number_of_songs,
                 "Shortest Song Length": str(timedelta(seconds=int(self.shortest_song_length))),
                 "Longest Song Length": str(timedelta(seconds=int(self.longest_song_length))),
-                "Outlier Limits": self.outlier_limits,
+                "Outlier Limits": (lower_outlier_limit, upper_outlier_limit),
                 "Mean": str(timedelta(seconds=int(self.mean))),
                 "Standard Deviation": str(timedelta(seconds=int(self.stdev))),
                 "Lower Bound": str(timedelta(seconds=int(self.lower_bound))),
@@ -263,7 +270,6 @@ class DatabaseStatistics:
             if self.write_limits:
                 df_limits.to_excel(writer, sheet_name="Limits")
             df_data.to_excel(writer, sheet_name="Data")
-
 
     def run_script(self):
         _logger.debug(f"Starting DatabaseStatistics.run_script()")

@@ -427,7 +427,7 @@ def test_to_list_for_csv_correct():
         len(alt_carts),
         timedelta(seconds=14),
         timedelta(seconds=653),
-        (44, 416),
+        ("0:00:44", "0:06:56"),
         timedelta(seconds=229),
         timedelta(seconds=57),
         timedelta(seconds=150),
