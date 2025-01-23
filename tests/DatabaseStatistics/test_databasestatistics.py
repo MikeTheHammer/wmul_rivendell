@@ -135,24 +135,41 @@ write_csv_params, write_csv_ids = \
 
 @pytest.mark.parametrize("params", write_csv_params, ids=write_csv_ids)
 def test__write_csv(fs, mocker, params):
-    alternative_line = ["alternative", "mock", "line"]
+    import pandas as pd
+    alternative_line = pd.Series({
+        "Group Name2": "alternative", 
+        "Number of Songs": "mock",
+        "Shortest Song Length": "line"
+    })
     alternative_mock = mocker.Mock(
-        to_list_for_csv=mocker.Mock(return_value=alternative_line)
+        to_pandas_series=mocker.Mock(return_value=alternative_line)
     )
 
-    streetbeat_line = ["streetbeat", "abcd", "efgh"]
+    streetbeat_line = pd.Series({
+        "Group Name2": "streetbeat", 
+        "Number of Songs": "abcd",
+        "Shortest Song Length": "efgh"
+    })
     streetbeat_mock = mocker.Mock(
-        to_list_for_csv=mocker.Mock(return_value=streetbeat_line)
+        to_pandas_series=mocker.Mock(return_value=streetbeat_line)
     )
 
-    pro_30_line = ["pro_30", "jklm", "nopq"]
+    pro_30_line = pd.Series({
+        "Group Name2": "pro_30", 
+        "Number of Songs": "jklm",
+        "Shortest Song Length": "nopq"
+    })
     pro_30_mock = mocker.Mock(
-        to_list_for_csv=mocker.Mock(return_value=pro_30_line)
+        to_pandas_series=mocker.Mock(return_value=pro_30_line)
     )
 
-    pro_60_line = ["pro_60", "rstu", "vwxy"]
+    pro_60_line = pd.Series({
+        "Group Name2": "pro_60", 
+        "Number of Songs": "rstu",
+        "Shortest Song Length": "vwxy"
+    })
     pro_60_mock = mocker.Mock(
-        to_list_for_csv=mocker.Mock(return_value=pro_60_line)
+        to_pandas_series=mocker.Mock(return_value=pro_60_line)
     )
 
     statistics_per_group = {
@@ -162,14 +179,12 @@ def test__write_csv(fs, mocker, params):
         "PRO_60": pro_60_mock
     }
 
-    data_contents = "Group Name,Number of Songs,Shortest Song Length,Longest Song Length,Outlier Limits," \
-                    "Mean,Standard Deviation,Lower Bound,Number of Songs < Lower Bound,Upper Bound," \
-                    "Number of Songs > Upper Bound,Percent of Songs Excluded\nalternative,mock,line\n" \
-                    "pro_30,jklm,nopq\npro_60,rstu,vwxy\nstreetbeat,abcd,efgh\n"
+    data_contents = "Group Name,Group Name2,Number of Songs,Shortest Song Length\nALTERNATIV,alternative,mock,line\n" \
+                    "PRO_30,pro_30,jklm,nopq\nPRO_60,pro_60,rstu,vwxy\nSTREETBEAT,streetbeat,abcd,efgh\n"
 
     if params.write_limits:
-        expected_file_contents = "Smallest Standard Deviation,Minimum Population for Outliers,Lower Bound Multiple," \
-            "Upper Bound Multiple\n0:00:15,4,1.5,3.0\n" + data_contents
+        expected_file_contents = ",Smallest Standard Deviation,Minimum Population for Outliers,Lower Bound Multiple," \
+            "Upper Bound Multiple\nStatistics Limits,0:00:15,4,1.5,3.0\n" + data_contents
     else:
         expected_file_contents = data_contents
 

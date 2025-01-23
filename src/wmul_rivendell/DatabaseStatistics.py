@@ -246,15 +246,21 @@ class DatabaseStatistics:
         return statistics_per_group
 
     def _write_csv(self, statistics_per_group):
+        df_limits = pd.DataFrame(
+            { "Statistics Limits": self.stats_limits.to_pandas_series() }
+        )
+        df_limits = df_limits.T
+
+        group_names = sorted(statistics_per_group.keys())
+        df_data = pd.DataFrame(
+            { group_name: statistics_per_group[group_name].to_pandas_series() for group_name in group_names }
+        )
+        df_data = df_data.T
+
         with open(str(self.output_filename), newline="", mode="wt", errors="replace") as statistics_output:
-            statistics_writer = csv.writer(statistics_output)
             if self.write_limits:
-                statistics_writer.writerow(StatisticsLimits.get_header_row())
-                statistics_writer.writerow(self.stats_limits.to_list_for_csv())
-            statistics_writer.writerow(RivendellGroupStatistics.get_header_list())
-            for group in sorted(statistics_per_group.keys()):
-                statistics_this_group = statistics_per_group[group]
-                statistics_writer.writerow(statistics_this_group.to_list_for_csv())
+                df_limits.to_csv(statistics_output)
+            df_data.to_csv(statistics_output, index_label="Group Name")
 
     def _write_excel(self, statistics_per_group):
         df_limits = pd.DataFrame(
