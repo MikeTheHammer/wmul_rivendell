@@ -8,7 +8,7 @@
                 test was refactored into LoadCartDataDump.
 
 ============ License ============
-Copyright (C) 2021, 2023 Michael Stanley
+Copyright (C) 2021, 2023, 2025 Michael Stanley
 
 This file is part of wmul_rivendell.
 
@@ -74,11 +74,14 @@ def cart_source_file_contents():
 
     source_file_contents = \
         'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\r\n' \
-        '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5071,1,audio,PSA_E_30,Arm Chair Officials,Interscholastic Athletics,,,,,,David Adkins,,,,,,"NFHS, NIAAA, WVSSAC\r\n2023","""1_Armchair Officials 30_WV.wav""",,005071_001.wav,:30,0,30000,30000,30001,-1,-1,0,0,-1,-1,\r\n' \
-        '5075,1,audio,PSA_E_30,Mentally Healthy Nation,Post Covid Mental Health,,,,,,David Adkins,,,,,,American Psychiatric Association\r\n2023,"""PSNRAPA1E30_01.wav""",,005075_001.wav,:30,0,30000,30000,-1,-1,-1,0,0,-1,-1,\r\n' \
-        '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\r\n'
+        '1,1,audio,TEMPORIBUS,perferendis optio adipisci odit,nesciunt repellendus,,1951,,,,saepe architecto sequi alias,,,facere odio magnam odit,,,,perferendis pariatur eligendi dolorem,,000001_001.wav,:07,,,,,,,,,,,2010s\r\n' \
+        '2,1,audio,TEMPORIBUS,saepe recusandae deleniti laborum,quisquam natus,,1965,,,,enim ut qui veniam,,,omnis voluptatum accusantium saepe,,,,praesentium eaque deleniti tempore,,000002_001.wav,:07,,,,,,,,,,,2010s\r\n' \
+        '2,2,audio,TEMPORIBUS,aperiam sed totam reiciendis,recusandae nesciunt,,1962,,,,fugiat saepe quam libero,,,repellat non in fuga,,,,deserunt repellat odit velit,,000002_002.wav,:11,,,,,,,,,,,2010s\r\n' \
+        '6,2,audio,TEMPORIBUS,tempora libero earum repudiandae,modi quo,,1953,,,,iure nobis illum quia,,,fugiat beatae perspiciatis dicta,,,,tempore voluptates tenetur dolorem,,000006_002.wav,:11,,,,,,,,,,,2010s\r\n' \
+        '101,1,audio,TEMPORIBUS,aliquam omnis quisquam enim,nobis sit,,2003,,,,culpa quas minus reiciendis,,,ipsam cumque nulla harum,,,,deserunt natus quidem at,,000101_001.wav,:05,,,,,,,,,,,2010s\r\n' \
+        '500,1,audio,VOLUPTATIB,voluptate commodi neque aperiam,reiciendis rem,,1969,,,,assumenda quasi maxime cum,,,doloremque provident dolorum mollitia,,,,ut praesentium sit quidem,,000500_001.wav,:08,,,,,,,,,,,2010s\r\n' \
+        '970000,1,macro,ALIQUAM,quasi necessitatibus quo vero,sapiente fuga,,1994,,,,distinctio culpa perspiciatis quam,,,explicabo magni temporibus provident,,,,adipisci officia impedit dolores,,,:00,,,,,,,,,,,2010s\r\n' \
+        '970001,1,macro,ALIQUAM,porro eos dolores fuga,rem dolor,,2015,,,,omnis molestias nesciunt cumque,,,adipisci quidem consequuntur quia,,,,provident perspiciatis quisquam ea,,,:00,,,,,,,,,,,2010s\r\n'
     
     return wmul_test_utils.make_namedtuple(
         "cart_source_file_contents",
@@ -88,438 +91,22 @@ def cart_source_file_contents():
 
 @pytest.fixture(scope="function")
 def defined_rivendell_carts():
-    rivendell_cart_1_1 = RivendellCart(
-        cart_number='1',
-        cut_number='1',
-        type=CartType.Audio,
-        group_name="LEGAL_ID",
-        title="Alternative",
-        artist="Legal ID",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="",
-        agency="",
-        publisher="",
-        composer="",
-        conductor="",
-        song_id="",
-        user_defined="",
-        description="We Are Marshall (Cheer)",
-        outcue="",
-        filename="000001_001.wav",
-        length=':07',
-        start_point="0",
-        end_point="7523",
-        segue_start_point="7079",
-        segue_end_point="7497",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="-1",
-        talk_end_point="-1",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
-    rivendell_cart_2_1 = RivendellCart(
-        cart_number='2',
-        cut_number='1',
-        type=CartType.Audio,
-        group_name="LEGAL_ID",
-        title="Streetbeat",
-        artist="Legal ID",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="",
-        agency="",
-        publisher="",
-        composer="",
-        conductor="",
-        song_id="",
-        user_defined="",
-        description="We Are Marshall (Cheer)",
-        outcue="",
-        filename="000002_001.wav",
-        length=':07',
-        start_point="0",
-        end_point="7523",
-        segue_start_point="7079",
-        segue_end_point="7497",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="-1",
-        talk_end_point="-1",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
-    rivendell_cart_2_2 = RivendellCart(
-        cart_number='2',
-        cut_number='2',
-        type=CartType.Audio,
-        group_name="ALTERNATIV",
-        title="Streetbeat",
-        artist="Legal ID",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="",
-        agency="",
-        publisher="",
-        composer="",
-        conductor="",
-        song_id="",
-        user_defined="",
-        description="Every Hour Commercial Free",
-        outcue="",
-        filename="000002_002.wav",
-        length=':11',
-        start_point="0",
-        end_point="11023",
-        segue_start_point="-1",
-        segue_end_point="-1",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="-1",
-        talk_end_point="-1",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
-    rivendell_cart_5_1 = RivendellCart(
-        cart_number='5',
-        cut_number='1',
-        type=CartType.Audio,
-        group_name="LEGAL_ID",
-        title="Jazz",
-        artist="Legal ID",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="",
-        agency="",
-        publisher="",
-        composer="",
-        conductor="",
-        song_id="",
-        user_defined="",
-        description="From the Campus of Marshall University",
-        outcue="",
-        filename="000005_001.wav",
-        length=':04',
-        start_point="0",
-        end_point="4806",
-        segue_start_point="-1",
-        segue_end_point="-1",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="-1",
-        talk_end_point="-1",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
-    rivendell_cart_6_2 = RivendellCart(
-        cart_number='6',
-        cut_number='2',
-        type=CartType.Audio,
-        group_name="ALTERNATIV",
-        title="Flashback",
-        artist="Legal ID",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="",
-        agency="",
-        publisher="",
-        composer="",
-        conductor="",
-        song_id="",
-        user_defined="",
-        description="Every Hour Commercial Free",
-        outcue="",
-        filename="000006_002.wav",
-        length=':11',
-        start_point="0",
-        end_point="11023",
-        segue_start_point="-1",
-        segue_end_point="-1",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="-1",
-        talk_end_point="-1",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
-    rivendell_cart_101_1 = RivendellCart(
-        cart_number='101',
-        cut_number='1',
-        type=CartType.Audio,
-        group_name="ALT_IMAGE",
-        title="Student Broadcast Voice",
-        artist="Dry Legal ID",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="",
-        agency="",
-        publisher="",
-        composer="Imported from WOAFR: LID/0006",
-        conductor="",
-        song_id="",
-        user_defined="",
-        description="Student Broadcast Voice",
-        outcue="",
-        filename="000101_001.wav",
-        length=':05',
-        start_point="0",
-        end_point="5825",
-        segue_start_point="-1",
-        segue_end_point="-1",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="-1",
-        talk_end_point="-1",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
-    rivendell_cart_500_1 = RivendellCart(
-        cart_number='500',
-        cut_number='1',
-        type=CartType.Audio,
-        group_name="ALT_IMAGE",
-        title="Cutting Edge Alt Music",
-        artist="Alternative Sweeper",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="",
-        agency="",
-        publisher="",
-        composer="Imported from WOAFR: AIM/0001",
-        conductor="",
-        song_id="",
-        user_defined="",
-        description="Cutting Edge Alt Music",
-        outcue="",
-        filename="000500_001.wav",
-        length=':08',
-        start_point="0",
-        end_point="8176",
-        segue_start_point="-1",
-        segue_end_point="-1",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="-1",
-        talk_end_point="-1",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
-    rivendell_cart_5071_1 = RivendellCart(
-        cart_number='5071',
-        cut_number='1',
-        type=CartType.Audio,
-        group_name="PSA_E_30",
-        title="Arm Chair Officials",
-        artist="Interscholastic Athletics",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="David Adkins",
-        agency="",
-        publisher="",
-        composer="",
-        conductor="",
-        song_id="",
-        user_defined="NFHS, NIAAA, WVSSAC 2023",
-        description='"1_Armchair Officials 30_WV.wav"',
-        outcue="",
-        filename="005071_001.wav",
-        length=':30',
-        start_point="0",
-        end_point="30000",
-        segue_start_point="30000",
-        segue_end_point="30001",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="0",
-        talk_end_point="0",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
-    rivendell_cart_5075_1 = RivendellCart(
-        cart_number='5075',
-        cut_number='1',
-        type=CartType.Audio,
-        group_name="PSA_E_30",
-        title="Mentally Healthy Nation",
-        artist="Post Covid Mental Health",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="David Adkins",
-        agency="",
-        publisher="",
-        composer="",
-        conductor="",
-        song_id="",
-        user_defined="American Psychiatric Association 2023",
-        description='"PSNRAPA1E30_01.wav"',
-        outcue="",
-        filename="005075_001.wav",
-        length=':30',
-        start_point="0",
-        end_point="30000",
-        segue_start_point="30000",
-        segue_end_point="-1",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="0",
-        talk_end_point="0",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
-    rivendell_cart_100249_1 = RivendellCart(
-        cart_number='100249',
-        cut_number='1',
-        type=CartType.Audio,
-        group_name="ALTERNATIV",
-        title="Calm Is Intention Devouring Its Frailty",
-        artist="Morning Teleportation",
-        album="",
-        year="2017",
-        isrc="",
-        isci="",
-        label="",
-        client="",
-        agency="",
-        publisher="",
-        composer="Imported from WOAFR: A17/0370",
-        conductor="",
-        song_id="",
-        user_defined="",
-        description="Calm Is Intention Devouring Its Frailty",
-        outcue="",
-        filename="100249_001.wav",
-        length='4:17',
-        start_point="0",
-        end_point="257000",
-        segue_start_point="252000",
-        segue_end_point="257000",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="0",
-        talk_end_point="3000",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes="2015s"
-    )
-    rivendell_cart_970000_1 = RivendellCart(
-        cart_number='970000',
-        cut_number='1',
-        type=CartType.Macro,
-        group_name="MACROS",
-        title="START NEXT",
-        artist="WMUL-FM",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="Mike Stanley",
-        agency="",
-        publisher="",
-        composer="",
-        conductor="",
-        song_id="",
-        user_defined="",
-        description="",
-        outcue="",
-        filename="",
-        length=':00',
-        start_point="-1",
-        end_point="-1",
-        segue_start_point="-1",
-        segue_end_point="-1",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="-1",
-        talk_end_point="-1",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
-    rivendell_cart_970001_1 = RivendellCart(
-        cart_number='970000',
-        cut_number='1',
-        type=CartType.Macro,
-        group_name="MACROS",
-        title="BBFN",
-        artist="WMUL-FM",
-        album="",
-        year="",
-        isrc="",
-        isci="",
-        label="",
-        client="Mike Stanley",
-        agency="",
-        publisher="",
-        composer="",
-        conductor="",
-        song_id="",
-        user_defined="",
-        description="",
-        outcue="",
-        filename="",
-        length=':00',
-        start_point="-1",
-        end_point="-1",
-        segue_start_point="-1",
-        segue_end_point="-1",
-        hook_start_point="-1",
-        hook_end_point="-1",
-        talk_start_point="-1",
-        talk_end_point="-1",
-        fadeup_point="-1",
-        fadedown_point="-1",
-        sched_codes=""
-    )
+    rivendell_cart_1_1 = RivendellCart(cart_number='1', cut_number='1', type=CartType.Audio, group_name='TEMPORIBUS', title='perferendis optio adipisci odit', artist='nesciunt repellendus', album='', year='1951', isrc='', isci='', label='', client='saepe architecto sequi alias', agency='', publisher='', composer='facere odio magnam odit', conductor='', song_id='', user_defined='', description='perferendis pariatur eligendi dolorem', outcue='', filename='000001_001.wav', length=':07', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes='2010s')
+    rivendell_cart_2_1 = RivendellCart(cart_number='2', cut_number='1', type=CartType.Audio, group_name='TEMPORIBUS', title='saepe recusandae deleniti laborum', artist='quisquam natus', album='', year='1965', isrc='', isci='', label='', client='enim ut qui veniam', agency='', publisher='', composer='omnis voluptatum accusantium saepe', conductor='', song_id='', user_defined='', description='praesentium eaque deleniti tempore', outcue='', filename='000002_001.wav', length=':07', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes='2010s')
+    rivendell_cart_2_2 = RivendellCart(cart_number='2', cut_number='2', type=CartType.Audio, group_name='TEMPORIBUS', title='aperiam sed totam reiciendis', artist='recusandae nesciunt', album='', year='1962', isrc='', isci='', label='', client='fugiat saepe quam libero', agency='', publisher='', composer='repellat non in fuga', conductor='', song_id='', user_defined='', description='deserunt repellat odit velit', outcue='', filename='000002_002.wav', length=':11', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes='2010s')
+    rivendell_cart_6_2 = RivendellCart(cart_number='6', cut_number='2', type=CartType.Audio, group_name='TEMPORIBUS', title='tempora libero earum repudiandae', artist='modi quo', album='', year='1953', isrc='', isci='', label='', client='iure nobis illum quia', agency='', publisher='', composer='fugiat beatae perspiciatis dicta', conductor='', song_id='', user_defined='', description='tempore voluptates tenetur dolorem', outcue='', filename='000006_002.wav', length=':11', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes='2010s')
+    rivendell_cart_101_1 = RivendellCart(cart_number='101', cut_number='1', type=CartType.Audio, group_name='TEMPORIBUS', title='aliquam omnis quisquam enim', artist='nobis sit', album='', year='2003', isrc='', isci='', label='', client='culpa quas minus reiciendis', agency='', publisher='', composer='ipsam cumque nulla harum', conductor='', song_id='', user_defined='', description='deserunt natus quidem at', outcue='', filename='000101_001.wav', length=':05', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes='2010s')
+    rivendell_cart_500_1 = RivendellCart(cart_number='500', cut_number='1', type=CartType.Audio, group_name='VOLUPTATIB', title='voluptate commodi neque aperiam', artist='reiciendis rem', album='', year='1969', isrc='', isci='', label='', client='assumenda quasi maxime cum', agency='', publisher='', composer='doloremque provident dolorum mollitia', conductor='', song_id='', user_defined='', description='ut praesentium sit quidem', outcue='', filename='000500_001.wav', length=':08', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes='2010s')
+    rivendell_cart_970000_1 = RivendellCart(cart_number='970000', cut_number='1', type=CartType.Macro, group_name='ALIQUAM', title='quasi necessitatibus quo vero', artist='sapiente fuga', album='', year='1994', isrc='', isci='', label='', client='distinctio culpa perspiciatis quam', agency='', publisher='', composer='explicabo magni temporibus provident', conductor='', song_id='', user_defined='', description='adipisci officia impedit dolores', outcue='', filename='', length=':00', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes='2010s')
+    rivendell_cart_970001_1 = RivendellCart(cart_number='970001', cut_number='1', type=CartType.Macro, group_name='ALIQUAM', title='porro eos dolores fuga', artist='rem dolor', album='', year='2015', isrc='', isci='', label='', client='omnis molestias nesciunt cumque', agency='', publisher='', composer='adipisci quidem consequuntur quia', conductor='', song_id='', user_defined='', description='provident perspiciatis quisquam ea', outcue='', filename='', length=':00', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes='2010s')
     return wmul_test_utils.make_namedtuple(
         "defined_carts",
         rivendell_cart_1_1=rivendell_cart_1_1,
         rivendell_cart_2_1=rivendell_cart_2_1,
         rivendell_cart_2_2=rivendell_cart_2_2,
-        rivendell_cart_5_1=rivendell_cart_5_1,
         rivendell_cart_6_2=rivendell_cart_6_2,
         rivendell_cart_101_1=rivendell_cart_101_1,
         rivendell_cart_500_1=rivendell_cart_500_1,
-        rivendell_cart_5071_1=rivendell_cart_5071_1,
-        rivendell_cart_5075_1=rivendell_cart_5075_1,
-        rivendell_cart_100249_1=rivendell_cart_100249_1,
         rivendell_cart_970000_1=rivendell_cart_970000_1,
         rivendell_cart_970001_1=rivendell_cart_970001_1
     )
@@ -546,12 +133,15 @@ def test__load_rivendell_carts(fs, setup_standard_cart_filter,
 
     expected_carts = [
         defined_rivendell_carts.rivendell_cart_1_1,
-        defined_rivendell_carts.rivendell_cart_5_1,
-        defined_rivendell_carts.rivendell_cart_5071_1,
-        defined_rivendell_carts.rivendell_cart_5075_1,
-        defined_rivendell_carts.rivendell_cart_100249_1
+        defined_rivendell_carts.rivendell_cart_2_1,
+        defined_rivendell_carts.rivendell_cart_2_2,
+        defined_rivendell_carts.rivendell_cart_6_2,
+        defined_rivendell_carts.rivendell_cart_101_1,
+        defined_rivendell_carts.rivendell_cart_500_1,
+        defined_rivendell_carts.rivendell_cart_970000_1,
+        defined_rivendell_carts.rivendell_cart_970001_1
     ]
-
+    x = 1
     assert result_carts == expected_carts
 
 
@@ -748,7 +338,7 @@ def test__remove_excluded_groups_no_carts_from_groups(setup_standard_cart_filter
         defined_rivendell_carts.rivendell_cart_500_1,
     ]
 
-    excluded_groups = ["STREETBEAT", "SG_MISC"]
+    excluded_groups = ["POSSIMUS", "INCIDUNT"]
     setup_standard_cart_filter.cart_filter.excluded_group_list = excluded_groups
 
     result_carts = setup_standard_cart_filter.cart_filter\
@@ -772,9 +362,10 @@ def test__remove_excluded_groups_some_carts_from_groups(setup_standard_cart_filt
         defined_rivendell_carts.rivendell_cart_2_1,
         defined_rivendell_carts.rivendell_cart_2_2,
         defined_rivendell_carts.rivendell_cart_6_2,
+        defined_rivendell_carts.rivendell_cart_101_1,
     ]
 
-    excluded_groups = ["STREETBEAT", "SG_MISC", "ALT_IMAGE"]
+    excluded_groups = ["POSSIMUS", "INCIDUNT", "VOLUPTATIB"]
     setup_standard_cart_filter.cart_filter.excluded_group_list = excluded_groups
 
     result_carts = setup_standard_cart_filter.cart_filter\
@@ -796,7 +387,7 @@ def test__remove_excluded_groups_all_carts_from_groups(setup_standard_cart_filte
     expected_carts = [
     ]
 
-    excluded_groups = ["STREETBEAT", "SG_MISC", "ALT_IMAGE", "LEGAL_ID", "ALTERNATIV"]
+    excluded_groups = ["POSSIMUS", "INCIDUNT", "VOLUPTATIB", "TEMPORIBUS", "EXPLICABO"]
     setup_standard_cart_filter.cart_filter.excluded_group_list = excluded_groups
 
     result_carts = setup_standard_cart_filter.cart_filter\

@@ -30,22 +30,32 @@ from wmul_rivendell.LoadCartDataDump import _fix_rivendell_csv_file
 
 @pytest.fixture(scope="function")
 def expected_result():
-    return 'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\r\n' \
-        '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5071,1,audio,PSA_E_30,Arm Chair Officials,Interscholastic Athletics,,,,,,David Adkins,,,,,,"NFHS, NIAAA, WVSSAC 2023","""1_Armchair Officials 30_WV.wav""",,005071_001.wav,:30,0,30000,30000,30001,-1,-1,0,0,-1,-1,\r\n' \
-        '5075,1,audio,PSA_E_30,Mentally Healthy Nation,Post Covid Mental Health,,,,,,David Adkins,,,,,,American Psychiatric Association 2023,"""PSNRAPA1E30_01.wav""",,005075_001.wav,:30,0,30000,30000,-1,-1,-1,0,0,-1,-1,\r\n' \
-        '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\r\n'
-
+    return \
+        'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\r\n' \
+        '599159,1,audio,aliquid,Inventore neque dignissimos repellendus.,Reprehenderit officiis cum.,,,,,,,,,,,,Laudantium asperiores veritatis quia facere in consequuntur.,Fugit eligendi perferendis itaque placeat optio.,,,,,,,,,,,,,,2010s\r\n' \
+        '139437,1,audio,odit,Quisquam voluptatem voluptas nostrum.,Aliquid a consequatur.,,,,,,,,,,,,Modi quo dolores pariatur iste.,Aperiam nesciunt sapiente culpa dolore impedit alias.,,,,,,,,,,,,,,2010s\r\n' \
+        '520726,1,audio,incidunt,Repellendus omnis modi sequi.,Corrupti necessitatibus fugiat.,,,,,,,,,,,,Corrupti vitae quo ipsam voluptatem deleniti expedita voluptas.,Doloribus earum nulla debitis blanditiis iste cumque.,,,,,,,,,,,,,,2010s\r\n' \
+        '680237,1,audio,doloribus,Quod laboriosam expedita ipsa.,A quae ex.,,,,,,,,,,,,Doloribus ea illo culpa ullam libero.,Qui voluptatibus earum laboriosam libero.,,,,,,,,,,,,,,2010s\r\n' \
+        '174387,1,audio,porro,Perferendis tempore consequatur molestiae.,Expedita harum praesentium.,,,,,,,,,,,,"Ipsam voluptas impedit alias a modi amet.",Corrupti non rerum reiciendis.,,,,,,,,,,,,,,2010s\r\n' \
+        '146066,1,audio,officia,Similique quo ullam exercitationem.,Ea ratione itaque.,,,,,,,,,,,,Officiis tenetur corrupti dolores nulla porro.,Nemo occaecati ad blanditiis eos sed doloribus enim.,,,,,,,,,,,,,,2010s\r\n' \
+        '93372,1,audio,aperiam,Nisi mollitia voluptates autem.,Repellendus cum labore.,,,,,,,,,,,,Nisi ullam deleniti expedita aspernatur deserunt.,Voluptates placeat est vitae sint.,,,,,,,,,,,,,,2010s\r\n' \
+        '787912,1,audio,voluptate,Repudiandae quam ipsum quia.,Dignissimos nisi blanditiis.,,,,,,,,,,,,Ab incidunt illum fugit repellat dicta quo reiciendis.,Expedita facere incidunt deserunt.,,,,,,,,,,,,,,2010s\r\n' \
+        '785851,1,audio,id,Iure eos libero tenetur.,Illo odit expedita.,,,,,,,,,,,,Laboriosam ipsum labore laboriosam porro.,Reiciendis illo recusandae vitae voluptatibus quam.,,,,,,,,,,,,,,2010s\r\n' \
+        '68669,1,audio,saepe,Sed saepe accusamus eveniet.,Eum qui nostrum.,,,,,,,,,,,,Non dolores est nam repellendus.,Dolore quia veritatis.,,,,,,,,,,,,,,2010s\r\n' 
 
 def test_no_extra_new_lines(fs, expected_result):
     source_file_contents = \
         'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\r\n' \
-        '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5071,1,audio,PSA_E_30,Arm Chair Officials,Interscholastic Athletics,,,,,,David Adkins,,,,,,"NFHS, NIAAA, WVSSAC 2023","""1_Armchair Officials 30_WV.wav""",,005071_001.wav,:30,0,30000,30000,30001,-1,-1,0,0,-1,-1,\r\n' \
-        '5075,1,audio,PSA_E_30,Mentally Healthy Nation,Post Covid Mental Health,,,,,,David Adkins,,,,,,American Psychiatric Association 2023,"""PSNRAPA1E30_01.wav""",,005075_001.wav,:30,0,30000,30000,-1,-1,-1,0,0,-1,-1,\r\n' \
-        '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\r\n'
+        '599159,1,audio,aliquid,Inventore neque dignissimos repellendus.,Reprehenderit officiis cum.,,,,,,,,,,,,Laudantium asperiores veritatis quia facere in consequuntur.,Fugit eligendi perferendis itaque placeat optio.,,,,,,,,,,,,,,2010s\r\n' \
+        '139437,1,audio,odit,Quisquam voluptatem voluptas nostrum.,Aliquid a consequatur.,,,,,,,,,,,,Modi quo dolores pariatur iste.,Aperiam nesciunt sapiente culpa dolore impedit alias.,,,,,,,,,,,,,,2010s\r\n' \
+        '520726,1,audio,incidunt,Repellendus omnis modi sequi.,Corrupti necessitatibus fugiat.,,,,,,,,,,,,Corrupti vitae quo ipsam voluptatem deleniti expedita voluptas.,Doloribus earum nulla debitis blanditiis iste cumque.,,,,,,,,,,,,,,2010s\r\n' \
+        '680237,1,audio,doloribus,Quod laboriosam expedita ipsa.,A quae ex.,,,,,,,,,,,,Doloribus ea illo culpa ullam libero.,Qui voluptatibus earum laboriosam libero.,,,,,,,,,,,,,,2010s\r\n' \
+        '174387,1,audio,porro,Perferendis tempore consequatur molestiae.,Expedita harum praesentium.,,,,,,,,,,,,"Ipsam voluptas impedit alias a modi amet.",Corrupti non rerum reiciendis.,,,,,,,,,,,,,,2010s\r\n' \
+        '146066,1,audio,officia,Similique quo ullam exercitationem.,Ea ratione itaque.,,,,,,,,,,,,Officiis tenetur corrupti dolores nulla porro.,Nemo occaecati ad blanditiis eos sed doloribus enim.,,,,,,,,,,,,,,2010s\r\n' \
+        '93372,1,audio,aperiam,Nisi mollitia voluptates autem.,Repellendus cum labore.,,,,,,,,,,,,Nisi ullam deleniti expedita aspernatur deserunt.,Voluptates placeat est vitae sint.,,,,,,,,,,,,,,2010s\r\n' \
+        '787912,1,audio,voluptate,Repudiandae quam ipsum quia.,Dignissimos nisi blanditiis.,,,,,,,,,,,,Ab incidunt illum fugit repellat dicta quo reiciendis.,Expedita facere incidunt deserunt.,,,,,,,,,,,,,,2010s\r\n' \
+        '785851,1,audio,id,Iure eos libero tenetur.,Illo odit expedita.,,,,,,,,,,,,Laboriosam ipsum labore laboriosam porro.,Reiciendis illo recusandae vitae voluptatibus quam.,,,,,,,,,,,,,,2010s\r\n' \
+        '68669,1,audio,saepe,Sed saepe accusamus eveniet.,Eum qui nostrum.,,,,,,,,,,,,Non dolores est nam repellendus.,Dolore quia veritatis.,,,,,,,,,,,,,,2010s\r\n' 
     
     file_name = pathlib.Path(r"\fakepath\source_file.csv")
 
@@ -63,12 +73,17 @@ def test_no_extra_new_lines(fs, expected_result):
 def test_one_with_extra_new_line(fs, expected_result):
     source_file_contents = \
         'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\r\n' \
-        '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5071,1,audio,PSA_E_30,Arm Chair Officials,Interscholastic Athletics,,,,,,David Adkins,,,,,,"NFHS, NIAAA, WVSSAC\r\n2023","""1_Armchair Officials 30_WV.wav""",,005071_001.wav,:30,0,30000,30000,30001,-1,-1,0,0,-1,-1,\r\n' \
-        '5075,1,audio,PSA_E_30,Mentally Healthy Nation,Post Covid Mental Health,,,,,,David Adkins,,,,,,American Psychiatric Association 2023,"""PSNRAPA1E30_01.wav""",,005075_001.wav,:30,0,30000,30000,-1,-1,-1,0,0,-1,-1,\r\n' \
-        '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\r\n'
-     
+        '599159,1,audio,aliquid,Inventore neque dignissimos repellendus.,Reprehenderit officiis cum.,,,,,,,,,,,,Laudantium asperiores veritatis quia facere in consequuntur.,Fugit eligendi perferendis itaque placeat optio.,,,,,,,,,,,,,,2010s\r\n' \
+        '139437,1,audio,odit,Quisquam voluptatem voluptas nostrum.,Aliquid a consequatur.,,,,,,,,,,,,Modi quo dolores pariatur iste.,Aperiam nesciunt sapiente culpa dolore impedit alias.,,,,,,,,,,,,,,2010s\r\n' \
+        '520726,1,audio,incidunt,Repellendus omnis modi sequi.,Corrupti necessitatibus fugiat.,,,,,,,,,,,,Corrupti vitae quo ipsam voluptatem deleniti expedita voluptas.,Doloribus earum nulla debitis blanditiis iste cumque.,,,,,,,,,,,,,,2010s\r\n' \
+        '680237,1,audio,doloribus,Quod laboriosam expedita ipsa.,A quae ex.,,,,,,,,,,,,Doloribus ea illo culpa ullam libero.,Qui voluptatibus earum laboriosam libero.,,,,,,,,,,,,,,2010s\r\n' \
+        '174387,1,audio,porro,Perferendis tempore consequatur molestiae.,Expedita harum praesentium.,,,,,,,,,,,,"Ipsam voluptas impedit\r\nalias a modi amet.",Corrupti non rerum reiciendis.,,,,,,,,,,,,,,2010s\r\n' \
+        '146066,1,audio,officia,Similique quo ullam exercitationem.,Ea ratione itaque.,,,,,,,,,,,,Officiis tenetur corrupti dolores nulla porro.,Nemo occaecati ad blanditiis eos sed doloribus enim.,,,,,,,,,,,,,,2010s\r\n' \
+        '93372,1,audio,aperiam,Nisi mollitia voluptates autem.,Repellendus cum labore.,,,,,,,,,,,,Nisi ullam deleniti expedita aspernatur deserunt.,Voluptates placeat est vitae sint.,,,,,,,,,,,,,,2010s\r\n' \
+        '787912,1,audio,voluptate,Repudiandae quam ipsum quia.,Dignissimos nisi blanditiis.,,,,,,,,,,,,Ab incidunt illum fugit repellat dicta quo reiciendis.,Expedita facere incidunt deserunt.,,,,,,,,,,,,,,2010s\r\n' \
+        '785851,1,audio,id,Iure eos libero tenetur.,Illo odit expedita.,,,,,,,,,,,,Laboriosam ipsum labore laboriosam porro.,Reiciendis illo recusandae vitae voluptatibus quam.,,,,,,,,,,,,,,2010s\r\n' \
+        '68669,1,audio,saepe,Sed saepe accusamus eveniet.,Eum qui nostrum.,,,,,,,,,,,,Non dolores est nam repellendus.,Dolore quia veritatis.,,,,,,,,,,,,,,2010s\r\n' 
+         
     file_name = pathlib.Path(r"\fakepath\source_file.csv")
 
     fs.create_file(
@@ -84,12 +99,17 @@ def test_one_with_extra_new_line(fs, expected_result):
 def test_two_with_extra_new_line(fs, expected_result):
     source_file_contents = \
         'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\r\n' \
-        '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5071,1,audio,PSA_E_30,Arm Chair Officials,Interscholastic Athletics,,,,,,David Adkins,,,,,,"NFHS, NIAAA, WVSSAC\r\n2023","""1_Armchair Officials 30_WV.wav""",,005071_001.wav,:30,0,30000,30000,30001,-1,-1,0,0,-1,-1,\r\n' \
-        '5075,1,audio,PSA_E_30,Mentally Healthy Nation,Post Covid Mental Health,,,,,,David Adkins,,,,,,American Psychiatric Association\r\n2023,"""PSNRAPA1E30_01.wav""",,005075_001.wav,:30,0,30000,30000,-1,-1,-1,0,0,-1,-1,\r\n' \
-        '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\r\n'
-    
+        '599159,1,audio,aliquid,Inventore neque dignissimos repellendus.,Reprehenderit officiis cum.,,,,,,,,,,,,Laudantium asperiores veritatis quia facere in consequuntur.,Fugit eligendi perferendis itaque placeat optio.,,,,,,,,,,,,,,2010s\r\n' \
+        '139437,1,audio,odit,Quisquam voluptatem voluptas nostrum.,Aliquid a consequatur.,,,,,,,,,,,,Modi quo dolores pariatur iste.,Aperiam nesciunt sapiente culpa dolore impedit alias.,,,,,,,,,,,,,,2010s\r\n' \
+        '520726,1,audio,incidunt,Repellendus omnis modi sequi.,Corrupti necessitatibus fugiat.,,,,,,,,,,,,Corrupti vitae quo ipsam voluptatem deleniti expedita voluptas.,Doloribus earum nulla debitis blanditiis iste cumque.,,,,,,,,,,,,,,2010s\r\n' \
+        '680237,1,audio,doloribus,Quod laboriosam expedita ipsa.,A quae ex.,,,,,,,,,,,,Doloribus ea illo culpa ullam libero.,Qui voluptatibus earum laboriosam libero.,,,,,,,,,,,,,,2010s\r\n' \
+        '174387,1,audio,porro,Perferendis tempore consequatur molestiae.,Expedita harum praesentium.,,,,,,,,,,,,"Ipsam voluptas impedit\r\nalias a modi amet.",Corrupti non rerum reiciendis.,,,,,,,,,,,,,,2010s\r\n' \
+        '146066,1,audio,officia,Similique quo ullam exercitationem.,Ea ratione itaque.,,,,,,,,,,,,Officiis tenetur corrupti\r\ndolores nulla porro.,Nemo occaecati ad blanditiis eos sed doloribus enim.,,,,,,,,,,,,,,2010s\r\n' \
+        '93372,1,audio,aperiam,Nisi mollitia voluptates autem.,Repellendus cum labore.,,,,,,,,,,,,Nisi ullam deleniti expedita aspernatur deserunt.,Voluptates placeat est vitae sint.,,,,,,,,,,,,,,2010s\r\n' \
+        '787912,1,audio,voluptate,Repudiandae quam ipsum quia.,Dignissimos nisi blanditiis.,,,,,,,,,,,,Ab incidunt illum fugit repellat dicta quo reiciendis.,Expedita facere incidunt deserunt.,,,,,,,,,,,,,,2010s\r\n' \
+        '785851,1,audio,id,Iure eos libero tenetur.,Illo odit expedita.,,,,,,,,,,,,Laboriosam ipsum labore laboriosam porro.,Reiciendis illo recusandae vitae voluptatibus quam.,,,,,,,,,,,,,,2010s\r\n' \
+        '68669,1,audio,saepe,Sed saepe accusamus eveniet.,Eum qui nostrum.,,,,,,,,,,,,Non dolores est nam repellendus.,Dolore quia veritatis.,,,,,,,,,,,,,,2010s\r\n' 
+
     file_name = pathlib.Path(r"\fakepath\source_file.csv")
 
     fs.create_file(
@@ -106,11 +126,16 @@ def test_two_with_extra_new_line(fs, expected_result):
 def test_multiple_extra_new_line(fs, expected_result):
     source_file_contents = \
         'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\r\n' \
-        '1,1,audio,LEGAL_ID,Alternative,Legal ID,,,,,,,,,,,,,We Are Marshall (Cheer),,000001_001.wav,:07,0,7523,7079,7497,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5,1,audio,LEGAL_ID,Jazz,Legal ID,,,,,,,,,,,,,From the Campus of Marshall University,,000005_001.wav,:04,0,4806,-1,-1,-1,-1,-1,-1,-1,-1,\r\n' \
-        '5071,1,audio,PSA_E_30,Arm Chair\r\nOfficials,Interscholastic Athletics,,,,,,David Adkins,,,,,,"NFHS, NIAAA, WVSSAC\r\n2023","""1_Armchair Officials 30_WV.wav""",,005071_001.wav,:30,0,30000,30000,30001,-1,-1,0,0,-1,-1,\r\n' \
-        '5075,1,audio,PSA_E_30,Mentally Healthy Nation,Post Covid Mental Health,,,,,,David Adkins,,,,,,American Psychiatric Association\r\n2023,"""PSNRAPA1E30_01.wav""",,005075_001.wav,:30,0,30000,30000,-1,-1,-1,0,0,-1,-1,\r\n' \
-        '100249,1,audio,ALTERNATIV,Calm Is Intention Devouring Its Frailty,Morning Teleportation,,2017,,,,,,,Imported from WOAFR: A17/0370,,,,Calm Is Intention Devouring Its Frailty,,100249_001.wav,4:17,0,257000,252000,257000,-1,-1,0,3000,-1,-1,2015s\r\n'
+        '599159,1,audio,aliquid,Inventore neque dignissimos repellendus.,Reprehenderit officiis cum.,,,,,,,,,,,,Laudantium asperiores veritatis quia facere in consequuntur.,Fugit eligendi perferendis itaque placeat optio.,,,,,,,,,,,,,,2010s\r\n' \
+        '139437,1,audio,odit,Quisquam voluptatem voluptas nostrum.,Aliquid a consequatur.,,,,,,,,,,,,Modi quo dolores pariatur iste.,Aperiam nesciunt sapiente culpa dolore impedit alias.,,,,,,,,,,,,,,2010s\r\n' \
+        '520726,1,audio,incidunt,Repellendus omnis modi sequi.,Corrupti necessitatibus fugiat.,,,,,,,,,,,,Corrupti vitae quo ipsam voluptatem deleniti expedita voluptas.,Doloribus earum nulla debitis blanditiis iste cumque.,,,,,,,,,,,,,,2010s\r\n' \
+        '680237,1,audio,doloribus,Quod laboriosam expedita ipsa.,A quae ex.,,,,,,,,,,,,Doloribus ea illo culpa ullam libero.,Qui voluptatibus earum laboriosam libero.,,,,,,,,,,,,,,2010s\r\n' \
+        '174387,1,audio,porro,Perferendis tempore consequatur molestiae.,Expedita harum praesentium.,,,,,,,,,,,,"Ipsam voluptas impedit\r\nalias a modi amet.",Corrupti non rerum reiciendis.,,,,,,,,,,,,,,2010s\r\n' \
+        '146066,1,audio,officia,Similique\r\nquo ullam exercitationem.,Ea ratione itaque.,,,,,,,,,,,,Officiis tenetur corrupti\r\ndolores nulla porro.,Nemo occaecati ad blanditiis eos sed doloribus enim.,,,,,,,,,,,,,,2010s\r\n' \
+        '93372,1,audio,aperiam,Nisi mollitia voluptates autem.,Repellendus cum labore.,,,,,,,,,,,,Nisi ullam deleniti expedita aspernatur deserunt.,Voluptates placeat est vitae sint.,,,,,,,,,,,,,,2010s\r\n' \
+        '787912,1,audio,voluptate,Repudiandae quam ipsum quia.,Dignissimos nisi blanditiis.,,,,,,,,,,,,Ab incidunt illum fugit repellat dicta quo reiciendis.,Expedita facere incidunt deserunt.,,,,,,,,,,,,,,2010s\r\n' \
+        '785851,1,audio,id,Iure eos libero tenetur.,Illo odit expedita.,,,,,,,,,,,,Laboriosam ipsum labore laboriosam porro.,Reiciendis illo recusandae vitae voluptatibus quam.,,,,,,,,,,,,,,2010s\r\n' \
+        '68669,1,audio,saepe,Sed saepe accusamus eveniet.,Eum qui nostrum.,,,,,,,,,,,,Non dolores est nam repellendus.,Dolore quia veritatis.,,,,,,,,,,,,,,2010s\r\n' 
     
     file_name = pathlib.Path(r"\fakepath\source_file.csv")
 

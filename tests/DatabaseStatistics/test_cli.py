@@ -84,12 +84,12 @@ def test_database_statistics(fs, params, mocker, caplog):
         cli_args.append("--include_all_cuts")
 
     if params.exclude_groups:
-        exclude_groups_file_contents = "ALTERNATIV\nSG_MISC\n"
+        exclude_groups_file_contents = "LAUDANTIUM\nASPERIORES\n"
         mock_exclude_groups_filename = "/test/mock_exclude_groups_filename.txt"
         fs.create_file(mock_exclude_groups_filename, contents=exclude_groups_file_contents)
         cli_args.append("--excluded_groups_file_name")
         cli_args.append(mock_exclude_groups_filename)
-        expected_exclude_groups = ["ALTERNATIV", "SG_MISC"]
+        expected_exclude_groups = ["LAUDANTIUM", "ASPERIORES"]
     else:
         expected_exclude_groups = []
 

@@ -10,7 +10,7 @@
 2020-Oct-21 = Created.
 
 ============ License ============
-Copyright (C) 2020, 2023 Michael Stanley
+Copyright (C) 2020, 2023, 2025 Michael Stanley
 
 This file is part of wmul_rivendell.
 
@@ -51,39 +51,39 @@ def setup_from_dict(request):
         expected_type = CartType.Macro
         type_for_dict = "macro"
 
-    expected_cart_number = '100340'
+    expected_cart_number = '638525'
     expected_cut_number = '1'
-    expected_group_name = '"ALTERNATIV"'
-    expected_title = '"Do You Want Love"'
-    expected_artist = '"Dave Depper"'
-    expected_album = '""'
+    expected_group_name = '"EXPLICABO"'
+    expected_title = 'perferendis enim harum repudiandae'
+    expected_artist = 'nisi ipsum'
+    expected_album = 'molestiae aut'
     expected_year = '"2017"'
-    expected_isrc = '""'
-    expected_isci = '""'
-    expected_label = '""'
-    expected_client = '""'
-    expected_agency = '""'
-    expected_publisher = '""'
-    expected_composer = '"Imported from WOAFR: A17/0461"'
-    expected_conductor = '""'
-    expected_song_id = '""'
-    expected_user_defined = '""'
-    expected_description = '"Do You Want Love"'
-    expected_outcue = '""'
-    expected_filename = '"100340_001.wav"'
+    expected_isrc = 'atque ratione'
+    expected_isci = 'consequuntur eligendi'
+    expected_label = 'occaecati vero'
+    expected_client = 'amet fugiat'
+    expected_agency = 'possimus corrupti'
+    expected_publisher = 'soluta rerum'
+    expected_composer = '"placeat sed'
+    expected_conductor = 'enim architecto'
+    expected_song_id = 'suscipit veritatis'
+    expected_user_defined = 'accusamus reprehenderit'
+    expected_description = 'repellat consectetur'
+    expected_outcue = 'maiores incidunt'
+    expected_filename = 'recusandae unde'
     expected_length = '7:14'
     expected_length_in_seconds = 434
-    expected_start_point = '0'
-    expected_end_point = '434000'
-    expected_segue_start_point = '432000'
-    expected_segue_end_point = '434000'
-    expected_hook_start_point = '-1'
-    expected_hook_end_point = '-1'
-    expected_talk_start_point = '0'
-    expected_talk_end_point = '40000'
-    expected_fadeup_point = '-1'
-    expected_fadedown_point = '-1'
-    expected_sched_codes = '"2015s"'
+    expected_start_point = 'repudiandae totam'
+    expected_end_point = 'aut iste'
+    expected_segue_start_point = 'dignissimos tenetur'
+    expected_segue_end_point = 'molestiae doloremque'
+    expected_hook_start_point = 'doloribus cupiditate'
+    expected_hook_end_point = 'reprehenderit perspiciatis'
+    expected_talk_start_point = 'similique dolorum'
+    expected_talk_end_point = 'dolorem nostrum'
+    expected_fadeup_point = 'assumenda praesentium'
+    expected_fadedown_point = 'minus vitae'
+    expected_sched_codes = 'non officia'
 
     source_dict = {
         "CART_NUMBER": expected_cart_number,

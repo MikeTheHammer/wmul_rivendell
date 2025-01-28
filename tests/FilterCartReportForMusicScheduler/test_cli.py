@@ -7,7 +7,7 @@
 2023-Jan-19 = Created.
 
 ============ License ============
-Copyright (C) 2023 Michael Stanley
+Copyright (C) 2023, 2025 Michael Stanley
 
 This file is part of wmul_rivendell.
 
@@ -98,12 +98,12 @@ def test_filter_cart_report(fs, params, mocker, caplog):
         cli_args.append("--use_trailing_comma")
 
     if params.exclude_groups:
-        exclude_groups_file_contents = "ALTERNATIV\nSG_MISC\n"
+        exclude_groups_file_contents = "LAUDANTIUM\nASPERIORES\n"
         mock_exclude_groups_filename = "/test/mock_exclude_groups_filename.txt"
         fs.create_file(mock_exclude_groups_filename, contents=exclude_groups_file_contents)
         cli_args.append("--excluded_groups_file_name")
         cli_args.append(mock_exclude_groups_filename)
-        expected_exclude_groups = ["ALTERNATIV", "SG_MISC"]
+        expected_exclude_groups = ["LAUDANTIUM", "ASPERIORES"]
     else:
         expected_exclude_groups = []
 
