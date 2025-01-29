@@ -111,8 +111,11 @@ def wmul_rivendell_cli(log_name, log_level):
               "this number and added to the mean to generate the upper bound.")
 @click.option("--write_limits", is_flag=True, help="Whether to write the statistics limits (smallest_stdev, "
               "minimum_population, lower_bound_multiple, and upper_bound_multiple) to the file.")
+@click.option("--write_full_statistics", is_flag=True, help="If true, the full set of statistics will be written. " 
+              "If false, only the summary statistics (Number of Songs, Lower Bound, Upper Bound) will be written.")
 def database_statistics(rivendell_cart_filename, output_filename, include_all_cuts, excluded_groups_file_name, 
-                        smallest_stdev, minimum_population, lower_bound_multiple, upper_bound_multiple, write_limits):
+                        smallest_stdev, minimum_population, lower_bound_multiple, upper_bound_multiple, write_limits,
+                        write_full_statistics):
     _logger.debug(f"With {locals()}")
 
     stats_limits = StatisticsLimits(
@@ -138,7 +141,8 @@ def database_statistics(rivendell_cart_filename, output_filename, include_all_cu
         rivendell_carts=rivendell_carts,
         output_filename=output_filename,
         stats_limits=stats_limits,
-        write_limits=write_limits
+        write_limits=write_limits,
+        write_full_statistics=write_full_statistics
     )
     x.run_script()
 
