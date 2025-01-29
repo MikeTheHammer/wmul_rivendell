@@ -26,7 +26,10 @@ dependencies = [
   "cachetools",
   "protobuf>=3.19.0;python_version > '3.7.0'",
   "protobuf<=3.19.4;python_version < '3.7.0'",
-  "dataclasses;python_version < '3.7.0'"
+  "dataclasses;python_version < '3.7.0'",
+  "numpy",
+  "pandas",
+  "openpyxl"
 ]
 
 [project.scripts]
