@@ -211,6 +211,8 @@ class DatabaseStatistics:
         df_limits = pd.DataFrame(
             { "Statistics Limits": self.stats_limits.to_pandas_series() }
         )
+        df_limits = df_limits.T
+
         group_names = sorted(statistics_per_group.keys())
         df_data = pd.DataFrame(
             { group_name: statistics_per_group[group_name].to_pandas_series() for group_name in group_names }

@@ -272,7 +272,7 @@ def test__write_excel(setup_write_file):
                         "Upper Bound Multiple": 3.0
                 }
             }
-            df_limits = pd.read_excel(xlsx, sheet_name="Limits", index_col=0).to_dict()
+            df_limits = pd.read_excel(xlsx, sheet_name="Limits", index_col=0).T.to_dict()
             assert df_limits == expected_limits
 
         expected_data = {
