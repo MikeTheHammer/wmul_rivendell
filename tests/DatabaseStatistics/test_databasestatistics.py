@@ -21,6 +21,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 wmul_rivendell. If not, see <https://www.gnu.org/licenses/>. 
 """
+import pandas as pd
 import pytest
 from pathlib import Path
 
@@ -135,7 +136,7 @@ write_file_params, write_file_ids = \
 @pytest.fixture(scope="function", params=write_file_params, ids=write_file_ids)
 def setup_write_file(fs, mocker, request):
     params = request.param
-    import pandas as pd
+
     laudantium_line = pd.Series({
         'Number of Songs': 19127, 
         'Shortest Song Length': '0:00:08', 
@@ -254,3 +255,81 @@ def test__write_csv(setup_write_file):
 
     assert pathname.read_text() == expected_file_contents
 
+
+def test__write_excel(setup_write_file):
+    ds = setup_write_file.ds
+    pathname = setup_write_file.root_dir / 'testfile.xlsx'
+    ds.output_filename = pathname
+    ds._write_excel(statistics_per_group=setup_write_file.statistics_per_group)
+
+    with pd.ExcelFile(pathname) as xlsx:
+        if setup_write_file.params.write_limits:
+            expected_limits = { 
+                "Statistics Limits" : {
+                        "Smallest Standard Deviation": "0:00:15",
+                        "Minimum Population for Outliers": 4,
+                        "Lower Bound Multiple": 1.5,
+                        "Upper Bound Multiple": 3.0
+                }
+            }
+            df_limits = pd.read_excel(xlsx, sheet_name="Limits", index_col=0).to_dict()
+            assert df_limits == expected_limits
+
+        expected_data = {
+            "ASPERIORES": {
+                'Number of Songs': 1778, 
+                'Shortest Song Length': '0:00:52', 
+                'Longest Song Length': '0:13:11', 
+                'Outlier Limits': "('0:00:20', '0:06:32')", 
+                'Mean': '0:03:27', 
+                'Standard Deviation': '0:01:03', 
+                'Lower Bound': '0:02:00', 
+                'Number of Songs < Lower Bound': 60, 
+                'Upper Bound': '0:06:30', 
+                'Number of Songs > Upper Bound': 47, 
+                'Percent of Songs Excluded': 6.0
+            },
+            "EXPLICABO": {
+                'Number of Songs': 1223, 
+                'Shortest Song Length': '0:00:36', 
+                'Longest Song Length': '0:23:10', 
+                'Outlier Limits': "('0:00:32', '0:06:36')", 
+                'Mean': '0:03:33', 
+                'Standard Deviation': '0:01:04', 
+                'Lower Bound': '0:02:00', 
+                'Number of Songs < Lower Bound': 82, 
+                'Upper Bound': '0:06:45', 
+                'Number of Songs > Upper Bound': 41, 
+                'Percent of Songs Excluded': 10.1
+            },
+            "LAUDANTIUM": {
+                'Number of Songs': 19127, 
+                'Shortest Song Length': '0:00:08', 
+                'Longest Song Length': '0:25:34', 
+                'Outlier Limits': "('0:01:12', '0:06:04')", 
+                'Mean': '0:03:36', 
+                'Standard Deviation': '0:00:53', 
+                'Lower Bound': '0:02:15', 
+                'Number of Songs < Lower Bound': 1243, 
+                'Upper Bound': '0:06:15', 
+                'Number of Songs > Upper Bound': 501, 
+                'Percent of Songs Excluded': 9.1
+            },
+            "POSSIMUS": {
+                'Number of Songs': 4946, 
+                'Shortest Song Length': '0:00:12', 
+                'Longest Song Length': '0:25:25', 
+                'Outlier Limits': "('0:00:26', '0:06:22')", 
+                'Mean': '0:03:25', 
+                'Standard Deviation': '0:00:58', 
+                'Lower Bound': '0:02:00', 
+                'Number of Songs < Lower Bound': 157, 
+                'Upper Bound': '0:06:15', 
+                'Number of Songs > Upper Bound': 140, 
+                'Percent of Songs Excluded': 6.0
+            }
+        }
+
+        df_data = pd.read_excel(xlsx, sheet_name="Data", index_col=0).T.to_dict()
+
+        assert df_data == expected_data
