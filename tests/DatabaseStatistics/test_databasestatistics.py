@@ -27,7 +27,7 @@ from pathlib import Path
 from wmul_rivendell.LoadCartDataDump import RivendellCart, CartType
 from wmul_rivendell.DatabaseStatistics import DatabaseStatistics, StatisticsLimits
 
-from wmul_test_utils import generate_true_false_matrix_from_list_of_strings
+from wmul_test_utils import generate_true_false_matrix_from_list_of_strings, make_namedtuple
 
 def test__organize_by_rivendell_group():
     defined_carts = [
@@ -122,19 +122,19 @@ def test__organize_by_rivendell_group():
     assert len(POSSIMUS_carts) == 20
 
 
-
-
-write_csv_params, write_csv_ids = \
+write_file_params, write_file_ids = \
     generate_true_false_matrix_from_list_of_strings(
-        "write_csv",
+        "write_file",
         [
             "write_limits"
         ]
 
     )
 
-@pytest.mark.parametrize("params", write_csv_params, ids=write_csv_ids)
-def test__write_csv(fs, mocker, params):
+
+@pytest.fixture(scope="function", params=write_file_params, ids=write_file_ids)
+def setup_write_file(fs, mocker, request):
+    params = request.param
     import pandas as pd
     laudantium_line = pd.Series({
         'Number of Songs': 19127, 
@@ -211,6 +211,30 @@ def test__write_csv(fs, mocker, params):
         "POSSIMUS": possimus_mock
     }
 
+    root_dir = Path(r"test")
+    root_dir.mkdir()
+
+    mock_rivendell_carts = "mock_rivendell_carts"
+    stats_limits = StatisticsLimits()
+    ds = DatabaseStatistics(
+        rivendell_carts=mock_rivendell_carts, 
+        output_filename=None, 
+        stats_limits=stats_limits,
+        write_limits=params.write_limits
+    )
+
+    return make_namedtuple(
+        "setup_write_file",
+        statistics_per_group=statistics_per_group,
+        root_dir=root_dir,
+        ds=ds,
+        params=params
+    )
+
+
+def test__write_csv(setup_write_file):
+    ds = setup_write_file.ds
+
     data_contents = \
         "Group Name,Number of Songs,Shortest Song Length,Longest Song Length,Outlier Limits,Mean,Standard Deviation,Lower Bound,Number of Songs < Lower Bound,Upper Bound,Number of Songs > Upper Bound,Percent of Songs Excluded\n" \
         "ASPERIORES,1778,0:00:52,0:13:11,\"('0:00:20', '0:06:32')\",0:03:27,0:01:03,0:02:00,60,0:06:30,47,6\n" \
@@ -218,29 +242,15 @@ def test__write_csv(fs, mocker, params):
         "LAUDANTIUM,19127,0:00:08,0:25:34,\"('0:01:12', '0:06:04')\",0:03:36,0:00:53,0:02:15,1243,0:06:15,501,9.1\n" \
         "POSSIMUS,4946,0:00:12,0:25:25,\"('0:00:26', '0:06:22')\",0:03:25,0:00:58,0:02:00,157,0:06:15,140,6\n"
 
-    if params.write_limits:
+    if setup_write_file.params.write_limits:
         expected_file_contents = ",Smallest Standard Deviation,Minimum Population for Outliers,Lower Bound Multiple," \
             "Upper Bound Multiple\nStatistics Limits,0:00:15,4,1.5,3.0\n" + data_contents
     else:
         expected_file_contents = data_contents
 
-
-    root_dir = Path(r"test")
-    root_dir.mkdir()
-
-    pathname = root_dir / 'testfile.csv'
-
-    mock_rivendell_carts = "mock_rivendell_carts"
-
-    stats_limits = StatisticsLimits()
-    ds = DatabaseStatistics(
-        rivendell_carts=mock_rivendell_carts, 
-        output_filename=pathname, 
-        stats_limits=stats_limits,
-        write_limits=params.write_limits
-    )
-
-    ds._write_csv(statistics_per_group=statistics_per_group)
+    pathname = setup_write_file.root_dir / 'testfile.csv'
+    ds.output_filename = pathname
+    ds._write_csv(statistics_per_group=setup_write_file.statistics_per_group)
 
     assert pathname.read_text() == expected_file_contents
 
