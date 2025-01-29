@@ -190,7 +190,7 @@ class DatabaseStatistics:
             )
         return statistics_per_group
 
-    def _write_csv(self, statistics_per_group):
+    def _generate_pandas_data(self, statistics_per_group):
         df_limits = pd.DataFrame(
             { "Statistics Limits": self.stats_limits.to_pandas_series() }
         )
@@ -202,23 +202,17 @@ class DatabaseStatistics:
         )
         df_data = df_data.T
 
+        return df_limits, df_data
+
+    def _write_csv(self, statistics_per_group):
+        df_limits, df_data = self._generate_pandas_data(statistics_per_group=statistics_per_group)
         with open(str(self.output_filename), newline="", mode="wt", errors="replace") as statistics_output:
             if self.write_limits:
                 df_limits.to_csv(statistics_output)
             df_data.to_csv(statistics_output, index_label="Group Name")
 
     def _write_excel(self, statistics_per_group):
-        df_limits = pd.DataFrame(
-            { "Statistics Limits": self.stats_limits.to_pandas_series() }
-        )
-        df_limits = df_limits.T
-
-        group_names = sorted(statistics_per_group.keys())
-        df_data = pd.DataFrame(
-            { group_name: statistics_per_group[group_name].to_pandas_series() for group_name in group_names }
-        )
-
-        df_data = df_data.T
+        df_limits, df_data = self._generate_pandas_data(statistics_per_group=statistics_per_group)
         with pd.ExcelWriter(self.output_filename) as writer:
             if self.write_limits:
                 df_limits.to_excel(writer, sheet_name="Limits")
