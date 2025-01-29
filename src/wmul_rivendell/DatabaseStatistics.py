@@ -4,6 +4,41 @@
 This script takes the "Cart Data Dump (CSV)" from RD Library and generates statistics about each group.
 
 ============ Change Log ============
+2025-Jan-29 = Remove to_list_for_csv and get_header_list, they are no longer needed. CSVs are generated using pandas 
+              now.
+
+              Flip the orientation of the statistics_limit sheet when outputting to an excel file. To make it match 
+              the orientation of the csv file.
+
+              Extract the identical lines for the creation of the pandas data from _write_csv and _write_excel to a 
+              single method.
+
+              Add option to output the full set of statistics, or just the number of songs and the boundaries.
+
+2025-Jan-23 = Make the upper and lower bound mulitples variables instead of hard coded.
+
+              Add logic to optionally write the statistics limits values to the output file.
+
+              Rewrite _write_csv to use pandas instead of direct csv. Will eliminate the need for a separate 
+              to_list_for_csv method in RivendellGroupStatistics.
+
+2025-Jan-22 = When the stdev is less than 15 seconds, don't bother calculating the exclusion limits. There is too 
+              little variance for those calculations to be meaningful and correct.
+
+              Refactor the _remove_outliers method.
+
+              Add ability to write to an Excel spreadsheet.
+
+              Add column to calculate the percentage of songs that are excluded.
+
+              Add logic to output either an excel file or a csv, depending on the suffix of the output_filename.
+
+              Extract _remove_outliers from a static method on RivendellGroupStatistics to a standalone.
+
+              Make smallest_stdev and minimum_population into variables instead of hard-coded.
+
+2025-Jan-21 = No longer try to remove outliers if the standard deviation of the population is less than 15 seconds.
+
 2025-Jan-17 = Extract statistics, expand generated data.
 
 2025-Jan-03 = Created.

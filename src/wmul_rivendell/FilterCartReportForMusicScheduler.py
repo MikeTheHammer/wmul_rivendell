@@ -5,6 +5,9 @@ This script takes the "Cart Data Dump (CSV)" from RD Library and eliminates data
 cannot use. It does this because some music schedulers, such as Natural Music 5, cannot import the full data dump.
 
 ============ Change Log ============
+2025-Jan-03 = Change the way the trailing comma is added. Python 3.13 doesn't allow a comma to be included in the line 
+              terminator. Instead, a dummy additional field is added to the end of the record.
+
 2023-May-25 = Refactor to remove RivendellCart, CartType, and the logic for 
                 loading and filtering the carts into LoadCartDataDump. This 
                 refactoring will allow DatabaseStatistics to re-use the code.
@@ -27,7 +30,7 @@ cannot use. It does this because some music schedulers, such as Natural Music 5,
 2020-Jun-25 = Created.
 
 ============ License ============
-Copyright (C) 2020-2023 Michael Stanley
+Copyright (C) 2020-2023, 2025 Michael Stanley
 
 This file is part of wmul_rivendell.
 

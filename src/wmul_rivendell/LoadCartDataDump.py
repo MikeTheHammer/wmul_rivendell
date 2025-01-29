@@ -6,12 +6,29 @@ into Python data.
 
 
 ============ Change Log ============
+2025-Jan-22 = Change debugging level on length_in_seconds.
+
+2025-Jan-08 = Add logging to RivendellCart.from_dict, handle fields that may be string or NoneType.
+
+              Add ability to fix csv lines that have un-escaped newlines.
+
+              Add ability for RivendellCart.length_in_seconds to handle carts that are longer than 59:59.
+
+2025-Jan-03 = Add repr for CartType enum.
+
+              Strip extra chars when loading cart data dump, update tests.
+
+              Remove the functionality for fixing the header bug from 3.6.4-3.6.6. It was a niche problem that is no 
+              longer relevant and fixing it creates other problems.
+
+              Add method to Rivendell Cart for converting the string MM:SS length to an int length_in_seconds.
+
 2023-May-25 = Created. This module was originally part of 
                 FilterCartReportForMusicSchedule and was refactored into this
                 module so that DatabaseStatistics could re-use the code.
 
 ============ License ============
-Copyright (C) 2020-2023 Michael Stanley
+Copyright (C) 2020-2023, 2025 Michael Stanley
 
 This file is part of wmul_rivendell.
 
