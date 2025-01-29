@@ -103,7 +103,8 @@ def test__organize_by_rivendell_group():
         rivendell_carts=mock_rivendell_carts, 
         output_filename=mock_filename, 
         stats_limits=stats_limits,
-        write_limits=False
+        write_limits=False,
+        write_full_statistics=False
     )
 
     organized_carts = ds._organize_by_rivendell_group(defined_carts)
@@ -127,7 +128,8 @@ write_file_params, write_file_ids = \
     generate_true_false_matrix_from_list_of_strings(
         "write_file",
         [
-            "write_limits"
+            "write_limits",
+            "write_full_statistics"
         ]
 
     )
@@ -221,7 +223,8 @@ def setup_write_file(fs, mocker, request):
         rivendell_carts=mock_rivendell_carts, 
         output_filename=None, 
         stats_limits=stats_limits,
-        write_limits=params.write_limits
+        write_limits=params.write_limits,
+        write_full_statistics=params.write_full_statistics
     )
 
     return make_namedtuple(
@@ -254,6 +257,9 @@ def test__write_csv(setup_write_file):
     ds._write_csv(statistics_per_group=setup_write_file.statistics_per_group)
 
     assert pathname.read_text() == expected_file_contents
+
+    for mock in setup_write_file.statistics_per_group.values():
+        mock.to_pandas_series.assert_called_once_with(setup_write_file.params.write_full_statistics)
 
 
 def test__write_excel(setup_write_file):
@@ -333,3 +339,6 @@ def test__write_excel(setup_write_file):
         df_data = pd.read_excel(xlsx, sheet_name="Data", index_col=0).T.to_dict()
 
         assert df_data == expected_data
+
+    for mock in setup_write_file.statistics_per_group.values():
+        mock.to_pandas_series.assert_called_once_with(setup_write_file.params.write_full_statistics)

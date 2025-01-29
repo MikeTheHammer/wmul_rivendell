@@ -127,26 +127,35 @@ class RivendellGroupStatistics:
         else:
             return input_number + (15 - mod_15)
         
-    def to_pandas_series(self):
+    def to_pandas_series(self, write_full_statistics):
         lower_outlier_limit, upper_outlier_limit = self.outlier_limits
         lower_outlier_limit = str(timedelta(seconds=int(lower_outlier_limit)))
         upper_outlier_limit = str(timedelta(seconds=int(upper_outlier_limit)))
 
-        return pd.Series(
-            {
-                "Number of Songs": self.number_of_songs,
+        statistics = {
+            "Number of Songs": self.number_of_songs,
+            "Lower Bound": str(timedelta(seconds=int(self.lower_bound))),
+            "Upper Bound": str(timedelta(seconds=int(self.upper_bound)))
+        }
+
+        if write_full_statistics:
+            # Construct a new dict, rather than updating the exising one, so that the new keys and old keys can be 
+            # interleaved.
+            statistics = {
+                "Number of Songs": statistics["Number of Songs"],
                 "Shortest Song Length": str(timedelta(seconds=int(self.shortest_song_length))),
                 "Longest Song Length": str(timedelta(seconds=int(self.longest_song_length))),
                 "Outlier Limits": (lower_outlier_limit, upper_outlier_limit),
                 "Mean": str(timedelta(seconds=int(self.mean))),
                 "Standard Deviation": str(timedelta(seconds=int(self.stdev))),
-                "Lower Bound": str(timedelta(seconds=int(self.lower_bound))),
+                "Lower Bound": statistics["Lower Bound"],
                 "Number of Songs < Lower Bound": self.number_of_songs_shorter_than_lower_bound,
-                "Upper Bound": str(timedelta(seconds=int(self.upper_bound))),
+                "Upper Bound": statistics["Upper Bound"],
                 "Number of Songs > Upper Bound": self.number_of_songs_longer_than_upper_bound,
                 "Percent of Songs Excluded": self.percentage_of_songs_excluded
             }
-        )
+
+        return pd.Series(statistics)
 
 
 def _remove_outliers(times_of_this_group: np.array, stats_limits: StatisticsLimits):
@@ -170,6 +179,7 @@ class DatabaseStatistics:
     output_filename: Path
     stats_limits: StatisticsLimits
     write_limits: bool
+    write_full_statistics: bool
 
     def _organize_by_rivendell_group(self, unorganized_carts):
         organized_by_rivendell_group = defaultdict(list)
@@ -198,7 +208,8 @@ class DatabaseStatistics:
 
         group_names = sorted(statistics_per_group.keys())
         df_data = pd.DataFrame(
-            { group_name: statistics_per_group[group_name].to_pandas_series() for group_name in group_names }
+            { group_name: statistics_per_group[group_name].to_pandas_series(self.write_full_statistics) 
+              for group_name in group_names }
         )
         df_data = df_data.T
 

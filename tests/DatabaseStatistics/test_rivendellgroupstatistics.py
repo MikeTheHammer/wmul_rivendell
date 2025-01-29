@@ -24,7 +24,7 @@ wmul_rivendell. If not, see <https://www.gnu.org/licenses/>.
 import pytest
 from wmul_rivendell.LoadCartDataDump import RivendellCart, CartType
 from wmul_rivendell.DatabaseStatistics import RivendellGroupStatistics, StatisticsLimits, _remove_outliers
-from wmul_test_utils import make_namedtuple
+from wmul_test_utils import make_namedtuple, generate_true_false_matrix_from_list_of_strings
 
 
 @pytest.fixture(scope="function")
@@ -408,8 +408,17 @@ def test_main_calculations_small_stdev():
     assert group_stats.percentage_of_songs_excluded == 0
 
 
-def test_to_pandas_correct():
-    from datetime import timedelta
+to_pandas_params, to_pandas_ids = \
+    generate_true_false_matrix_from_list_of_strings(
+        "to_pandas",
+        [
+            "write_full_statistics"
+        ]
+
+    )
+
+@pytest.mark.parametrize("write_full_statistics", to_pandas_params, ids=to_pandas_ids)
+def test_to_pandas_correct(write_full_statistics):
     carts = [
         RivendellCart(cart_number='', cut_number='1', type=CartType.Audio, group_name='EXPLICABO', title='perferendis enim harum repudiandae', artist='nisi ipsum', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='', conductor='', song_id='', user_defined='', description='', outcue='', filename='', length='4:22', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes=''),
         RivendellCart(cart_number='', cut_number='1', type=CartType.Audio, group_name='EXPLICABO', title='sapiente praesentium voluptates expedita', artist='tenetur assumenda', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='', conductor='', song_id='', user_defined='', description='', outcue='', filename='', length='2:28', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes=''),
@@ -449,22 +458,31 @@ def test_to_pandas_correct():
 
     import pandas as pd
 
-    expected_pandas_series = pd.Series(
-        {
-            "Number of Songs": 25,
-            "Shortest Song Length": "0:00:14",
-            "Longest Song Length": "0:10:53",
-            "Outlier Limits": ("0:00:44", "0:06:56"),
-            "Mean": "0:03:49",
-            "Standard Deviation": "0:00:57",
-            "Lower Bound": "0:02:30",
-            "Number of Songs < Lower Bound": 3,
-            "Upper Bound": "0:06:45",
-            "Number of Songs > Upper Bound": 1,
-            "Percent of Songs Excluded": 16.0
-        }
-    )
+    if write_full_statistics:
+        expected_pandas_series = pd.Series(
+            {
+                "Number of Songs": 25,
+                "Shortest Song Length": "0:00:14",
+                "Longest Song Length": "0:10:53",
+                "Outlier Limits": ("0:00:44", "0:06:56"),
+                "Mean": "0:03:49",
+                "Standard Deviation": "0:00:57",
+                "Lower Bound": "0:02:30",
+                "Number of Songs < Lower Bound": 3,
+                "Upper Bound": "0:06:45",
+                "Number of Songs > Upper Bound": 1,
+                "Percent of Songs Excluded": 16.0
+            }
+        )
+    else:
+        expected_pandas_series = pd.Series(
+            {
+                "Number of Songs": 25,
+                "Number of Songs < Lower Bound": 3,
+                "Number of Songs > Upper Bound": 1
+            }
+        )
 
-    result_series = group_stats.to_pandas_series()
+    result_series = group_stats.to_pandas_series(write_full_statistics)
 
     assert (result_series == expected_pandas_series).all()
