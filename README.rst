@@ -2,12 +2,19 @@ Description
 ===========
 
 This project provides several utility scripts to help in the use of Rivendell 
-Radio Automation 3.4.0+
+Radio Automation 4.0+ 
+
+It may also work with Rivendell 3, but I am no longer guaranteeing that.
 
 
 ``Filter Cart Report For Music Scheduler`` takes the Rivendell Cart Data Dump 
 (.csv) and filters out the fields, cart types, and cuts that are not needed by 
 external scheduling software.
+
+``Database Statistics`` takes the Rivendell Cart Data Dump (.csv) and provides statistical information about each 
+group. Currently, it generates the Number of Songs, Shortest Song Length, Longest Song Length, Outlier Limits, Mean, 
+Standard Deviation, Lower Bound (a variable multiple of standard deviations below the mean), and  upper bound (a 
+variable multiple of standard deviations above the mean). 
 
 ``Load Current Log Line`` selects which log to use and which line in the log to 
 use based on the current date and time.
@@ -24,6 +31,8 @@ group and scheduler code(s) to which a file should be imported.
 
     #. `Filter Cart Report For Music Scheduler`_
 
+    #. `Database Statistics`_
+
     #. `Load Current Log Line`_
 
         `Running Load Current Log Line at Startup`_
@@ -37,15 +46,19 @@ group and scheduler code(s) to which a file should be imported.
 Installation - Linux
 ====================
 
-#. If you are using a CentOS 7, you will need to install Python 3. (Ubuntu 22.04 Jammy Jellyfish and Linux Mint 21.1 Vera both have Python 3.10 installed by default.) This command will install Python 3.6.8, which is the most recent version in the default CentOS 7 repos. This module is tested on Python 3.6-3.11.
+#. If you are using Ubuntu or Mint, you will need to install python3-venv.
 
-    ``sudo yum -y install python3``
-
-#. If you are using Ubuntu 22.04 Jammy Jellyfish or Mint 21.1 Vera, you will need to install python3-venv.
+    #. Ubuntu 22.04 Jammy Jellyfish or Mint 21.X (Vanessa, Vera, Victoria, or Virginia)
  
-    ``sudo apt-get update``  
+        ``sudo apt-get update``  
+
+        ``sudo apt-get install python3.10-venv``
+
+    #. Ubuntu 24.04 Noble Numbat or Mint 22.X (Wilma, Xia)
     
-    ``sudo apt-get install python3.10-venv``
+        ``sudo apt-get update``  
+
+        ``sudo apt-get install python3.12-venv``
 
 #. Go to your home directory.
 
@@ -59,7 +72,7 @@ Installation - Linux
 
     ``source wmul_rivendell_venv/bin/activate``
 
-#. Update pip, because the version packaged with Python 3.6.8 is old.
+#. Update pip, because the packaged version is already out of date.
 
     ``pip3 install --upgrade pip``
 
@@ -70,11 +83,15 @@ Installation - Linux
 
 Installation - Windows
 ======================
-While ``Load Current Log Line`` and ``Rivendell Audio Importer`` are only usable on the same machine as the Rivendell install, ``Filter Cart Report For Music Scheduler`` can be run on a Windows machine as well. (Presumably the same machine as the music scheduler software.)
+While ``Load Current Log Line`` and ``Rivendell Audio Importer`` are only usable on the same machine as the Rivendell 
+install, ``Filter Cart Report For Music Scheduler`` and ``Database Statistics`` can be run on a Windows machine as 
+well. (Presumably the same machine as the music scheduler software.)
 
-#. Download and install a recent version of Python 3 from https://www.python.org/downloads/ . This software has been tested with Python 3.6-3.11.
+#. Download and install a recent version of Python 3 from https://www.python.org/downloads/ . 
+This software has been tested with Python 3.8-3.13.
 
-    #. Check "Install Launcher for all users (recommended)" and "Add Python 3.11 to PATH". (Or whichever Python version you are installing.)
+    #. Check "Install Launcher for all users (recommended)" and "Add Python 3.11 to PATH". (Or whichever Python 
+    version you are installing.)
     #. Click "Customize Installation".
     #. Make certain that "pip" is checked.
     #. Click "Next".
@@ -89,7 +106,8 @@ While ``Load Current Log Line`` and ``Rivendell Audio Importer`` are only usable
 
     ``cd \``
 
-#. Create a Python Virtual Environment for this module. Putting it into a virtual environment will prevent this module from interfering with or receiving interference from other Python 3 modules on your system.
+#. Create a Python Virtual Environment for this module. Putting it into a virtual environment will prevent this module 
+from interfering with or receiving interference from other Python 3 modules on your system.
 
     ``python3 -m venv wmul_rivendell_venv``
 
@@ -97,11 +115,12 @@ While ``Load Current Log Line`` and ``Rivendell Audio Importer`` are only usable
 
     ``.\wmul_rivendell_venv\Scripts\Activate.ps1``
 
-#. Update pip, because the version packaged with the Python installer is a bit old almost as soon as the installer is released.
+#. Update pip, because the version packaged with the Python installer is a bit old almost as soon as the installer is 
+released.
 
     ``pip install --upgrade pip``
 
-#. pip install using the requirements.txt file in this directory. You have to run pip while in the repo directory so that requirements.txt correctly points to the code in this directory.
+#. pip install this package.
 
     ``pip3 install wmul_rivendell``
 
@@ -109,7 +128,9 @@ While ``Load Current Log Line`` and ``Rivendell Audio Importer`` are only usable
 Usage
 =====
 
-While these three scripts are bundled together because of their common goal of assisting the Rivendell experience, they are really three different scripts with three different usages.
+While these four scripts are bundled together because of their common goal of assisting the Rivendell experience, they 
+are really four different scripts with four different usages. (Granted, the information from ``Database Statistics`` 
+will be helpful inside your music scheduler.)
 
 Filter Cart Report For Music Scheduler
 --------------------------------------
@@ -132,17 +153,95 @@ Each group name should be on a separate line. Any cuts belonging to any of those
     a. **RIVENDELL_CART_FILENAME** is the name of the Cart Data Dump file.
     b. **OUTPUT_FILENAME** is the name of the file to which the script should write. This is the file that you will load into your music scheduler. (If a file with this name already exists, it will be overwritten.)
     c. **DESIRED_FIELDS_FILENAME** is the name of the file containing the list of desired fields. This is the file you created in step 1.
-    d. There are five **[OPTIONS]**:
+    d. There are four **[OPTIONS]**:
 
         i. **--include_macros** If this flag is set, MACROS will be included in the output.
         ii. **--include_all_cuts** If this flag is set, all the cuts will be included in the output. If this flag is left off, only the lowest numbered cut will be output.
         iii. **--use_trailing_comma** If this flag is set, each line of the output file will include a comma at the end. If your music scheduler cannot see the final field, try this setting. Natural Music 5 needs this flag.
-        iv. **--fix_header** Versions 3.6.4-3.6.6 of Rivendell included a bug in the Cart Data Dump (csv) where the header was malformed. Setting this flag causes that header to be fixed.
-        v. **--excluded_groups_file_name [FILENAME]** Allows you to supply a filename with a list of groups to exclude. Any cuts belonging to any of those groups will be exluded from the output. Usefull for keeping your non-music cuts out of your music scheduler.
+        iv. **--excluded_groups_file_name [FILENAME]** Allows you to supply a filename with a list of groups to exclude. Any cuts belonging to any of those groups will be exluded from the output. Useful for keeping your non-music cuts out of your music scheduler.
 
     e. For an explanation of **[LOGGING]**, see `Logging`_.
 
 #. Example: ``wmul_rivendell --log_name "~/filter_cart_report.log" --log_level 30 filter-cart-report "~/cart_data_dump.csv" "~/cart_data_for_music_scheduler.csv" "~/desired_fields.txt" --use_trailing_comma``
+
+Database Statistics
+-------------------
+
+This script takes the Rivendell Cart Data Dump (.csv), optionally filters out specified groups, and generates 
+statistical information about each group. Currently, it generates the Number of Songs, Shortest Song Length, Longest 
+Song Length, Outlier Limits, Mean, Standard Deviation, Lower Bound (a variable multiple of standard deviations below 
+the mean), number of songs shorter than the lower bound, upper bound (a variable multiple of standard deviations above 
+the mean), number of songs longer than the upper bound, and the percent of songs excluded. 
+
+Within each group, it first checks the population standard deviation and population size. If both values are above 
+the set limits, it will remove the statistical outliers, using the interquartile range method. However, if either value 
+is below the set limits, this step will be skipped. The default value is 15 seconds for smallest standard deviation 
+and 4 for minimum population. These values can be changed with command-line options.
+
+After removing the statistical outliers, it calculates the mean and standard deviation. If the new standard deviation
+is above the set limit, it will calculate the lower and upper bound. The lower bound is calculated by multiplying the 
+standard deviation by a multiple and subtracting that from the mean. The upper bound is calculated by multiplying the 
+standard deviation by a different multiple and adding that to the mean. The bounds are then rounded off to the nearest 
+15 seconds. If the new standard deviation is below the limit, it will set the bounds to 0, and 86_399 (23:59:59).
+
+E.G.
+Given:
+Mean: 3:00
+Standard Deviation: 0:30
+Lower Bound Multiple: 1.5
+Upper Bound Multiple: 3.0
+
+The calculated results will be:
+Lower Bound: 2:15
+Upper Bound: 4:30
+
+The lower bound multiple defaults to 1.5 and the upper bound multiple defaults to 3.0. Both can be changed at the 
+command-line.
+
+
+This script can optionally include all cuts inside a cart when making the calculations. Otherwise, it will base its 
+calculations on the lowest numbered cut in each cart.
+
+This script can optionally exclude specified groups and not calculate statistics for those groups. 
+
+The script can be provided with new values for the statistical limits: smallest standard deviation, minimum population, 
+lower bound multiple, and upper bound multiple. 
+
+The script can optionally include the values for the statistical limits in the output file. (Useful when exploring 
+different values.)
+
+By default, the script will only output the Number of Songs, Lower Bound, and Upper Boudn. It can optionally include
+the Shortest Song Length, Longest Song Length, Outlier Limits, Mean, Standard Deviation, number of songs shorter than 
+the lower bound, number of songs longer than the upper bound, and the percent of songs excluded. 
+
+Usage: ``wmul_rivendell [LOGGING] database-statistics RIVENDELL_CART_FILENAME  OUTPUT_FILENAME   [OPTIONS]``
+
+    a. **RIVENDELL_CART_FILENAME** is the name of the Cart Data Dump file.
+    b. **OUTPUT_FILENAME** is the name of the file to which the script should write. (If a file with this name already 
+    exists, it will be overwritten.)
+    c. There are eight **[OPTIONS]**:
+
+        i. **--include_all_cuts** If this flag is set, all the cuts will be included in the output. If this flag is 
+        left off, only the lowest numbered cut will be output.
+        ii. **--excluded_groups_file_name [FILENAME]** Allows you to supply a filename with a list of groups to 
+        exclude. Useful for focusing on your music groups.
+        iii. **--smallest_stdev** The smallest standard deviation (in seconds) permitted for calculating outliers, and 
+        upper and lower bounds for excluding songs. If the group population standard deviation is less than this number,
+         then no outliers will be excluded. If the population (excluding outliers) standard deviation is less than this 
+         number, then no lower and upper boundes will be calculated. This limit helps avoid unwanted behaviour when a 
+         group is mostly the same length. E.G. a group containing only 30 second spots.
+        iv. **--minimum_population** The smallest population for calculating outliers. If the population of the group 
+        is smaller than or equal to this number, then outliers will not be calculated and excluded.
+        v. **--lower_bound_multiple** The standard deviation will be multiplied by this number and subtracted from the 
+        mean to generate the lower bound.
+        vi. **--upper_bound_multiple** The standard deviation will be multiplied by this number and added to the mean 
+        to generate the upper bound.
+        vii. **--write_limits** If this flag is set, the statistics limits (smallest_stdev, minimum_population, 
+        lower_bound_multiple, and upper_bound_multiple) will be written to the file.
+        viii. **--write_full_statistics** If this flag is set, the full set of statistics will be written. If not set,
+        only the summary statistics (Number of Songs, Lower Bound, Upper Bound) will be written.
+    d. For an explanation of **[LOGGING]**, see `Logging`_.
+
 
 Load Current Log Line
 ---------------------

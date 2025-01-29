@@ -1,3 +1,22 @@
+v0.13.0
+-------
+Extracted the logic for loading and initial filters of the Rivendell Cart Data Dump from FilterCartReportForMusicSchedule. That logic is now in LoadCartDataDump. This refactoring will allow DatabaseStatistics to re-use the code.
+
+Add support for Python 3.12 and 3.13, remove support for Python 3.6 and 3.7
+
+Change the way the trailing comma is added. Python 3.13 doesn't allow a comma to be included in the line terminator. Instead, a dummy additional field is added to the end of the record.
+
+Remove the functionality for fixing the header bug from  3.6.4-3.6.6. It was a niche problem that is no longer relevant and fixing it creates other problems.
+
+Add DatabaseStatistics for generating statistical information about the music database.
+
+Add two additional failure checks to RivendellAudioImporter. One checks for a file with no group (in the root folder). The second checks to see if rdimport could not open the file.
+
+v0.12.1
+-------
+BugFix on FilterCartReportForMusicScheduler
+The new _remove_excluded_groups was not being called correctly.
+
 v0.12.0
 -------
 RivendellAudioImporter: Catch crashes that occur when renaming a bad file and 
