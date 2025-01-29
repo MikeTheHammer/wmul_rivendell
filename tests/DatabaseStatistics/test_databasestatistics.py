@@ -137,36 +137,68 @@ write_csv_params, write_csv_ids = \
 def test__write_csv(fs, mocker, params):
     import pandas as pd
     laudantium_line = pd.Series({
-        "Group Name2": "laudantium", 
-        "Number of Songs": "mock",
-        "Shortest Song Length": "line"
+        'Number of Songs': 19127, 
+        'Shortest Song Length': '0:00:08', 
+        'Longest Song Length': '0:25:34', 
+        'Outlier Limits': ('0:01:12', '0:06:04'), 
+        'Mean': '0:03:36', 
+        'Standard Deviation': '0:00:53', 
+        'Lower Bound': '0:02:15', 
+        'Number of Songs < Lower Bound': 1243, 
+        'Upper Bound': '0:06:15', 
+        'Number of Songs > Upper Bound': 501, 
+        'Percent of Songs Excluded': 9.1
     })
     laudantium_mock = mocker.Mock(
         to_pandas_series=mocker.Mock(return_value=laudantium_line)
     )
 
     asperiores_line = pd.Series({
-        "Group Name2": "asperiores", 
-        "Number of Songs": "abcd",
-        "Shortest Song Length": "efgh"
+        'Number of Songs': 1778, 
+        'Shortest Song Length': '0:00:52', 
+        'Longest Song Length': '0:13:11', 
+        'Outlier Limits': ('0:00:20', '0:06:32'), 
+        'Mean': '0:03:27', 
+        'Standard Deviation': '0:01:03', 
+        'Lower Bound': '0:02:00', 
+        'Number of Songs < Lower Bound': 60, 
+        'Upper Bound': '0:06:30', 
+        'Number of Songs > Upper Bound': 47, 
+        'Percent of Songs Excluded': 6
     })
     asperiores_mock = mocker.Mock(
         to_pandas_series=mocker.Mock(return_value=asperiores_line)
     )
 
     explicabo_line = pd.Series({
-        "Group Name2": "explicabo", 
-        "Number of Songs": "jklm",
-        "Shortest Song Length": "nopq"
+        'Number of Songs': 1223, 
+        'Shortest Song Length': '0:00:36', 
+        'Longest Song Length': '0:23:10', 
+        'Outlier Limits': ('0:00:32', '0:06:36'), 
+        'Mean': '0:03:33', 
+        'Standard Deviation': '0:01:04', 
+        'Lower Bound': '0:02:00', 
+        'Number of Songs < Lower Bound': 82, 
+        'Upper Bound': '0:06:45', 
+        'Number of Songs > Upper Bound': 41, 
+        'Percent of Songs Excluded': 10.1
     })
     explicabo_mock = mocker.Mock(
         to_pandas_series=mocker.Mock(return_value=explicabo_line)
     )
 
     possimus_line = pd.Series({
-        "Group Name2": "possimus", 
-        "Number of Songs": "rstu",
-        "Shortest Song Length": "vwxy"
+        'Number of Songs': 4946, 
+        'Shortest Song Length': '0:00:12', 
+        'Longest Song Length': '0:25:25', 
+        'Outlier Limits': ('0:00:26', '0:06:22'), 
+        'Mean': '0:03:25', 
+        'Standard Deviation': '0:00:58', 
+        'Lower Bound': '0:02:00', 
+        'Number of Songs < Lower Bound': 157, 
+        'Upper Bound': '0:06:15', 
+        'Number of Songs > Upper Bound': 140, 
+        'Percent of Songs Excluded': 6
     })
     possimus_mock = mocker.Mock(
         to_pandas_series=mocker.Mock(return_value=possimus_line)
@@ -179,12 +211,12 @@ def test__write_csv(fs, mocker, params):
         "POSSIMUS": possimus_mock
     }
 
-    data_contents = "Group Name,Group Name2,Number of Songs,Shortest Song Length\n" \
-        "ASPERIORES,asperiores,abcd,efgh\n" \
-        "EXPLICABO,explicabo,jklm,nopq\n" \
-        "LAUDANTIUM,laudantium,mock,line\n" \
-        "POSSIMUS,possimus,rstu,vwxy\n"
-        
+    data_contents = \
+        "Group Name,Number of Songs,Shortest Song Length,Longest Song Length,Outlier Limits,Mean,Standard Deviation,Lower Bound,Number of Songs < Lower Bound,Upper Bound,Number of Songs > Upper Bound,Percent of Songs Excluded\n" \
+        "ASPERIORES,1778,0:00:52,0:13:11,\"('0:00:20', '0:06:32')\",0:03:27,0:01:03,0:02:00,60,0:06:30,47,6\n" \
+        "EXPLICABO,1223,0:00:36,0:23:10,\"('0:00:32', '0:06:36')\",0:03:33,0:01:04,0:02:00,82,0:06:45,41,10.1\n" \
+        "LAUDANTIUM,19127,0:00:08,0:25:34,\"('0:01:12', '0:06:04')\",0:03:36,0:00:53,0:02:15,1243,0:06:15,501,9.1\n" \
+        "POSSIMUS,4946,0:00:12,0:25:25,\"('0:00:26', '0:06:22')\",0:03:25,0:00:58,0:02:00,157,0:06:15,140,6\n"
 
     if params.write_limits:
         expected_file_contents = ",Smallest Standard Deviation,Minimum Population for Outliers,Lower Bound Multiple," \
