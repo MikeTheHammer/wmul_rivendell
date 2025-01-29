@@ -25,7 +25,6 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 wmul_rivendell. If not, see <https://www.gnu.org/licenses/>. 
 """
-import csv
 import math
 import numpy as np
 import pandas as pd
@@ -57,23 +56,6 @@ class StatisticsLimits:
                 "Upper Bound Multiple": self.upper_bound_multiple
             }
         )
-
-    def to_list_for_csv(self):
-        return [
-            timedelta(seconds=int(self.smallest_stdev)),
-            self.minimum_population_for_outliers,
-            self.lower_bound_multiple,
-            self.upper_bound_multiple
-        ]
-
-    @staticmethod
-    def get_header_row():
-        return [
-            "Smallest Standard Deviation",
-            "Minimum Population for Outliers",
-            "Lower Bound Multiple",
-            "Upper Bound Multiple"
-        ]
     
 
 class RivendellGroupStatistics:
