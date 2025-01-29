@@ -145,26 +145,6 @@ class RivendellGroupStatistics:
         else:
             return input_number + (15 - mod_15)
         
-    def to_list_for_csv(self):
-        lower_outlier_limit, upper_outlier_limit = self.outlier_limits
-        lower_outlier_limit = str(timedelta(seconds=int(lower_outlier_limit)))
-        upper_outlier_limit = str(timedelta(seconds=int(upper_outlier_limit)))
-
-        return [
-            self.group_name,
-            self.number_of_songs,
-            timedelta(seconds=int(self.shortest_song_length)),
-            timedelta(seconds=int(self.longest_song_length)),
-            (lower_outlier_limit, upper_outlier_limit),
-            timedelta(seconds=int(self.mean)),
-            timedelta(seconds=int(self.stdev)),
-            timedelta(seconds=int(self.lower_bound)),
-            self.number_of_songs_shorter_than_lower_bound,
-            timedelta(seconds=int(self.upper_bound)),
-            self.number_of_songs_longer_than_upper_bound,
-            self.percentage_of_songs_excluded
-        ]
-
     def to_pandas_series(self):
         lower_outlier_limit, upper_outlier_limit = self.outlier_limits
         lower_outlier_limit = str(timedelta(seconds=int(lower_outlier_limit)))
@@ -185,23 +165,6 @@ class RivendellGroupStatistics:
                 "Percent of Songs Excluded": self.percentage_of_songs_excluded
             }
         )
-
-    @staticmethod
-    def get_header_list():
-        return [
-            "Group Name",
-            "Number of Songs",
-            "Shortest Song Length",
-            "Longest Song Length",
-            "Outlier Limits",
-            "Mean",
-            "Standard Deviation",
-            "Lower Bound",
-            "Number of Songs < Lower Bound",
-            "Upper Bound",
-            "Number of Songs > Upper Bound",
-            "Percent of Songs Excluded"
-        ]
 
 
 def _remove_outliers(times_of_this_group: np.array, stats_limits: StatisticsLimits):
