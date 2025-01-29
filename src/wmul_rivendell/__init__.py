@@ -7,7 +7,7 @@
 2020-Jun-25 = Created.
 
 ============ License ============
-Copyright (C) 2020, 2023 Michael Stanley
+Copyright (C) 2020, 2023, 2025 Michael Stanley
 
 This file is part of wmul_rivendell.
 
@@ -24,5 +24,5 @@ You should have received a copy of the GNU General Public License along with
 wmul_rivendell. If not, see <https://www.gnu.org/licenses/>. 
 """
 
-__version__ = "0.13.0a1"
+__version__ = "0.13.0"
 
