@@ -342,3 +342,76 @@ def test__write_excel(setup_write_file):
 
     for mock in setup_write_file.statistics_per_group.values():
         mock.to_pandas_series.assert_called_once_with(setup_write_file.params.write_full_statistics)
+
+
+run_script_params, run_script_ids = \
+    generate_true_false_matrix_from_list_of_strings(
+        "run_script",
+        [
+            "file_already_exists",
+            "excel_file"
+        ]
+)
+
+@pytest.mark.parametrize("params", run_script_params, ids=run_script_ids)
+def test_run_script(fs, params, mocker):
+    rivendell_carts = "mock_rivendell_carts"
+
+    if params.excel_file:
+        output_filename = Path("/rivendell/output_filename.xlsx")
+    else:
+        output_filename = Path("/rivendell/output_filename.csv")
+    
+    if params.file_already_exists:
+        fs.create_file(output_filename)
+        assert output_filename.exists()
+    else:
+        assert not output_filename.exists()
+
+    mock_organized_by_rivendell_group = "mock_organized_by_rivendell_group"
+
+    mock_organize_by_rivendell_groups_function = mocker.Mock(
+        return_value=mock_organized_by_rivendell_group
+    )
+
+    mock_statistics_per_group = "mock_statistics_per_group"
+    mock_calculate_statistics_per_group_function = mocker.Mock(
+        return_value=mock_statistics_per_group
+    )
+
+    mock_write_excel = mocker.Mock()
+    mock_write_csv = mocker.Mock()
+
+    ds = mocker.Mock(
+        rivendell_carts=rivendell_carts,
+        output_filename=output_filename,
+        _organize_by_rivendell_group=mock_organize_by_rivendell_groups_function,
+        _calculate_statistics_per_group=mock_calculate_statistics_per_group_function,
+        _write_excel=mock_write_excel,
+        _write_csv=mock_write_csv
+    )
+
+    result = DatabaseStatistics.run_script(ds)
+
+    assert result is None
+
+    mock_organize_by_rivendell_groups_function.assert_called_once_with(
+        unorganized_carts=rivendell_carts
+    )
+
+    mock_calculate_statistics_per_group_function.assert_called_once_with(
+        organized_carts=mock_organized_by_rivendell_group
+    )
+
+    if params.file_already_exists:
+        assert output_filename.with_stem("output_filename_old").exists()
+    assert not output_filename.exists()
+
+    if params.excel_file:
+        mock_write_excel.assert_called_once_with(
+            statistics_per_group=mock_statistics_per_group
+        )
+    else:
+        mock_write_csv.assert_called_once_with(
+            statistics_per_group=mock_statistics_per_group
+        )

@@ -287,8 +287,9 @@ Usage: `wmul_rivendell [LOGGING] database-statistics RIVENDELL_CART_FILENAME
 OUTPUT_FILENAME   [OPTIONS]`
 
 1. **RIVENDELL_CART_FILENAME** is the name of the Cart Data Dump file.
-2. **OUTPUT_FILENAME** is the name of the file to which the script should write. (If a file with this name already
-exists, it will be overwritten.)
+2. **OUTPUT_FILENAME** is the name of the file to which the script should
+write. If a file with this name already exists, it will be renamed with "_old"
+ at the end.)
 3. There are eight **[OPTIONS]**:
 
     a. **--include_all_cuts** If this flag is set, all the cuts will be

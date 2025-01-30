@@ -4,6 +4,8 @@
 This script takes the "Cart Data Dump (CSV)" from RD Library and generates statistics about each group.
 
 ============ Change Log ============
+2025-Jan-30 = Add logic to rename the DatabaseStatistics.output_filename if that file already exists.
+
 2025-Jan-29 = Remove to_list_for_csv and get_header_list, they are no longer needed. CSVs are generated using pandas 
               now.
 
@@ -268,7 +270,11 @@ class DatabaseStatistics:
         _logger.debug(f"Starting DatabaseStatistics.run_script()")
         organized_by_rivendell_group = self._organize_by_rivendell_group(unorganized_carts=self.rivendell_carts)
         statistics_per_group = self._calculate_statistics_per_group(organized_carts=organized_by_rivendell_group)
-        if self.output_filename.suffix == '.xlsx':
-            self._write_excel(statistics_per_group)
+        output_filename = self.output_filename
+        if output_filename.exists():
+            new_filename = output_filename.with_stem(output_filename.stem + "_old")
+            output_filename.rename(new_filename)
+        if output_filename.suffix == '.xlsx':
+            self._write_excel(statistics_per_group=statistics_per_group)
         else:
             self._write_csv(statistics_per_group=statistics_per_group)
