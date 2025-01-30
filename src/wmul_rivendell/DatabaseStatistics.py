@@ -272,7 +272,8 @@ class DatabaseStatistics:
         statistics_per_group = self._calculate_statistics_per_group(organized_carts=organized_by_rivendell_group)
         output_filename = self.output_filename
         if output_filename.exists():
-            new_filename = output_filename.with_stem(output_filename.stem + "_old")
+            new_filename = (output_filename.parent / 
+                (output_filename.stem + "_old" + output_filename.suffix))
             output_filename.rename(new_filename)
         if output_filename.suffix == '.xlsx':
             self._write_excel(statistics_per_group=statistics_per_group)

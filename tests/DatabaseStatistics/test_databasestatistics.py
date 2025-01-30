@@ -404,7 +404,9 @@ def test_run_script(fs, params, mocker):
     )
 
     if params.file_already_exists:
-        assert output_filename.with_stem("output_filename_old").exists()
+        new_filename = (output_filename.parent / 
+            (output_filename.stem + "_old" + output_filename.suffix))
+        assert new_filename.exists()
     assert not output_filename.exists()
 
     if params.excel_file:
