@@ -29,7 +29,8 @@ dependencies = [
   "dataclasses;python_version < '3.7.0'",
   "numpy",
   "pandas",
-  "openpyxl"
+  "openpyxl",
+  "setuptools"
 ]
 
 [project.scripts]
