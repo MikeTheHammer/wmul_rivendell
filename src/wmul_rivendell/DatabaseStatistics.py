@@ -262,10 +262,10 @@ class DatabaseStatistics:
     def _write_excel(self, statistics_per_group):
         df_limits, df_data = self._generate_pandas_data(statistics_per_group=statistics_per_group)
         with pd.ExcelWriter(self.output_filename) as writer:
+            df_data.to_excel(writer, sheet_name="Data")
             if self.write_limits:
                 df_limits.to_excel(writer, sheet_name="Limits")
-            df_data.to_excel(writer, sheet_name="Data")
-
+                
     def run_script(self):
         _logger.debug(f"Starting DatabaseStatistics.run_script()")
         organized_by_rivendell_group = self._organize_by_rivendell_group(unorganized_carts=self.rivendell_carts)
