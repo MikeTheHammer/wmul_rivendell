@@ -288,6 +288,7 @@ class DatabaseStatistics:
         if output_filename.exists():
             new_filename = (output_filename.parent / 
                 (output_filename.stem + "_old" + output_filename.suffix))
+            new_filename.unlink(missing_ok=True)
             output_filename.rename(new_filename)
         if output_filename.suffix == '.xlsx':
             self._write_excel(statistics_per_group=statistics_per_group)
