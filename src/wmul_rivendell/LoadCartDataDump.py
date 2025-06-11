@@ -50,6 +50,8 @@ from enum import Enum
 from io import StringIO
 from os import SEEK_SET
 from pathlib import Path
+from pydantic import BaseModel, computed_field, model_serializer
+from typing import Generator, ValuesView
 
 import wmul_logger
 
@@ -65,8 +67,30 @@ class CartType(Enum):
         return f"{self.__class__.__name__}.{self.name}"
 
 
-@dataclass
-class RivendellCart:
+class LengthInSecondsProperty(BaseModel):
+    length: str
+
+    @computed_field(return_type=int)
+    @property
+    def length_in_seconds(self):
+        length = self.length
+        if length.count(":") > 1:
+            hours, minutes, seconds = length.split(":")
+            hours = int(hours)
+        else:
+            minutes, seconds = self.length.split(":")
+            hours = 0
+
+        if minutes:
+            minutes = int(minutes)
+        else:
+            minutes = 0
+        seconds = int(seconds)
+
+        return (hours * 3600) + (minutes * 60) + seconds
+
+
+class RivendellCart(LengthInSecondsProperty):
     cart_number: str
     cut_number: str
     type: CartType
@@ -88,7 +112,6 @@ class RivendellCart:
     description: str
     outcue: str
     filename: str
-    length: str
     start_point: str
     end_point: str
     segue_start_point: str
@@ -152,24 +175,6 @@ class RivendellCart:
             fadedown_point=source_dict["FADEDOWN_POINT"],
             sched_codes=source_dict["SCHED_CODES"]
         )
-
-    def length_in_seconds(self):
-        _logger.debug(f"{self.group_name}:{self.cart_number} {self.length}")
-        length = self.length
-        if length.count(":") > 1:
-            hours, minutes, seconds = length.split(":")
-            hours = int(hours)
-        else:
-            minutes, seconds = self.length.split(":")
-            hours = 0
-
-        if minutes:
-            minutes = int(minutes)
-        else:
-            minutes = 0
-        seconds = int(seconds)
-
-        return (hours * 3600) + (minutes * 60) + seconds
 
 
 def _fix_rivendell_csv_file(rivendell_source_file):

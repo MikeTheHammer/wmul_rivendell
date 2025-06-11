@@ -100,7 +100,7 @@ class RivendellGroupStatistics:
     def __init__(self, group_name: str, songs_in_group: list, stats_limits: StatisticsLimits):
         self.group_name = group_name
         self.stats_limits = stats_limits
-        times_of_this_group = np.array([this_item.length_in_seconds() for this_item in songs_in_group])
+        times_of_this_group = np.array([this_item.length_in_seconds for this_item in songs_in_group])
         times_of_this_group.sort()
         
         self.number_of_songs = times_of_this_group.size

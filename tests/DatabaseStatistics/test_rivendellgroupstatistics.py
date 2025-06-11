@@ -231,7 +231,7 @@ def test_remove_outliers():
         RivendellCart(cart_number='', cut_number='1', type=CartType.Audio, group_name='EXPLICABO', title='porro ad ipsum repudiandae', artist='explicabo eum', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='', conductor='', song_id='', user_defined='', description='', outcue='', filename='', length='3:04', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes='')
     ]
 
-    times_of_this_group = np.array([this_item.length_in_seconds() for this_item in carts])
+    times_of_this_group = np.array([this_item.length_in_seconds for this_item in carts])
 
     expected_lower_outlier_limit = 44.5 
     expected_upper_outlier_limit = 416.5 
@@ -273,7 +273,7 @@ def test_remove_outliers():
         RivendellCart(cart_number='100024', cut_number='1', type=CartType.Audio, group_name='ALTERNATIV', title='Spiky Seeds', artist='Pillows', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='Imported from WOAFR: A00/0025', conductor='', song_id='', user_defined='', description='Spiky Seeds', outcue='', filename='100024_001.wav', length='3:04', start_point='0', end_point='184000', segue_start_point='180000', segue_end_point='184000', hook_start_point='-1', hook_end_point='-1', talk_start_point='0', talk_end_point='20000', fadeup_point='-1', fadedown_point='-1', sched_codes='2000s')
     ]
 
-    times_without_outliers = np.array([this_item.length_in_seconds() for this_item in carts_without_outliers])
+    times_without_outliers = np.array([this_item.length_in_seconds for this_item in carts_without_outliers])
     times_without_outliers.sort()
 
     assert (outliers_excluded == times_without_outliers).all()
@@ -294,7 +294,7 @@ def test_remove_outliers_not_enough_population():
         RivendellCart(cart_number='', cut_number='1', type=CartType.Audio, group_name='EXPLICABO', title='unde quidem quam debitis', artist='adipisci qui', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='', conductor='', song_id='', user_defined='', description='', outcue='', filename='', length='4:43', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes=''),
     ]
 
-    times_of_this_group = np.array([this_item.length_in_seconds() for this_item in carts])
+    times_of_this_group = np.array([this_item.length_in_seconds for this_item in carts])
 
     expected_lower_outlier_limit = 0 
     expected_upper_outlier_limit = 86_399 # 23:59:59
@@ -340,7 +340,7 @@ def test_remove_ouliers_too_small_stdev():
         RivendellCart(cart_number='', cut_number='1', type=CartType.Audio, group_name='DOLORES', title='alias magnam deleniti sunt', artist='maxime facere', album='', year='', isrc='', isci='', label='', client='', agency='', publisher='', composer='', conductor='', song_id='', user_defined='AMC 8/20/2013', description='', outcue='', filename='', length=':08', start_point='', end_point='', segue_start_point='', segue_end_point='', hook_start_point='', hook_end_point='', talk_start_point='', talk_end_point='', fadeup_point='', fadedown_point='', sched_codes=''),
     ]
 
-    times_of_this_group = np.array([this_item.length_in_seconds() for this_item in carts])
+    times_of_this_group = np.array([this_item.length_in_seconds for this_item in carts])
 
     expected_lower_outlier_limit = 0 
     expected_upper_outlier_limit = 86_399 # 23:59:59

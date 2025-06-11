@@ -329,7 +329,7 @@ def test_from_dict_sched_codes_correct(setup_from_dict):
 
 def test_length_in_seconds_correct(setup_from_dict):
     result_rivendell_cart = setup_from_dict.result_rivendell_cart
-    assert setup_from_dict.expected_length_in_seconds == result_rivendell_cart.length_in_seconds()
+    assert setup_from_dict.expected_length_in_seconds == result_rivendell_cart.length_in_seconds
 
 def test_length_in_seconds_longer_than_one_hour():
     source_dict = {
@@ -372,4 +372,4 @@ def test_length_in_seconds_longer_than_one_hour():
 
     expected_length_in_seconds = 4034
 
-    assert result_rivendell_cart.length_in_seconds() == expected_length_in_seconds
+    assert result_rivendell_cart.length_in_seconds == expected_length_in_seconds
