@@ -466,10 +466,11 @@ def test_to_pandas_correct(write_full_statistics):
                 "Longest Song Length": "0:10:53",
                 "Outlier Limits": ("0:00:44", "0:06:56"),
                 "Mean": "0:03:49",
+                "Adjusted Mean": "0:04:00",
                 "Standard Deviation": "0:00:57",
                 "Lower Bound": "0:02:30",
-                "Number of Songs < Lower Bound": 3,
                 "Upper Bound": "0:06:45",
+                "Number of Songs < Lower Bound": 3,
                 "Number of Songs > Upper Bound": 1,
                 "Percent of Songs Excluded": 16.0
             }
@@ -478,8 +479,9 @@ def test_to_pandas_correct(write_full_statistics):
         expected_pandas_series = pd.Series(
             {
                 "Number of Songs": 25,
-                "Number of Songs < Lower Bound": 3,
-                "Number of Songs > Upper Bound": 1
+                "Lower Bound": "0:02:30",
+                "Upper Bound": "0:06:45",
+                "Adjusted Mean": "0:04:00"
             }
         )
 

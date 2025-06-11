@@ -130,20 +130,29 @@ class RivendellGroupStatistics:
             upper_bound = self.mean + (stats_limits.upper_bound_multiple * stdev)
             self.upper_bound = RivendellGroupStatistics._nearest_15(upper_bound)
 
-            shorter_than_lower_bound = [
-                song_length for song_length in times_of_this_group if song_length < self.lower_bound
-            ]
-            self.number_of_songs_shorter_than_lower_bound = len(shorter_than_lower_bound)
+            shorter_than_lower_bound = []
+            longer_than_upper_bound = []
+            within_bounds = []
 
-            longer_than_upper_bound = [
-                song_length for song_length in times_of_this_group if song_length > self.upper_bound
-            ]
+            for song_length in times_of_this_group:
+                if song_length < self.lower_bound:
+                    shorter_than_lower_bound.append(song_length)
+                elif song_length > self.upper_bound:
+                    longer_than_upper_bound.append(song_length)
+                else:
+                    within_bounds.append(song_length)
+
+            self.number_of_songs_shorter_than_lower_bound = len(shorter_than_lower_bound)
             self.number_of_songs_longer_than_upper_bound = len(longer_than_upper_bound)
             total_songs_excluded = self.number_of_songs_shorter_than_lower_bound + \
                 self.number_of_songs_longer_than_upper_bound
+
             percentage_of_songs_excluded = (total_songs_excluded / self.number_of_songs) * 100
             percentage_of_songs_excluded = round(percentage_of_songs_excluded, 1)
             self.percentage_of_songs_excluded = percentage_of_songs_excluded
+
+            adjusted_mean = np.array(within_bounds).mean()
+            self.adjusted_mean = self._nearest_15(adjusted_mean)
         else:
             # If STDev is below stats_limits.smallest_stdev, there is not enough variance in the lengths of the songs 
             # for the exclusion to be meaningful and correct.
@@ -152,6 +161,7 @@ class RivendellGroupStatistics:
             self.upper_bound = _MAX_TIME
             self.number_of_songs_longer_than_upper_bound = 0
             self.percentage_of_songs_excluded = 0
+            self.adjusted_mean = self._nearest_15(self.mean)
     
     @staticmethod
     def _nearest_15(input_number):
@@ -169,27 +179,29 @@ class RivendellGroupStatistics:
         lower_outlier_limit = str(timedelta(seconds=int(lower_outlier_limit)))
         upper_outlier_limit = str(timedelta(seconds=int(upper_outlier_limit)))
 
-        statistics = {
-            "Number of Songs": self.number_of_songs,
-            "Lower Bound": str(timedelta(seconds=int(self.lower_bound))),
-            "Upper Bound": str(timedelta(seconds=int(self.upper_bound)))
-        }
-
         if write_full_statistics:
             # Construct a new dict, rather than updating the exising one, so that the new keys and old keys can be 
             # interleaved.
             statistics = {
-                "Number of Songs": statistics["Number of Songs"],
+                "Number of Songs": self.number_of_songs,
                 "Shortest Song Length": str(timedelta(seconds=int(self.shortest_song_length))),
                 "Longest Song Length": str(timedelta(seconds=int(self.longest_song_length))),
                 "Outlier Limits": (lower_outlier_limit, upper_outlier_limit),
                 "Mean": str(timedelta(seconds=int(self.mean))),
+                "Adjusted Mean": str(timedelta(seconds=int(self.adjusted_mean))),
                 "Standard Deviation": str(timedelta(seconds=int(self.stdev))),
-                "Lower Bound": statistics["Lower Bound"],
+                "Lower Bound": str(timedelta(seconds=int(self.lower_bound))),
+                "Upper Bound": str(timedelta(seconds=int(self.upper_bound))),
                 "Number of Songs < Lower Bound": self.number_of_songs_shorter_than_lower_bound,
-                "Upper Bound": statistics["Upper Bound"],
                 "Number of Songs > Upper Bound": self.number_of_songs_longer_than_upper_bound,
                 "Percent of Songs Excluded": self.percentage_of_songs_excluded
+            }
+        else:
+            statistics = {
+                "Number of Songs": self.number_of_songs,
+                "Lower Bound": str(timedelta(seconds=int(self.lower_bound))),
+                "Upper Bound": str(timedelta(seconds=int(self.upper_bound))),
+                "Adjusted Mean": str(timedelta(seconds=int(self.adjusted_mean)))
             }
 
         return pd.Series(statistics)
