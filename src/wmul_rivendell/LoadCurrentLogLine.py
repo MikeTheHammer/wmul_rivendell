@@ -60,7 +60,7 @@ class LoadCurrentLogLineArguments:
     days_back: int
     default_log: str
     log_machine: int
-    emailer: wmul_emailer.EmailSender
+    emailer: wmul_emailer.EmailSender | None
 
 
 def _get_start_time_in_millis(log_datetime):
@@ -106,7 +106,7 @@ def _get_desired_log_line(arguments, desired_start_time_in_millis):
         _logger.error("Error while connecting to MySQL", e)
     finally:
         if connection.is_connected():
-            cursor.close()
+            cursor.close() # type: ignore
             connection.close()
             _logger.debug("MySQL connection is closed")
     return desire_log_line, log_name

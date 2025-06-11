@@ -217,7 +217,7 @@ class LoadCartDataDump:
     include_macros: bool
     include_all_cuts: bool
 
-    def _load_rivendell_carts(self):
+    def _load_rivendell_carts(self) -> list[RivendellCart]:
         with open(str(self.rivendell_cart_data_filename), newline="", mode="rt", errors="replace") as \
                 rivendell_source_file:
             rivendell_fixed_data = _fix_rivendell_csv_file(rivendell_source_file)
@@ -225,14 +225,14 @@ class LoadCartDataDump:
             rivendell_carts = [RivendellCart.from_dict(rivendell_cart) for rivendell_cart in rivendell_reader]
         return rivendell_carts
 
-    def _remove_excluded_groups(self, rivendell_carts):
+    def _remove_excluded_groups(self, rivendell_carts) -> Generator[RivendellCart, None, None]:
         return (rivendell_cart for rivendell_cart in rivendell_carts if
                 rivendell_cart.group_name not in self.excluded_group_list)
 
-    def _remove_macro_carts(self, rivendell_carts):
+    def _remove_macro_carts(self, rivendell_carts) -> Generator[RivendellCart, None, None]:
         return (rivendell_cart for rivendell_cart in rivendell_carts if not rivendell_cart.type == CartType.Macro)
 
-    def _remove_extra_cuts(self, rivendell_carts):
+    def _remove_extra_cuts(self, rivendell_carts) -> ValuesView[RivendellCart]:
         carts_grouped_by_cart_number = dict()
         for cart in rivendell_carts:
             if cart.cart_number in carts_grouped_by_cart_number:
@@ -242,7 +242,7 @@ class LoadCartDataDump:
                 carts_grouped_by_cart_number[cart.cart_number] = cart
         return carts_grouped_by_cart_number.values()
 
-    def load_carts(self):
+    def load_carts(self) -> list[RivendellCart]:
         _logger.debug(f"Starting load_carts with {self}")
         rivendell_carts = self._load_rivendell_carts()
 
@@ -253,4 +253,4 @@ class LoadCartDataDump:
         if not self.include_all_cuts:
             rivendell_carts = self._remove_extra_cuts(rivendell_carts)
 
-        return rivendell_carts
+        return list(rivendell_carts)

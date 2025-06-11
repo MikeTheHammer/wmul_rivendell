@@ -412,28 +412,28 @@ def setup_run_script(request, caplog, mocker):
     params = request.param
     mock_rivendell_cart_data_filename = "mock_rivendell_cart_data_filename"
 
-    mock_rivendell_carts = "mock_rivendell_carts"
+    mock_rivendell_carts = ["mock_rivendell_carts"]
     mock_load_rivendell_carts = mocker.Mock(return_value=mock_rivendell_carts)
     mocker.patch(
         "wmul_rivendell.LoadCartDataDump.LoadCartDataDump._load_rivendell_carts",
         mock_load_rivendell_carts
     )
 
-    mock_rivendell_carts_without_excluded_groups = "mock_rivendell_carts_without_excluded_groups"
+    mock_rivendell_carts_without_excluded_groups = ["mock_rivendell_carts_without_excluded_groups"]
     mock_remove_excluded_groups = mocker.Mock(return_value=mock_rivendell_carts_without_excluded_groups)
     mocker.patch(
         "wmul_rivendell.LoadCartDataDump.LoadCartDataDump._remove_excluded_groups",
         mock_remove_excluded_groups
     )
 
-    mock_rivendell_carts_without_macros = "mock_rivendell_carts_without_macros"
+    mock_rivendell_carts_without_macros = ["mock_rivendell_carts_without_macros"]
     mock_remove_macro_carts = mocker.Mock(return_value=mock_rivendell_carts_without_macros)
     mocker.patch(
         "wmul_rivendell.LoadCartDataDump.LoadCartDataDump._remove_macro_carts",
         mock_remove_macro_carts
     )
 
-    mock_rivendell_carts_without_extra_cuts = "mock_rivendell_carts_without_extra_cuts"
+    mock_rivendell_carts_without_extra_cuts = ["mock_rivendell_carts_without_extra_cuts"]
     mock_remove_extra_cuts = mocker.Mock(return_value=mock_rivendell_carts_without_extra_cuts)
     mocker.patch(
         "wmul_rivendell.LoadCartDataDump.LoadCartDataDump._remove_extra_cuts",

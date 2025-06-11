@@ -207,7 +207,7 @@ class RivendellGroupStatistics:
         return pd.Series(statistics)
 
 
-def _remove_outliers(times_of_this_group: np.array, stats_limits: StatisticsLimits):
+def _remove_outliers(times_of_this_group: np.ndarray, stats_limits: StatisticsLimits):
     if ((times_of_this_group.size > stats_limits.minimum_population_for_outliers) and 
         (times_of_this_group.std() >= stats_limits.smallest_stdev)):
         q25, q75 = np.percentile(times_of_this_group, [25, 75])
@@ -279,7 +279,7 @@ class DatabaseStatistics:
             df_data.to_excel(writer, sheet_name="Data")
             if self.write_limits:
                 df_limits.to_excel(writer, sheet_name="Limits")
-                
+
     def run_script(self):
         _logger.debug(f"Starting DatabaseStatistics.run_script()")
         organized_by_rivendell_group = self._organize_by_rivendell_group(unorganized_carts=self.rivendell_carts)
