@@ -214,6 +214,8 @@ def _remove_outliers(times_of_this_group: np.array, stats_limits: StatisticsLimi
         iqr = q75 - q25
         iqr_times_1_point_5 = iqr * 1.5
         lower_limit = q25 - iqr_times_1_point_5
+        if lower_limit < 0:
+            lower_limit = 0
         upper_limit = q75 + iqr_times_1_point_5
         outliers_excluded = np.array([this_item for this_item in times_of_this_group if lower_limit < this_item < upper_limit])
         outliers_excluded.sort()
