@@ -55,6 +55,7 @@ import click
 import datetime
 
 from pathlib import Path
+from wmul_rivendell import __version__
 from wmul_rivendell.DatabaseStatistics import DatabaseStatistics, StatisticsLimits
 from wmul_rivendell.FilterCartReportForMusicScheduler import FilterCartReportForMusicScheduler
 from wmul_rivendell.LoadCartDataDump import LoadCartDataDump
@@ -84,8 +85,7 @@ def wmul_rivendell_cli(log_name, log_level):
         global _logger
         _logger = wmul_logger.setup_logger(file_name=log_name, log_level=log_level)
         import pkg_resources  # part of setuptools
-        version = pkg_resources.require("wmul_rivendell")[0].version
-        _logger.warning(f"Version: {version}")
+        _logger.warning(f"Version: {__version__}")
         _logger.warning("In command_line_interface")
 
 
