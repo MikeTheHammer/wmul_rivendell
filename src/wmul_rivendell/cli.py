@@ -331,9 +331,13 @@ def get_desired_fields(desired_fields_filename):
     
 
 def get_excluded_groups(excluded_groups_file_name):
+    excluded_groups = []
     if excluded_groups_file_name:
         with open(excluded_groups_file_name, "rt") as excluded_groups_reader:
-            return [excluded_group.strip("\n\r") for excluded_group in excluded_groups_reader]
-    else:
-        return []
-
+            for excluded_group in excluded_groups_reader:
+                trimmed_group = excluded_group.strip(" \n\r")
+                if trimmed_group:
+                    excluded_groups.append(trimmed_group)
+        if not excluded_groups:
+            raise ValueError(f"The excluded groups file: {excluded_groups_file_name}, did not contain any desired fields. It appears to be blank or empty. If you wish to include all groups, omit the --exclude_groups option.")
+    return excluded_groups
