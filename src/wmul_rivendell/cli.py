@@ -174,9 +174,7 @@ def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_
                        include_all_cuts, excluded_groups_file_name, use_trailing_comma):
     _logger.debug(f"With {locals()}")
 
-    with open(desired_fields_filename, "rt") as desired_fields_reader:
-        desired_fields = [desired_field.strip("\n\r") for desired_field in desired_fields_reader]
-
+    desired_fields = get_desired_fields(desired_fields_filename)
     excluded_groups = get_excluded_groups(excluded_groups_file_name)
 
     lcdd = LoadCartDataDump(
@@ -318,6 +316,19 @@ def import_with_file_system_metadata(source_paths, cache_duration, rdimport_sysl
     except Exception as e:
         _logger.exception(f"Final crash: {e}")
 
+
+def get_desired_fields(desired_fields_filename):
+    desired_fields = []
+    with open(desired_fields_filename, "rt") as desired_fields_reader:
+        for desired_field in desired_fields_reader:
+            trimmed_field = desired_field.strip(" \n\r")
+            if trimmed_field:
+                desired_fields.append(trimmed_field)
+    if desired_fields:
+        return desired_fields
+    else:
+        raise ValueError(f"The desired fields file: {desired_fields_filename}, did not contain any desired fields. It appears to be blank or empty.")
+    
 
 def get_excluded_groups(excluded_groups_file_name):
     if excluded_groups_file_name:
