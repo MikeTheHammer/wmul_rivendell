@@ -50,6 +50,7 @@ import csv
 from collections import OrderedDict
 from dataclasses import dataclass
 from pathlib import Path
+from wmul_rivendell.LoadCartDataDump import RivendellCart
 
 
 import wmul_logger
@@ -58,32 +59,38 @@ _logger = wmul_logger.get_logger()
 
 
 @dataclass
-class FilterCartReportForMusicScheduler:
-    rivendell_carts: list
+class ConvertDatabaseBase:
+    rivendell_carts: list[RivendellCart]
     output_filename: Path
-    desired_field_list: list
-    use_trailing_comma: bool
+    desired_field_list: list[str]
 
     def _remove_unwanted_fields(self, rivendell_carts):
-        music_scheduler_carts = []
+        trimmed_carts = []
         for cart in rivendell_carts:
-            music_scheduler_cart = OrderedDict()
+            this_trimmed_cart  = OrderedDict()
             for desired_field in self.desired_field_list:
-                music_scheduler_cart[desired_field] = getattr(cart, desired_field.lower(), "INVALID FIELD NAME")
-            music_scheduler_carts.append(music_scheduler_cart)
-        return music_scheduler_carts
+                this_trimmed_cart[desired_field] = getattr(cart, desired_field.lower(), "INVALID FIELD NAME IN DESIRED FIELDS FILE")
+            trimmed_carts.append(this_trimmed_cart)
+        return trimmed_carts
 
-    def _export_carts_to_csv(self, music_scheduler_carts):
-        fieldnames = list(music_scheduler_carts[0].keys())
+    def _export_carts(self, trimmed_carts):
+        pass
+
+    def run_script(self):
+        _logger.debug(f"Starting run_script with {self}")
+        music_scheduler_carts = self._remove_unwanted_fields(self.rivendell_carts)
+        self._export_carts(music_scheduler_carts)
+
+
+@dataclass
+class ConvertDatabaseToCSV(ConvertDatabaseBase):
+    use_trailing_comma: bool
+
+    def _export_carts(self, trimmed_carts):
+        fieldnames = list(trimmed_carts[0].keys())
         if self.use_trailing_comma:
             fieldnames.append("Placeholder")
         with open(str(self.output_filename), newline="", mode="wt", errors="replace") as music_scheduler_file:
             natural_music_writer = csv.DictWriter(music_scheduler_file, fieldnames,
                                                   dialect="excel")
-            natural_music_writer.writerows(music_scheduler_carts)
-
-    def run_script(self):
-        _logger.debug(f"Starting run_script with {self}")
-        
-        music_scheduler_carts = self._remove_unwanted_fields(self.rivendell_carts)
-        self._export_carts_to_csv(music_scheduler_carts)
+            natural_music_writer.writerows(trimmed_carts)

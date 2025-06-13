@@ -57,7 +57,7 @@ import datetime
 from pathlib import Path
 from wmul_rivendell import __version__
 from wmul_rivendell.DatabaseStatistics import DatabaseStatistics, StatisticsLimits
-from wmul_rivendell.FilterCartReportForMusicScheduler import FilterCartReportForMusicScheduler
+from wmul_rivendell.FilterCartReportForMusicScheduler import ConvertDatabaseToCSV
 from wmul_rivendell.LoadCartDataDump import LoadCartDataDump
 from wmul_rivendell.LoadCurrentLogLine import LoadCurrentLogLineArguments, run_script as load_current_log_lines
 from wmul_rivendell.RivendellAudioImporter import \
@@ -186,7 +186,7 @@ def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_
 
     rivendell_carts = lcdd.load_carts()
 
-    x = FilterCartReportForMusicScheduler(
+    x = ConvertDatabaseToCSV(
         rivendell_carts=rivendell_carts,
         output_filename=output_filename,
         desired_field_list=desired_fields,

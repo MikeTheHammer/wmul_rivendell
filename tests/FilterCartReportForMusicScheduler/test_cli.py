@@ -77,7 +77,7 @@ def test_filter_cart_report(fs, params, mocker, caplog):
     mock_filter_cart_report_object = mocker.Mock()
 
     mock_filter_cart_report_constructor = mocker.patch(
-        "wmul_rivendell.cli.FilterCartReportForMusicScheduler",
+        "wmul_rivendell.cli.ConvertDatabaseToCSV",
         return_value=mock_filter_cart_report_object,
         autospec=True
     )
