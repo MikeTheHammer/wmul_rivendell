@@ -32,7 +32,7 @@ from collections import OrderedDict
 import pytest
 import wmul_test_utils
 
-from wmul_rivendell.FilterCartReportForMusicScheduler import FilterCartReportForMusicScheduler
+from wmul_rivendell.FilterCartReportForMusicScheduler import ConvertDatabaseToCSV
 from wmul_rivendell.LoadCartDataDump import RivendellCart, CartType
 
 
@@ -43,11 +43,11 @@ cart_filter_params, cart_filter_ids = \
 
 @pytest.fixture(scope="function", params=cart_filter_params, 
     ids=cart_filter_ids )
-def setup_standard_cart_filter():
-    mock_output_filename = "mock_output_filename"
-    mock_rivendell_carts = "mock_rivendell_carts"
+def setup_standard_cart_filter(mocker):
+    mock_output_filename = mocker.Mock()
+    mock_rivendell_carts = mocker.Mock()
 
-    cart_filter = FilterCartReportForMusicScheduler(
+    cart_filter = ConvertDatabaseToCSV(
         rivendell_carts=mock_rivendell_carts,
         output_filename=mock_output_filename,
         desired_field_list=[],
@@ -305,7 +305,7 @@ def test__export_carts_to_csv_trailing_comma(fs, setup_standard_cart_filter,
         defined_music_scheduler_carts.rc_500_1
     ]
 
-    cart_filter._export_carts_to_csv(music_scheduler_carts)
+    cart_filter._export_carts(music_scheduler_carts)
 
     assert output_file_path.exists()
 
@@ -339,7 +339,7 @@ def test__export_carts_to_csv_no_trailing_comma(fs, setup_standard_cart_filter,
         defined_music_scheduler_carts.rc_500_1
     ]
 
-    cart_filter._export_carts_to_csv(music_scheduler_carts)
+    cart_filter._export_carts(music_scheduler_carts)
 
     assert output_file_path.exists()
 
@@ -357,24 +357,23 @@ def test__export_carts_to_csv_no_trailing_comma(fs, setup_standard_cart_filter,
 
 @pytest.fixture(scope="function")
 def setup_run_script(caplog, mocker):
-    mock_output_filename = "mock_output_filename"
-
-    mock_rivendell_carts = "mock_rivendell_carts"
+    mock_output_filename = mocker.Mock()
+    mock_rivendell_carts = mocker.Mock()
 
     mock_music_scheduler_carts = "mock_music_scheduler_cuts"
     mock_remove_unwanted_fields = mocker.Mock(return_value=mock_music_scheduler_carts)
     mocker.patch(
-        "wmul_rivendell.FilterCartReportForMusicScheduler.FilterCartReportForMusicScheduler._remove_unwanted_fields",
+        "wmul_rivendell.FilterCartReportForMusicScheduler.ConvertDatabaseToCSV._remove_unwanted_fields",
         mock_remove_unwanted_fields
     )
 
-    mock_export_carts_to_csv = mocker.Mock()
+    mock_export_carts = mocker.Mock()
     mocker.patch(
-        "wmul_rivendell.FilterCartReportForMusicScheduler.FilterCartReportForMusicScheduler._export_carts_to_csv",
-        mock_export_carts_to_csv
+        "wmul_rivendell.FilterCartReportForMusicScheduler.ConvertDatabaseToCSV._export_carts",
+        mock_export_carts
     )
 
-    cart_filter = FilterCartReportForMusicScheduler(
+    cart_filter = ConvertDatabaseToCSV(
         rivendell_carts=mock_rivendell_carts,
         output_filename=mock_output_filename,
         desired_field_list=[],
@@ -388,7 +387,7 @@ def setup_run_script(caplog, mocker):
         mock_rivendell_carts=mock_rivendell_carts,
         mock_remove_unwanted_fields=mock_remove_unwanted_fields,
         mock_music_scheduler_carts=mock_music_scheduler_carts,
-        mock_export_carts_to_csv=mock_export_carts_to_csv,
+        mock_export_carts=mock_export_carts,
         caplog_text=caplog.text
     )
 
@@ -400,4 +399,4 @@ def test_run_script_remove_unwanted_fields_called_correctly(setup_run_script):
 
 
 def test_run_script_export_carts_to_csv_called_correctly(setup_run_script):
-    setup_run_script.mock_export_carts_to_csv.assert_called_once_with(setup_run_script.mock_music_scheduler_carts)
+    setup_run_script.mock_export_carts.assert_called_once_with(setup_run_script.mock_music_scheduler_carts)
