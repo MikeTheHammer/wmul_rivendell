@@ -7,3 +7,4 @@ dist/
 *.bat
 .vscode/
 scratch.py
+.coverage
