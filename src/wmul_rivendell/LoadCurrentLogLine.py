@@ -37,6 +37,7 @@ wmul_rivendell. If not, see <https://www.gnu.org/licenses/>.
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from mysql.connector import Error
+from typing import Optional
 
 import mysql.connector
 import subprocess
@@ -60,7 +61,7 @@ class LoadCurrentLogLineArguments:
     days_back: int
     default_log: str
     log_machine: int
-    emailer: wmul_emailer.EmailSender | None
+    emailer: Optional[wmul_emailer.EmailSender]
 
 
 def _get_start_time_in_millis(log_datetime):
