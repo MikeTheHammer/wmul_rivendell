@@ -148,3 +148,28 @@ def test_multiple_extra_new_line(fs, expected_result):
         result = _fix_rivendell_csv_file(rivendell_source_file=rivendell_file)
 
     assert expected_result == result.getvalue()
+
+def test_cant_be_fixed(fs, expected_result):
+    source_file_contents = \
+        'CART_NUMBER,CUT_NUMBER,TYPE,GROUP_NAME,TITLE,ARTIST,ALBUM,YEAR,ISRC,ISCI,LABEL,CLIENT,AGENCY,PUBLISHER,COMPOSER,CONDUCTOR,SONG_ID,USER_DEFINED,DESCRIPTION,OUTCUE,FILENAME,LENGTH,START_POINT,END_POINT,SEGUE_START_POINT,SEGUE_END_POINT,HOOK_START_POINT,HOOK_END_POINT,TALK_START_POINT,TALK_END_POINT,FADEUP_POINT,FADEDOWN_POINT,SCHED_CODES\r\n' \
+        '599159,1,audio,aliquid,Inventore neque dignissimos repellendus.,Reprehenderit officiis cum.,,,,,,,,,Laudantium asperiores veritatis quia facere in consequuntur.,Fugit eligendi perferendis itaque placeat optio.,,,,,,,,,,,,,,2010s\r\n' \
+        '139437,1,audio,odit,Quisquam voluptatem voluptas nostrum.,Aliquid a consequatur.,,,,,,,,,,,,Modi quo dolores pariatur iste.,Aperiam nesciunt sapiente culpa dolore impedit alias.,,,,,,,,,,,,,,2010s\r\n' \
+        '520726,1,audio,incidunt,Repellendus omnis modi sequi.,Corrupti necessitatibus fugiat.,,,,,,,,,,,,Corrupti vitae quo ipsam voluptatem deleniti expedita voluptas.,Doloribus earum nulla debitis blanditiis iste cumque.,,,,,,,,,,,,,,2010s\r\n' \
+        '680237,1,audio,doloribus,Quod laboriosam expedita ipsa.,A quae ex.,,,,,,,,,,,,Doloribus ea illo culpa ullam libero.,Qui voluptatibus earum laboriosam libero.,,,,,,,,,,,,,,2010s\r\n' \
+        '174387,1,audio,porro,Perferendis tempore consequatur molestiae.,Expedita harum praesentium.,,,,,,,,,,,,"Ipsam voluptas impedit alias a modi amet.",Corrupti non rerum reiciendis.,,,,,,,,,,,,,,2010s\r\n' \
+        '146066,1,audio,officia,Similique quo ullam exercitationem.,Ea ratione itaque.,,,,,,,,,,,,Officiis tenetur corrupti dolores nulla porro.,Nemo occaecati ad blanditiis eos sed doloribus enim.,,,,,,,,,,,,,,2010s\r\n' \
+        '93372,1,audio,aperiam,Nisi mollitia voluptates autem.,Repellendus cum labore.,,,,,,,,,,,,Nisi ullam deleniti expedita aspernatur deserunt.,Voluptates placeat est vitae sint.,,,,,,,,,,,,,,2010s\r\n' \
+        '787912,1,audio,voluptate,Repudiandae quam ipsum quia.,Dignissimos nisi blanditiis.,,,,,,,,,,,,Ab incidunt illum fugit repellat dicta quo reiciendis.,Expedita facere incidunt deserunt.,,,,,,,,,,,,,,2010s\r\n' \
+        '785851,1,audio,id,Iure eos libero tenetur.,Illo odit expedita.,,,,,,,,,,,,Laboriosam ipsum labore laboriosam porro.,Reiciendis illo recusandae vitae voluptatibus quam.,,,,,,,,,,,,,,2010s\r\n' \
+        '68669,1,audio,saepe,Sed saepe accusamus eveniet.,Eum qui nostrum.,,,,,,,,,,,,Non dolores est nam repellendus.,Dolore quia veritatis.,,,,,,,,,,,,,,2010s\r\n' 
+    
+    file_name = pathlib.Path(r"\fakepath\source_file.csv")
+
+    fs.create_file(
+        file_name,
+        contents=source_file_contents
+    )
+
+    with open(file_name, newline="", mode="rt", errors="replace") as rivendell_file:
+        with pytest.raises(ValueError, match="There are errors in the csv file that cannot be automatically fixed. "):
+            result = _fix_rivendell_csv_file(rivendell_source_file=rivendell_file)
