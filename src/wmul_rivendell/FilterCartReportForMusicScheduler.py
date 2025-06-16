@@ -47,6 +47,7 @@ You should have received a copy of the GNU General Public License along with
 wmul_rivendell. If not, see <https://www.gnu.org/licenses/>. 
 """
 import csv
+import pandas as pd
 from collections import OrderedDict
 from dataclasses import dataclass
 from pathlib import Path
@@ -94,3 +95,11 @@ class ConvertDatabaseToCSV(ConvertDatabaseBase):
             natural_music_writer = csv.DictWriter(music_scheduler_file, fieldnames,
                                                   dialect="excel")
             natural_music_writer.writerows(trimmed_carts)
+
+
+@dataclass
+class ConvertDatabaseToExcel(ConvertDatabaseBase):
+    def _export_carts(self, trimmed_carts):
+        df_data = pd.DataFrame(trimmed_carts)
+        with pd.ExcelWriter(self.output_filename) as writer:
+            df_data.to_excel(writer, sheet_name="Data")
