@@ -129,7 +129,7 @@ def database_statistics(rivendell_cart_filename, output_filename, include_all_cu
         upper_bound_multiple=upper_bound_multiple
     )
 
-    excluded_groups = get_excluded_groups(excluded_groups_file_name)
+    excluded_groups = get_items_from_file(file_name=excluded_groups_file_name)
     output_filename = Path(output_filename)
 
     lcdd = LoadCartDataDump(
@@ -169,8 +169,8 @@ def database_statistics(rivendell_cart_filename, output_filename, include_all_cu
 def convert_to_excel(rivendell_cart_filename, output_filename, desired_fields_filename, include_all_cuts, excluded_groups_file_name):
     _logger.debug(f"With {locals()}")
 
-    desired_fields = get_desired_fields(desired_fields_filename)
-    excluded_groups = get_excluded_groups(excluded_groups_file_name)
+    desired_fields = get_items_from_file(file_name=desired_fields_filename)
+    excluded_groups = get_items_from_file(file_name=excluded_groups_file_name)
     output_filename = Path(output_filename)
 
     lcdd = LoadCartDataDump(
@@ -212,8 +212,8 @@ def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_
                        include_all_cuts, excluded_groups_file_name, use_trailing_comma):
     _logger.debug(f"With {locals()}")
 
-    desired_fields = get_desired_fields(desired_fields_filename)
-    excluded_groups = get_excluded_groups(excluded_groups_file_name)
+    desired_fields = get_items_from_file(file_name=desired_fields_filename)
+    excluded_groups = get_items_from_file(file_name=excluded_groups_file_name)
 
     lcdd = LoadCartDataDump(
         rivendell_cart_data_filename=rivendell_cart_filename,
@@ -379,3 +379,16 @@ def get_excluded_groups(excluded_groups_file_name):
         if not excluded_groups:
             raise ValueError(f"The excluded groups file: {excluded_groups_file_name}, did not contain any desired fields. It appears to be blank or empty. If you wish to include all groups, omit the --exclude_groups option.")
     return excluded_groups
+
+
+def get_items_from_file(file_name):
+    items = []
+    if file_name:
+        with open(file_name, "rt") as file_reader:
+            for item in file_reader:
+                trimmed_item = item.strip(" \n\r")
+                if trimmed_item:
+                    items.append(trimmed_item)
+        if not items:
+            raise ValueError(f"The file: {file_name}, did not contain any items. It appears to be blank or empty.")
+    return items
