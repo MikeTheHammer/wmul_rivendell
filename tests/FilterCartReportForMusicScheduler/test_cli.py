@@ -24,6 +24,7 @@ You should have received a copy of the GNU General Public License along with
 wmul_rivendell. If not, see <https://www.gnu.org/licenses/>. 
 """
 from click.testing import CliRunner
+from pathlib import Path
 import pytest
 
 from wmul_rivendell import cli
@@ -46,6 +47,7 @@ def test_filter_cart_report(fs, params, mocker, caplog):
     mock_rivendell_cart_filename = "/test/mock_rivendell_cart_filename.txt"
     fs.create_file(mock_rivendell_cart_filename)
     mock_output_filename = "/test/mock_output_filename"
+    expected_output_filename = Path(mock_output_filename)
     mock_desired_fields_filename = "/test/desired.txt"
 
     desired_fields_file_contents = "Cart_number\nGroup_Name\nTitle\nArtist\nAlbum\nYear\nLength\nUser_Defined\nSched_Codes\n"
@@ -126,7 +128,7 @@ def test_filter_cart_report(fs, params, mocker, caplog):
 
     mock_filter_cart_report_constructor.assert_called_once_with(
         rivendell_carts=mock_rivendell_carts,
-        output_filename=mock_output_filename,
+        output_filename=expected_output_filename,
         desired_field_list=expected_desired_fields,
         use_trailing_comma=params.use_trailing_comma
     )

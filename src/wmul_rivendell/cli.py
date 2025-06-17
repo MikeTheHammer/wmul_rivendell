@@ -214,6 +214,7 @@ def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_
 
     desired_fields = get_items_from_file(file_name=desired_fields_filename)
     excluded_groups = get_items_from_file(file_name=excluded_groups_file_name)
+    output_filename = Path(output_filename)
 
     lcdd = LoadCartDataDump(
         rivendell_cart_data_filename=rivendell_cart_filename,
