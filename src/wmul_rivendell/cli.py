@@ -355,32 +355,6 @@ def import_with_file_system_metadata(source_paths, cache_duration, rdimport_sysl
         _logger.exception(f"Final crash: {e}")
 
 
-def get_desired_fields(desired_fields_filename):
-    desired_fields = []
-    with open(desired_fields_filename, "rt") as desired_fields_reader:
-        for desired_field in desired_fields_reader:
-            trimmed_field = desired_field.strip(" \n\r")
-            if trimmed_field:
-                desired_fields.append(trimmed_field)
-    if desired_fields:
-        return desired_fields
-    else:
-        raise ValueError(f"The desired fields file: {desired_fields_filename}, did not contain any desired fields. It appears to be blank or empty.")
-    
-
-def get_excluded_groups(excluded_groups_file_name):
-    excluded_groups = []
-    if excluded_groups_file_name:
-        with open(excluded_groups_file_name, "rt") as excluded_groups_reader:
-            for excluded_group in excluded_groups_reader:
-                trimmed_group = excluded_group.strip(" \n\r")
-                if trimmed_group:
-                    excluded_groups.append(trimmed_group)
-        if not excluded_groups:
-            raise ValueError(f"The excluded groups file: {excluded_groups_file_name}, did not contain any desired fields. It appears to be blank or empty. If you wish to include all groups, omit the --exclude_groups option.")
-    return excluded_groups
-
-
 def get_items_from_file(file_name):
     items = []
     if file_name:
