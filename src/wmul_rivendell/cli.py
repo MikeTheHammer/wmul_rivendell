@@ -161,6 +161,40 @@ def database_statistics(rivendell_cart_filename, output_filename, include_all_cu
                 "field per line.")
 @click.option('--include_macros', is_flag=True, help="Include macro carts in the output file.")
 @click.option('--include_all_cuts', is_flag=True,
+              help="Include all the individual cuts in the output file. If this is left unset, then the output file "
+                   "will only include the lowest numbered cut in each cart.")
+@click.option('--excluded_groups_file_name', 
+              type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+              help="File path to a text file containing a list of groups to be exluded. The file should have one "
+              "group name on each line. A group name may be present in this file but not in the cart data dump.")
+@click.option('--use_trailing_comma', is_flag=True,
+              help="Include a comma at the end of each line. Required by some scheduling software, such as Natural "
+                   "Music, to see the final field.")
+def convert_to_csv(rivendell_cart_filename, output_filename, desired_fields_filename, include_macros,
+                       include_all_cuts, excluded_groups_file_name, use_trailing_comma):
+    _logger.debug(f"With {locals()}")
+    converter = ConvertDatabaseToCSV.get_factory(use_trailing_comma=use_trailing_comma)
+    convert_cart_database(
+        rivendell_cart_filename=rivendell_cart_filename,
+        output_filename=output_filename,
+        desired_fields_filename=desired_fields_filename,
+        include_macros=include_macros,
+        include_all_cuts=include_all_cuts,
+        excluded_groups_file_name=excluded_groups_file_name,
+        converter=converter
+    )
+
+
+@wmul_rivendell_cli.command()
+@click.argument('rivendell_cart_filename', type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+                nargs=1)
+@click.argument('output_filename', type=click.Path(exists=False, file_okay=True, dir_okay=False, writable=True),
+                nargs=1)
+@click.option('--desired_fields_filename', type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True),
+                help="File path to a text file containing a list of desired fields. The file should have one desired "
+                "field per line.")
+@click.option('--include_macros', is_flag=True, help="Include macro carts in the output file.")
+@click.option('--include_all_cuts', is_flag=True,
               help="Whether to use every cut in the cart when making the calculations. If this is set, every cut from "
               "each cart will be used in the calculations. If it is not set, only the lowest numbered cut will be " 
               "used.")
@@ -169,26 +203,15 @@ def database_statistics(rivendell_cart_filename, output_filename, include_all_cu
               "group name on each line. A group name may be present in this file but not in the cart data dump.")
 def convert_to_excel(rivendell_cart_filename, output_filename, desired_fields_filename, include_macros, include_all_cuts, excluded_groups_file_name):
     _logger.debug(f"With {locals()}")
-
-    desired_fields = get_items_from_file(file_name=desired_fields_filename)
-    excluded_groups = get_items_from_file(file_name=excluded_groups_file_name)
-    output_filename = Path(output_filename)
-
-    lcdd = LoadCartDataDump(
-        rivendell_cart_data_filename=rivendell_cart_filename,
-        include_all_cuts=include_all_cuts,
+    convert_cart_database(
+        rivendell_cart_filename=rivendell_cart_filename,
+        output_filename=output_filename,
+        desired_fields_filename=desired_fields_filename,
         include_macros=include_macros,
-        excluded_group_list=excluded_groups
+        include_all_cuts=include_all_cuts,
+        excluded_groups_file_name=excluded_groups_file_name,
+        converter=ConvertDatabaseToExcel
     )
-
-    rivendell_carts = lcdd.load_carts()
-
-    x = ConvertDatabaseToExcel(
-        rivendell_carts=rivendell_carts,
-        desired_field_list=desired_fields,
-        output_filename=output_filename
-    )
-    x.run_script()
 
 
 @wmul_rivendell_cli.command()
@@ -212,27 +235,16 @@ def convert_to_excel(rivendell_cart_filename, output_filename, desired_fields_fi
 def filter_cart_report(rivendell_cart_filename, output_filename, desired_fields_filename, include_macros,
                        include_all_cuts, excluded_groups_file_name, use_trailing_comma):
     _logger.debug(f"With {locals()}")
-
-    desired_fields = get_items_from_file(file_name=desired_fields_filename)
-    excluded_groups = get_items_from_file(file_name=excluded_groups_file_name)
-    output_filename = Path(output_filename)
-
-    lcdd = LoadCartDataDump(
-        rivendell_cart_data_filename=rivendell_cart_filename,
+    converter = ConvertDatabaseToCSV.get_factory(use_trailing_comma=use_trailing_comma)
+    convert_cart_database(
+        rivendell_cart_filename=rivendell_cart_filename,
+        output_filename=output_filename,
+        desired_fields_filename=desired_fields_filename,
         include_macros=include_macros,
         include_all_cuts=include_all_cuts,
-        excluded_group_list=excluded_groups,
+        excluded_groups_file_name=excluded_groups_file_name,
+        converter=converter
     )
-
-    rivendell_carts = lcdd.load_carts()
-
-    x = ConvertDatabaseToCSV(
-        rivendell_carts=rivendell_carts,
-        output_filename=output_filename,
-        desired_field_list=desired_fields,
-        use_trailing_comma=use_trailing_comma
-    )
-    x.run_script()
 
 
 @wmul_rivendell_cli.command()
@@ -368,3 +380,26 @@ def get_items_from_file(file_name):
         if not items:
             raise ValueError(f"The file: {file_name}, did not contain any items. It appears to be blank or empty.")
     return items
+
+
+def convert_cart_database(rivendell_cart_filename, output_filename, desired_fields_filename, include_macros, 
+                          include_all_cuts, excluded_groups_file_name, converter):
+    desired_fields = get_items_from_file(file_name=desired_fields_filename)
+    excluded_groups = get_items_from_file(file_name=excluded_groups_file_name)
+    output_filename = Path(output_filename)
+
+    lcdd = LoadCartDataDump(
+        rivendell_cart_data_filename=rivendell_cart_filename,
+        include_all_cuts=include_all_cuts,
+        include_macros=include_macros,
+        excluded_group_list=excluded_groups
+    )
+
+    rivendell_carts = lcdd.load_carts()
+
+    x = converter(
+        rivendell_carts=rivendell_carts,
+        desired_field_list=desired_fields,
+        output_filename=output_filename
+    )
+    x.run_script()
