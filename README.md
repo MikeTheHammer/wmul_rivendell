@@ -5,9 +5,13 @@ Radio Automation 4.0+
 
 It may also work with Rivendell 3, but I am no longer guaranteeing that.
 
-`Filter Cart Report For Music Scheduler` takes the Rivendell Cart Data Dump
-(.csv) and filters out the fields, cart types, and cuts that are not needed by
-external scheduling software.
+`Convert to CSV` takes the Rivendell Cart Data Dump (.csv), filters out unwanted fields,
+cart types, cuts, and groups and outputs a csv file. Useful for some music schedulers
+
+`Convert to Excel` takes the Rivendell Cart Data Dump (.csv), filters out unwanted fields,
+cart types, cuts, and groups and outputs an Excel file (.xlsx).
+
+`Filter Cart Report For Music Scheduler` works the same as `Convert to CSV`. It is retained for backwards-compatibility, but may be removed in a future version.
 
 `Database Statistics` takes the Rivendell Cart Data Dump (.csv) and provides
 statistical information about each group. Currently, it generates the Number
@@ -27,7 +31,8 @@ group and scheduler code(s) to which a file should be imported.
 - [Installation - Linux](#installation---linux)
 - [Installation - Windows](#installation---windows)
 - [Usage](#usage)
-  - [Filter Cart Report For Music Scheduler](#filter-cart-report-for-music-scheduler)
+  - [Convert to CSV](#convert-to-csv)
+  - [Convert to Excel](#convert-to-excel)
   - [Database Statistics](#database-statistics)
   - [Load Current Log Line](#load-current-log-line)
     - [Running Load Current Log Line at Startup](#running-load-current-log-line-at-startup)
@@ -94,7 +99,7 @@ Scheduler` and `Database Statistics` can be run on a Windows machine as well.
 (Presumably the same machine as the music scheduler software.)
 
 1. Download and install a recent version of Python 3 from <https://www.python.org/downloads/> .
-This software has been tested with Python 3.8-3.13.
+This software has been tested with Python 3.9-3.13.
 
     a. Check `Install Launcher for all users (recommended)` and `Add Python
     3.11 to PATH`. (Or whichever Python version you are installing.)  
@@ -148,15 +153,19 @@ assisting the Rivendell experience, they are really four different scripts with
 four different usages. (Granted, the information from `Database Statistics`
 will be helpful inside your music scheduler.)
 
-### Filter Cart Report For Music Scheduler
+### Convert to CSV
 
-This script takes the Rivendell Cart Data Dump (.csv) and filters out the
-fields, cart types, and cuts that are not needed by external scheduling
-software.
+### Convert to Excel
 
-(In particular, Natural Music 5 has trouble importing the full Cart Data Dump.
-It seems to be due to the number of fields. The Cart Data Dump includes 33
-fields and Natural Music 5 seems to only be able to handle 32.)
+AKA Filter Cart Report For Music Scheduler
+
+These scripts are essentially the same. One script outputs .csv file and the other outputs an Excel (.xlsx) file.
+
+This script takes the Rivendell Cart Data Dump (.csv) and optionally filters out the fields, cart types, and cuts that
+are not desired. This script is needed to prepare the Cart Data Dump for some external music schedulers.
+
+(In particular, Natural Music 5 has trouble importing the full Cart Data Dump. It seems to be due to the number of
+fields. The Cart Data Dump includes 33 fields and Natural Music 5 seems to only be able to handle 32.)
 
 This script can optionally remove MACRO carts from the data dump and reduce
 the entry for each cart down to a single cut.
@@ -168,18 +177,17 @@ Each group name should be on a separate line. Any cuts belonging to any of
 those groups will be exluded from the output. Useful for keeping your
 non-music cuts out of your music scheduler.
 
-1. To begin, you will need to create a text file containing the field names
-that you want to keep. Each field needs to be on its own line. Field names are
-case-insensitive. Two example files are in the github repo:
+This script can optionally remove unneeded fields from the output. Use the `--desired_fields_filename [FILENAME]`
+option. The `FILENAME` should contain a list of the field names that you want to keep. Each field needs to be on its
+own line. Field names are case-insensitive. Two example files are in the github repo:
 <https://github.com/MikeTheHammer/wmul_rivendell/tree/main/example_files/>.
 
-    `all_fields.txt` is every field included in Cart Data Dump.
-`desired_fields.txt` is an example of a file containing only the desired
-fields. Use `Notepad` on Windows, or `Text Editor` on Linux.
+`all_fields.txt` is every field included in Cart Data Dump. `desired_fields.txt` is an example of a file containing
+only the desired fields. Use `Notepad` on Windows, or `Text Editor` on Linux.
 
-2. Use RD Library to create a Cart Data Dump (.csv) file and save it.
+1. Use RD Library to create a Cart Data Dump (.csv) file and save it.
 
-3. Run the filter script.
+2. Run the filter script.
 
     Usage: `wmul_rivendell [LOGGING] filter-cart-report RIVENDELL_CART_FILENAME
      OUTPUT_FILENAME  DESIRED_FIELDS_FILENAME [OPTIONS]` .
@@ -188,10 +196,8 @@ fields. Use `Notepad` on Windows, or `Text Editor` on Linux.
     b. **OUTPUT_FILENAME** is the name of the file to which the script should
     write. This is the file that you will load into your music scheduler.
     (If a file with this name already exists, it will be overwritten.)  
-    c. **DESIRED_FIELDS_FILENAME** is the name of the file containing the list
-    of desired fields. This is the file you created in step 1.  
-    d. There are four **[OPTIONS]**:  
-
+    d. There are five **[OPTIONS]**:  
+    - **--desired_fields_filename** is the name of the file containing the list of desired fields.
     - **--include_macros** If this flag is set, MACROS will be included
         in the output.  
     - **--include_all_cuts** If this flag is set, all the cuts will be
@@ -200,7 +206,7 @@ fields. Use `Notepad` on Windows, or `Text Editor` on Linux.
     - **--use_trailing_comma** If this flag is set, each line of the
     output file will include a comma at the end. If your music scheduler
     cannot see the final field, try this setting. Natural Music 5 needs
-    this flag.  
+    this flag. (This flag only applies to `convert-to-csv`.)  
     - **--excluded_groups_file_name [FILENAME]** Allows you to supply a
     filename with a list of groups to exclude. Any cuts belonging to any
     of those groups will be exluded from the output. Useful for keeping
@@ -211,7 +217,7 @@ fields. Use `Notepad` on Windows, or `Text Editor` on Linux.
     **Example:**
     `wmul_rivendell --log_name "~/filter_cart_report.log" --log_level 30
     filter-cart-report "~/cart_data_dump.csv"
-    "~/cart_data_for_music_scheduler.csv" "~/desired_fields.txt"
+    "~/cart_data_for_music_scheduler.csv" --desired_fields_filename "~/desired_fields.txt"
     --use_trailing_comma`
 
 ### Database Statistics
