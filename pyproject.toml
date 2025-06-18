@@ -15,22 +15,19 @@ classifiers = [
 ]
 
 dynamic = ["version"]
-description = "Various scripts to help use Rivendell Radio Automation 3.4.1+"
+description = "Various scripts to help use Rivendell Radio Automation 4+"
 
 dependencies = [
   "wmul_logger>=0.5.1",
   "wmul_emailer>=0.5.0",
   "click",
-  "mysql-connector-python<8.0.29;python_version < '3.7.0'",
-  "mysql-connector-python>8.0;python_version > '3.7.0'",
+  "mysql-connector-python>8.0",
   "cachetools",
-  "protobuf>=3.19.0;python_version > '3.7.0'",
-  "protobuf<=3.19.4;python_version < '3.7.0'",
-  "dataclasses;python_version < '3.7.0'",
+  "protobuf>=3.19.0",
   "numpy",
   "pandas",
   "openpyxl",
-  "setuptools"
+  "pydantic"
 ]
 
 [project.scripts]
