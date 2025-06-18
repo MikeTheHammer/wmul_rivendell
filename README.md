@@ -99,7 +99,7 @@ Scheduler` and `Database Statistics` can be run on a Windows machine as well.
 (Presumably the same machine as the music scheduler software.)
 
 1. Download and install a recent version of Python 3 from <https://www.python.org/downloads/> .
-This software has been tested with Python 3.9-3.13.
+This software has been tested with Python 3.10-3.13.
 
     a. Check `Install Launcher for all users (recommended)` and `Add Python
     3.11 to PATH`. (Or whichever Python version you are installing.)  
