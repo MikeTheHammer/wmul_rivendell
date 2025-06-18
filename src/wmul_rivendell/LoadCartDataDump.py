@@ -6,6 +6,10 @@ into Python data.
 
 
 ============ Change Log ============
+2025-Jun-18 = Rework RivendellCart to be a Pydantic model.
+              Improve type hinting.
+              Make certain load_carts returns a list.
+
 2025-Jan-22 = Change debugging level on length_in_seconds.
 
 2025-Jan-08 = Add logging to RivendellCart.from_dict, handle fields that may be string or NoneType.

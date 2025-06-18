@@ -1,3 +1,15 @@
+v0.14.0
+-------
+Rework Rivendell Cart to be a Pydantic model.
+
+Make the process of identifying out of bounds songs more straight-forward.
+
+Add Adjusted Mean for the mean after the outliers and out-of-bounds songs are removed.
+
+Make Zero the lower bound for outliers.
+
+Rework Filter Cart Report and create Convert To Excel.
+
 v0.13.0
 -------
 Extracted the logic for loading and initial filters of the Rivendell Cart Data Dump from FilterCartReportForMusicSchedule. That logic is now in LoadCartDataDump. This refactoring will allow DatabaseStatistics to re-use the code.

@@ -4,6 +4,11 @@
 This script takes the "Cart Data Dump (CSV)" from RD Library and generates statistics about each group.
 
 ============ Change Log ============
+2025-Jun-18 = Make zero lower bound for outliers.
+              Make the process of identifying out of bounds songs more straight-forward. 
+              Add adjusted mean for the mean after the outliers and out-of-bounds songs have been removed.
+              Make RivendellCart a Pydantic model.
+
 2025-Jan-30 = Add logic to rename the DatabaseStatistics.output_filename if that file already exists.
 
 2025-Jan-29 = Remove to_list_for_csv and get_header_list, they are no longer needed. CSVs are generated using pandas 

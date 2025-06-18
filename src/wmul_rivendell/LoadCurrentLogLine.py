@@ -7,6 +7,8 @@ However, I did not document my source at the time I originally wrote this.
 That module is BSD 2-Clause licensed. 
 
 ============ Change Log ============
+2025-Jun-18 = Improve type hinting.
+
 2023-Jan-20 = Back-insert items into change log.
               Updated description.
               Change license from GPLv2 to GPLv3.
@@ -18,7 +20,7 @@ That module is BSD 2-Clause licensed.
 2020-Jun-26 = Created.
 
 ============ License ============
-Copyright (C) 2020-2023 Michael Stanley
+Copyright (C) 2020-2023, 2025 Michael Stanley
 
 This file is part of wmul_rivendell.
 

@@ -4,6 +4,9 @@
 Command-Line-Interface for the various modules in this package.
 
 ============ Change Log ============
+2025-Jun-18 = Add convert-to-excel and convert-to-csv.
+              Refactor filter-cart-report.
+
 2025-Jan-29 = Add option to database_statistics for write_full_statistics option on DatabaseStatistics.
 
 2025-Jan-23 = Add options to database_statistics for smallest_stdev, minimum_population, upper and lower bound 
