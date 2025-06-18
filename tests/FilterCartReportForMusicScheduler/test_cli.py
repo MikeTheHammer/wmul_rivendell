@@ -76,13 +76,17 @@ def test_filter_cart_report(fs, params, mocker, caplog):
         autospec=True
     )
 
-    mock_filter_cart_report_object = mocker.Mock()
+    mock_convert_database_to_csv_object = mocker.Mock()
 
-    mock_filter_cart_report_constructor = mocker.patch(
-        "wmul_rivendell.cli.ConvertDatabaseToCSV",
-        return_value=mock_filter_cart_report_object,
-        autospec=True
+    mock_convert_database_to_csv_get_factory_inner = mocker.Mock(
+        return_value=mock_convert_database_to_csv_object
     )
+
+    mock_convert_database_to_csv_get_factory = mocker.patch(
+        "wmul_rivendell.cli.ConvertDatabaseToCSV.get_factory",
+        return_value=mock_convert_database_to_csv_get_factory_inner
+    )
+
 
     cli_args = [
             mock_rivendell_cart_filename,
@@ -126,11 +130,14 @@ def test_filter_cart_report(fs, params, mocker, caplog):
 
     mock_load_carts.assert_called_once_with()
 
-    mock_filter_cart_report_constructor.assert_called_once_with(
+    mock_convert_database_to_csv_get_factory_inner.assert_called_once_with(
         rivendell_carts=mock_rivendell_carts,
         output_filename=expected_output_filename,
-        desired_field_list=expected_desired_fields,
+        desired_field_list=expected_desired_fields
+    )
+
+    mock_convert_database_to_csv_get_factory.assert_called_once_with(
         use_trailing_comma=params.use_trailing_comma
     )
 
-    mock_filter_cart_report_object.run_script.assert_called_once_with()
+    mock_convert_database_to_csv_object.run_script.assert_called_once_with()

@@ -96,6 +96,12 @@ class ConvertDatabaseToCSV(ConvertDatabaseBase):
                                                   dialect="excel")
             natural_music_writer.writerows(trimmed_carts)
 
+    @classmethod
+    def get_factory(cls, use_trailing_comma):
+        def inner(rivendell_carts: list[RivendellCart], output_filename: Path, desired_field_list:  list[str]):
+            return cls(rivendell_carts, output_filename, desired_field_list, use_trailing_comma)
+        return inner
+
 
 @dataclass
 class ConvertDatabaseToExcel(ConvertDatabaseBase):
